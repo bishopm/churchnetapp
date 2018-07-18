@@ -8,7 +8,16 @@
     </p>
     <q-tabs color="secondary" no-pane-border align="justify">
       <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
-      <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">{{individual}}</q-tab-pane>
+      <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
+        <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}}<br>
+        <q-icon v-if="individual.cellphone" name="phone" color="primary"></q-icon> {{individual.cellphone}}<br>
+        <q-icon v-if="individual.email" name="email" color="primary"></q-icon> {{individual.email}}<br>
+        <q-icon v-if="individual.memberstatus" name="account_box" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
+        <p class="caption q-mt-md">Groups</p>
+        <div class="text-justify">
+          <q-chip class="q-ma-xs" small color="primary" v-for="group in individual.groups" :key="group.id"><router-link :to="'/groups/' + group.id">{{group.groupname}}</router-link></q-chip>
+        </div>
+      </q-tab-pane>
     </q-tabs>
   </div>
 </template>
@@ -34,4 +43,8 @@ export default {
 </script>
 
 <style>
+  a {
+    text-decoration: none;
+    color:white;
+  }
 </style>

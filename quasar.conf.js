@@ -42,6 +42,7 @@ module.exports = function (ctx) {
     framework: {
       components: [
         'QBtn',
+        'QChip',
         'QIcon',
         'QItem',
         'QItemMain',
