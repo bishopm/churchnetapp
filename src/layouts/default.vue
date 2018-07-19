@@ -21,6 +21,10 @@
           <q-item-side icon="person" />
           <q-item-main label="Households" sublabel="view all households" />
         </q-item>
+        <q-item to="/settings">
+          <q-item-side icon="settings" />
+          <q-item-main label="Settings" sublabel="user settings" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
     <q-page-container>
@@ -35,6 +39,20 @@ export default {
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('CHURCHNET_user_id')) {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+        .then((response) => {
+          this.$store.commit('setUser', response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    } else {
+      this.$router.push({ name: 'settings' })
     }
   }
 }

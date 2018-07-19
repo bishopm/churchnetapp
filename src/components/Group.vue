@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted () {
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(this.$store.state.hostname + '/groups/' + this.$route.params.id)
       .then((response) => {
         this.group = response.data

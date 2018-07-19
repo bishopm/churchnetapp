@@ -2,7 +2,8 @@
   <div>
     <q-list class="no-border">
       <p class="caption text-center">All households</p>
-      <q-search class="q-ml-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
+      <societyfilter @altered="searchdb"></societyfilter>
+      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
       <q-item v-if="households" v-for="household in households" :key="household.id" :to="'/households/' + household.id">
         {{household.addressee}}
       </q-item>
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+import societyfilter from './Societyfilter'
 export default {
   data () {
     return {
@@ -19,24 +21,30 @@ export default {
       search: ''
     }
   },
+  components: {
+    'societyfilter': societyfilter
+  },
   methods: {
     addHousehold () {
       this.$router.push({name: 'addhousehold'})
     },
     searchdb () {
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post(this.$store.state.hostname + '/households/search',
-        {
-          search: this.search
-        })
-        .then(response => {
-          this.households = response.data
-          this.$q.loading.hide()
-        })
-        .catch(function (error) {
-          console.log(error)
-          this.$q.loading.hide()
-        })
+      if (this.$store.state.societies) {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(this.$store.state.hostname + '/households/search',
+          {
+            search: this.search,
+            societies: this.$store.state.societies
+          })
+          .then(response => {
+            this.households = response.data
+            this.$q.loading.hide()
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
+      }
     }
   },
   mounted () {

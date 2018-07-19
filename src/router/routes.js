@@ -8,7 +8,8 @@ export default [
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
       { name: 'household', path: '/households/:id', component: () => import('components/Household'), meta: {auth: true} },
-      { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} }
+      { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
+      { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} }
     ]
   },
 
