@@ -12,15 +12,22 @@
     </q-layout-header>
     <q-layout-drawer v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
-        <q-list-header>Society</q-list-header>
-        <q-item to="/groups">
-          <q-item-side icon="group" />
-          <q-item-main label="Groups" sublabel="view all groups" />
-        </q-item>
-        <q-item to="/households">
-          <q-item-side icon="person" />
-          <q-item-main label="Households" sublabel="view all households" />
-        </q-item>
+        <div v-if="hassocieties">
+          <q-list-header class="text-center"><q-icon name="person"></q-icon> Church members</q-list-header>
+          <q-item to="/groups">
+            <q-item-side icon="group" />
+            <q-item-main label="Groups" sublabel="view all groups" />
+          </q-item>
+          <q-item to="/households">
+            <q-item-side icon="home" />
+            <q-item-main label="Households" sublabel="view all households" />
+          </q-item>
+        </div>
+        <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
+          <q-item to="/societies">
+            <q-item-side icon="room" />
+            <q-item-main label="Societies" sublabel="view all societies" />
+          </q-item>
         <q-item to="/settings">
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
@@ -38,7 +45,14 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      socs: [],
+      circs: []
+    }
+  },
+  computed: {
+    hassocieties () {
+      return this.$store.state.hassocieties
     }
   },
   mounted () {
@@ -47,6 +61,14 @@ export default {
       this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
           this.$store.commit('setUser', response.data)
+          for (var skey in this.$store.state.user.societies) {
+            this.socs.push(this.$store.state.user.societies[skey].id.toString())
+          }
+          this.$store.commit('setSocieties', this.socs)
+          for (var ckey in this.$store.state.user.circuits) {
+            this.circs.push(this.$store.state.user.circuits[ckey].id.toString())
+          }
+          this.$store.commit('setCircuits', this.circs)
         })
         .catch(function (error) {
           console.log(error)

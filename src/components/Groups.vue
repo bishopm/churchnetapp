@@ -17,7 +17,8 @@ import societyfilter from './Societyfilter'
 export default {
   data () {
     return {
-      groups: []
+      groups: [],
+      search: ''
     }
   },
   components: {
