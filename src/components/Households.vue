@@ -31,24 +31,26 @@ export default {
     searchdb () {
       if (this.$store.state.societies) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/households/search',
-          {
-            search: this.search,
-            societies: this.$store.state.societies
-          })
-          .then(response => {
-            this.households = response.data
-            this.$q.loading.hide()
-          })
-          .catch(function (error) {
-            console.log(error)
-            this.$q.loading.hide()
-          })
+        if (this.search.length > 1) {
+          this.$q.loading.show()
+          this.$axios.post(this.$store.state.hostname + '/households/search',
+            {
+              search: this.search,
+              societies: this.$store.state.societies
+            })
+            .then(response => {
+              this.households = response.data
+              this.$q.loading.hide()
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        }
       }
     }
   },
   mounted () {
-    this.$q.loading.show()
     this.searchdb()
   }
 

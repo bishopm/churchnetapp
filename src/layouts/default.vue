@@ -23,11 +23,13 @@
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
         </div>
-        <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
+        <div v-if="hascircuits">
+          <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
           <q-item to="/societies">
             <q-item-side icon="room" />
             <q-item-main label="Societies" sublabel="view all societies" />
           </q-item>
+        </div>
         <q-item to="/settings">
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
@@ -51,6 +53,9 @@ export default {
     }
   },
   computed: {
+    hascircuits () {
+      return this.$store.state.hascircuits
+    },
     hassocieties () {
       return this.$store.state.hassocieties
     }
