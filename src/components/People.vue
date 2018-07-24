@@ -1,14 +1,14 @@
 <template>
   <div>
     <q-list class="no-border">
-      <p class="caption text-center">All societies</p>
+      <p class="caption text-center">Circuit preachers / leaders</p>
       <circuitfilter @altered="searchdb"></circuitfilter>
-      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by society name" />
-      <q-item v-if="societies" v-for="society in societies" :key="society.id" :to="'/societies/' + society.circuit_id + '_' + society.id">
-        {{society.society}}
+      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
+      <q-item v-if="people" v-for="person in people" :key="person.id" :to="'/people/' + person.id">
+        {{person.surname}}, {{person.title}} {{person.firstname}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addSociety" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
+    <q-btn round color="primary" @click="addPerson" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@ import circuitfilter from './Circuitfilter'
 export default {
   data () {
     return {
-      societies: [],
+      people: [],
       search: ''
     }
   },
@@ -25,19 +25,19 @@ export default {
     'circuitfilter': circuitfilter
   },
   methods: {
-    addSociety () {
-      this.$router.push({name: 'addsociety'})
+    addPerson () {
+      this.$router.push({name: 'addperson'})
     },
     searchdb () {
-      if (this.$store.state.societies) {
+      if (this.$store.state.circuits) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/societies/search',
+        this.$axios.post(this.$store.state.hostname + '/people/search',
           {
             search: this.search,
             circuits: this.$store.state.circuits
           })
           .then(response => {
-            this.societies = response.data
+            this.people = response.data
             this.$q.loading.hide()
           })
           .catch(function (error) {
