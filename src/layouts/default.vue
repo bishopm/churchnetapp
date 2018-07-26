@@ -38,6 +38,7 @@
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
         </q-item>
+        <q-list-header class="text-center"><q-icon name="publish"></q-icon> Publish content</q-list-header>
       </q-list>
     </q-layout-drawer>
     <q-page-container>
