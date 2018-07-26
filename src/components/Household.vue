@@ -1,6 +1,6 @@
 <template>
   <div v-if="household" class="text-center layout-padding">
-    <p class="caption">{{household.addressee}} <q-icon name="edit"></q-icon></p>
+    <p class="caption">{{household.addressee}} <q-icon class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
     <p class="text-left q-mx-md">
       <q-icon name="place" color="tertiary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
       <q-icon name="email" color="tertiary"></q-icon> {{household.post1}} {{household.post2}} {{household.post3}}<br>
@@ -38,6 +38,11 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
+  },
+  methods: {
+    editHousehold () {
+      this.$router.push({name: 'edithousehold'})
+    }
   }
 }
 </script>

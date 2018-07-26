@@ -5,7 +5,8 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
-      'maps'
+      'maps',
+      'vuelidate'
     ],
     css: [
       'app.styl'
@@ -44,7 +45,9 @@ module.exports = function (ctx) {
       components: [
         'QBtn',
         'QChip',
+        'QField',
         'QIcon',
+        'QInput',
         'QItem',
         'QItemMain',
         'QItemSide',
