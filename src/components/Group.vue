@@ -1,6 +1,6 @@
 <template>
   <div v-if="group" class="text-center layout-padding">
-    <p class="caption">{{group.groupname}}</p>
+    <p class="caption">{{group.groupname}} <q-icon class="cursor-pointer" @click.native="editGroup" name="edit"></q-icon></p>
     <q-item v-for="individual in group.individuals" :key="individual.id" :to="'/households/' + individual.household_id">
       {{individual.firstname}} {{individual.surname}}
     </q-item>
@@ -23,6 +23,11 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
+  },
+  methods: {
+    editGroup () {
+      this.$router.push({name: 'editgroup'})
+    }
   }
 }
 </script>
