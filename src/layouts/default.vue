@@ -38,7 +38,11 @@
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
         </q-item>
-        <q-list-header class="text-center"><q-icon name="publish"></q-icon> Publish content</q-list-header>
+        <q-list-header class="text-center"><q-icon name="language"></q-icon> Publish content</q-list-header>
+        <q-item to="/publish">
+          <q-item-side icon="publish" />
+          <q-item-main label="Publish content" sublabel="publish to feed" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
     <q-page-container>

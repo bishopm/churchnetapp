@@ -13,6 +13,7 @@ export default [
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'person', path: '/people/:id', component: () => import('components/Person'), meta: {auth: true} },
       { name: 'people', path: '/people', component: () => import('components/People'), meta: {auth: true} },
+      { name: 'publish', path: '/publish', component: () => import('components/Publish'), meta: {auth: true} },
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} }
