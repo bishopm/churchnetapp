@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
-    <h4>Publish</h4>
-    <q-input float-label="Title" v-model="title" />
+    <p class="caption text-center">Publish content</p>
+    <q-input class="q-mb-md" float-label="Title" v-model="title" />
     <q-editor v-model="body" :toolbar="[
       ['bold', 'italic', 'underline'],
       ['hr', 'link'],

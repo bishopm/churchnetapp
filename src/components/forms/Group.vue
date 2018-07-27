@@ -35,8 +35,10 @@ export default {
   methods: {
     submit () {
       this.$v.form.$touch()
-      if (this.form.$error) {
-        this.$q.notify('Please review fields again.')
+      if (this.$v.form.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        this.$q.notify('Good to go!')
       }
     }
   },

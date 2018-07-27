@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
-    <div class="q-mx-md text-center caption">
-      Edit household
+    <div v-if="$route.params.action" class="q-mx-md text-center caption">
+      {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.addressee.$error" error-label="The addressee field is required">
@@ -44,29 +44,31 @@ export default {
   validations: {
     form: {
       addressee: { required },
-      addr1: { required },
-      addr2: { required },
-      addr3: { required },
       homephone: { numeric }
     }
   },
   methods: {
     submit () {
       this.$v.form.$touch()
-      if (this.form.$error) {
-        this.$q.notify('Please review fields again.')
+      if (this.$v.form.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        // if action = edit / add
+        this.$q.notify('Good to go!')
       }
     }
   },
   mounted () {
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
-      .then((response) => {
-        this.form = response.data
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+    if (this.$route.params.action === 'edit') {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
+        .then((response) => {
+          this.form = response.data
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
   }
 }
 </script>

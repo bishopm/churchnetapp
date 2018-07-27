@@ -8,7 +8,7 @@ export default [
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
       { name: 'editgroup', path: '/group/:id/edit', component: () => import('components/forms/Group'), meta: {auth: true} },
-      { name: 'edithousehold', path: '/household/:id/edit', component: () => import('components/forms/Household'), meta: {auth: true} },
+      { name: 'householdform', path: '/household/:action/:id?', component: () => import('components/forms/Household'), meta: {auth: true} },
       { name: 'household', path: '/households/:id', component: () => import('components/Household'), meta: {auth: true} },
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'person', path: '/people/:id', component: () => import('components/Person'), meta: {auth: true} },

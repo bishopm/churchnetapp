@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     editHousehold () {
-      this.$router.push({name: 'edithousehold'})
+      this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
     }
   }
 }

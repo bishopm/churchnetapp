@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     addHousehold () {
-      this.$router.push({name: 'addhousehold'})
+      this.$router.push({name: 'householdform', params: { action: 'add' }})
     },
     searchdb () {
       if (this.$store.state.societies) {
