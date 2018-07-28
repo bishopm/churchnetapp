@@ -4,6 +4,8 @@
     <societyfilter></societyfilter>
     <circuitfilter></circuitfilter>
     <q-input class="q-mb-md" float-label="Title" v-model="title" />
+    <q-select class="q-mb-md" v-model="category" float-label="Category" radio :options="categoryOptions" />
+    <q-datetime class="q-mb-md" float-label="Publication date" v-model="publicationdate" type="date" />
     <q-editor v-model="body" :toolbar="[
       ['bold', 'italic', 'underline'],
       ['hr', 'link'],
@@ -26,7 +28,27 @@ export default {
   data () {
     return {
       title: '',
-      body: ''
+      body: '',
+      categoryOptions: [
+        {
+          label: 'Community',
+          value: 'community'
+        },
+        {
+          label: 'Groups',
+          value: 'groups'
+        },
+        {
+          label: 'Media',
+          value: 'media'
+        },
+        {
+          label: 'Practice',
+          value: 'practice'
+        }
+      ],
+      publicationdate: '',
+      category: ''
     }
   },
   components: {

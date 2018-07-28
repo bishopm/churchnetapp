@@ -45,6 +45,7 @@ module.exports = function (ctx) {
       components: [
         'QBtn',
         'QChip',
+        'QDatetime',
         'QEditor',
         'QField',
         'QIcon',
