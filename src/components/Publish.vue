@@ -3,7 +3,7 @@
     <p class="caption text-center">Publish content</p>
     <societyfilter showme="2"></societyfilter>
     <circuitfilter showme="2"></circuitfilter>
-    <q-input class="q-mb-md" float-label="Title" v-model="post.title" />
+    <q-input ref="title" class="q-mb-md" float-label="Title" v-model="post.title" />
     <q-select class="q-mb-md" v-model="post.category" float-label="Category" radio :options="categoryOptions" />
     <q-datetime class="q-mb-md" float-label="Publication date" v-model="post.publicationdate" format="YYYY-MM-DD" type="date" />
     <q-editor v-model="post.body" :toolbar="[
@@ -63,6 +63,9 @@ export default {
   components: {
     'circuitfilter': circuitfilter,
     'societyfilter': societyfilter
+  },
+  mounted () {
+    this.$refs.title.focus()
   },
   methods: {
     submit () {

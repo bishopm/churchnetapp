@@ -3,7 +3,7 @@
     <q-list class="no-border">
       <p class="caption text-center">Circuit preachers / leaders</p>
       <circuitfilter @altered="searchdb"></circuitfilter>
-      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
+      <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
       <q-item v-if="people" v-for="person in people" :key="person.id" :to="'/people/' + person.id">
         {{person.surname}}, {{person.title}} {{person.firstname}}
       </q-item>
@@ -48,6 +48,7 @@ export default {
     }
   },
   mounted () {
+    this.$refs.search.focus()
     this.$q.loading.show()
     this.searchdb()
   }

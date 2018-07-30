@@ -3,7 +3,7 @@
     <q-list class="no-border">
       <p class="caption text-center">All groups</p>
       <societyfilter @altered="searchdb"></societyfilter>
-      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
+      <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
       <q-item v-if="groups" v-for="group in groups" :key="group.id" :to="'/groups/' + group.id">
         {{group.groupname}}
       </q-item>
@@ -47,6 +47,7 @@ export default {
     }
   },
   mounted () {
+    this.$refs.search.focus()
     this.searchdb()
   }
 

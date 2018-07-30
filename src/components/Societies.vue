@@ -3,7 +3,7 @@
     <q-list class="no-border">
       <p class="caption text-center">All societies</p>
       <circuitfilter @altered="searchdb" :showme="showme()"></circuitfilter>
-      <q-search class="q-my-md" @input="searchdb" v-model="search" placeholder="search by society name" />
+      <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by society name" />
       <q-item v-if="societies" v-for="society in societies" :key="society.id" :to="'/societies/' + society.circuit_id + '_' + society.id">
         {{society.society}}
       </q-item>
@@ -51,6 +51,7 @@ export default {
     }
   },
   mounted () {
+    this.$refs.search.focus()
     this.$q.loading.show()
     this.searchdb()
   }
