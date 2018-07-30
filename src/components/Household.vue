@@ -9,7 +9,7 @@
     <q-tabs color="secondary" no-pane-border align="justify">
       <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
       <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-        <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}}<br>
+        <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
         <q-icon v-if="individual.cellphone" name="phone" color="primary"></q-icon> {{individual.cellphone}}<br>
         <q-icon v-if="individual.email" name="email" color="primary"></q-icon> {{individual.email}}<br>
         <q-icon v-if="individual.memberstatus" name="account_box" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
@@ -42,6 +42,9 @@ export default {
   methods: {
     editHousehold () {
       this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
+    },
+    editIndividual (individual) {
+      this.$router.push({name: 'individualform', params: { individual: individual, action: 'edit' }})
     }
   }
 }
