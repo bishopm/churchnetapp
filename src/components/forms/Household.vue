@@ -20,7 +20,7 @@
     </div>
     <div class="q-ma-md">
       <q-btn color="primary" @click="submit">Submit</q-btn>
-      <q-btn class="q-ml-md" color="secondary">Cancel</q-btn>
+      <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn class="q-ml-md" color="red">Delete</q-btn>
     </div>
   </div>
