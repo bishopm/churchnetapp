@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="$store.state.user.societies.length > 1" @input="updateMe" multiple chips class="q-ma-md" v-model="societies" float-label="Societies" :options="societyOptions" />
+<q-select v-if="showme > 1" @input="updateMe" multiple chips class="q-my-md" v-model="societies" float-label="Societies" :options="societyOptions" />
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
       societyOptions: []
     }
   },
+  props: ['showme'],
   mounted () {
     for (var skey in this.$store.state.user.societies) {
       var newitem = {

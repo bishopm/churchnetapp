@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="layout-padding">
     <q-list class="no-border">
       <p class="caption text-center">All societies</p>
-      <circuitfilter @altered="searchdb"></circuitfilter>
-      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by society name" />
+      <circuitfilter @altered="searchdb" :showme="showme()"></circuitfilter>
+      <q-search class="q-my-md" @input="searchdb" v-model="search" placeholder="search by society name" />
       <q-item v-if="societies" v-for="society in societies" :key="society.id" :to="'/societies/' + society.circuit_id + '_' + society.id">
         {{society.society}}
       </q-item>
@@ -27,6 +27,9 @@ export default {
   methods: {
     addSociety () {
       this.$router.push({name: 'addsociety'})
+    },
+    showme () {
+      return this.$store.state.user.circuits.length
     },
     searchdb () {
       if (this.$store.state.societies) {

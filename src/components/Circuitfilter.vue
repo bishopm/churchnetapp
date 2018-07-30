@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="$store.state.user.circuits.length > 1" @input="updateMe" multiple chips class="q-ma-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
+<q-select v-if="showme > 1" @input="updateMe" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
       circuitOptions: []
     }
   },
+  props: ['showme'],
   mounted () {
     for (var ckey in this.$store.state.user.circuits) {
       var newitem = {

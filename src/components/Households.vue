@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="layout-padding">
     <q-list class="no-border">
       <p class="caption text-center">All households</p>
-      <societyfilter @altered="searchdb"></societyfilter>
-      <q-search class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
+      <societyfilter @altered="searchdb" :showme="showme()"></societyfilter>
+      <q-search class="q-my-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
       <q-item v-if="households" v-for="household in households" :key="household.id" :to="'/households/' + household.id">
         {{household.addressee}}
       </q-item>
@@ -27,6 +27,9 @@ export default {
   methods: {
     addHousehold () {
       this.$router.push({name: 'householdform', params: { action: 'add' }})
+    },
+    showme () {
+      return this.$store.state.user.societies.length
     },
     searchdb () {
       if (this.$store.state.societies) {
