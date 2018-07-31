@@ -78,7 +78,8 @@ export default {
           circuits: this.$store.state.circuits
         })
         .then(response => {
-          console.log(response.data)
+          this.$q.notify('Your content has been published!')
+          this.$router.push({name: 'home'})
         })
         .catch(function (error) {
           console.log(error)

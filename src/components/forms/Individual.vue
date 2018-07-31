@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    <div v-if="$route.params.action" class="q-mx-md text-center caption">
+    <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} INDIVIDUAL
     </div>
     <div class="q-ma-md">
