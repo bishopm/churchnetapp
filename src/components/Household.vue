@@ -2,9 +2,9 @@
   <div v-if="household" class="text-center layout-padding">
     <p class="caption q-mt-md">{{household.addressee}} <q-icon class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
     <p class="text-left q-mx-md">
-      <q-icon name="place" color="tertiary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
-      <q-icon name="email" color="tertiary"></q-icon> {{household.post1}} {{household.post2}} {{household.post3}}<br>
-      <q-icon name="phone" color="tertiary"></q-icon> {{household.homephone}}
+      <q-icon name="place" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
+      <q-icon name="email" color="secondary"></q-icon> {{household.post1}} {{household.post2}} {{household.post3}}<br>
+      <q-icon name="phone" color="secondary"></q-icon> {{household.homephone}}
     </p>
     <div id="map" class="q-mt-md"></div>
     <q-tabs color="secondary" no-pane-border align="justify">
@@ -50,7 +50,8 @@ export default {
     editIndividual (individual) {
       this.$router.push({name: 'individualform', params: { individual: individual, action: 'edit' }})
     },
-    initMap () {
+    async initMap () {
+      await this.$google()
       this.map = new window.google.maps.Map(document.getElementById('map'), {
         center: {lat: parseFloat(this.household.latitude), lng: parseFloat(this.household.longitude)},
         zoom: 15

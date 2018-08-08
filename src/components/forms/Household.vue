@@ -66,7 +66,8 @@ export default {
         this.$q.notify('Good to go!')
       }
     },
-    initMap () {
+    async initMap () {
+      await this.$google()
       this.map = new window.google.maps.Map(document.getElementById('map'), {
         center: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)},
         zoom: 15
