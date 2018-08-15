@@ -26,8 +26,12 @@
         <div v-if="hascircuits">
           <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
           <q-item to="/people">
-            <q-item-side icon="mic" />
+            <q-item-side icon="person" />
             <q-item-main label="Preachers" sublabel="preachers and circuit leaders" />
+          </q-item>
+          <q-item to="/plan">
+            <q-item-side icon="mic" />
+            <q-item-main label="Plan" sublabel="preaching plan" />
           </q-item>
           <q-item to="/societies">
             <q-item-side icon="room" />
