@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import circuitfilter from './Circuitfilter'
 import { date } from 'quasar'
 
 export default {
   data () {
     return {
+      circuit: 164,
       societies: [],
       headers: [],
       rows: [],
@@ -23,18 +23,11 @@ export default {
       paginationControl: { rowsPerPage: 0 }
     }
   },
-  components: {
-    'circuitfilter': circuitfilter
-  },
   methods: {
     searchdb () {
       if (this.$store.state.societies) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/societies/search',
-          {
-            search: this.search,
-            circuits: this.$store.state.circuits
-          })
+        this.$axios.get(this.$store.state.hostname + '/circuits/' + this.circuit + '/plans/currentplan')
           .then(response => {
             console.log(response.data)
             for (var skey in response.data) {
