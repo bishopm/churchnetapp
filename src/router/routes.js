@@ -12,6 +12,7 @@ export default [
       { name: 'household', path: '/households/:id', component: () => import('components/Household'), meta: {auth: true} },
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'individualform', path: '/individual/:action/:id?', component: () => import('components/forms/Individual'), meta: {auth: true} },
+      { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: true} },
       { name: 'person', path: '/people/:id', component: () => import('components/Person'), meta: {auth: true} },
       { name: 'people', path: '/people', component: () => import('components/People'), meta: {auth: true} },
       { name: 'plan', path: '/plan', component: () => import('components/Plan'), meta: {auth: true} },

@@ -74,25 +74,10 @@ export default {
     }
   },
   mounted () {
-    if (localStorage.getItem('CHURCHNET_user_id')) {
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
-        .then((response) => {
-          this.$store.commit('setUser', response.data)
-          for (var skey in this.$store.state.user.societies) {
-            this.socs.push(this.$store.state.user.societies[skey].id.toString())
-          }
-          this.$store.commit('setSocieties', this.socs)
-          for (var ckey in this.$store.state.user.circuits) {
-            this.circs.push(this.$store.state.user.circuits[ckey].id.toString())
-          }
-          this.$store.commit('setCircuits', this.circs)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+    if (localStorage.getItem('CHURCHNET_Token')) {
+      this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
     } else {
-      this.$router.push({ name: 'settings' })
+      this.$router.push({ name: 'login' })
     }
   }
 }

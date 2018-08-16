@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    token: {},
+    token: null,
     hassocieties: false,
     hascircuits: false,
     hostname: 'http://localhost/churchnet/public/api/methodist'
@@ -14,6 +14,9 @@ const store = new Vuex.Store({
   mutations: {
     setUser (state, newuser) {
       state.user = newuser
+    },
+    setToken (state, newtoken) {
+      state.token = newtoken
     },
     setSocieties (state, newsocieties) {
       state.societies = newsocieties
