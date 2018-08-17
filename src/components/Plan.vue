@@ -27,7 +27,7 @@ export default {
     searchdb () {
       if (this.$store.state.societies) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.get(this.$store.state.hostname + '/circuits/' + this.circuit + '/plans/currentplan')
+        this.$axios.get(this.$store.state.hostname + '/circuits/' + this.circuit + '/mplans/monthlyplan/2018/8')
           .then(response => {
             console.log(response.data)
             for (var skey in response.data) {

@@ -44,7 +44,6 @@ export default {
   data () {
     return {
       email: '',
-
       password: '',
       newpassword: '',
       newemail: '',
@@ -60,28 +59,10 @@ export default {
           password: this.password
         })
         .then(response => {
-          console.log(response.data)
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
-          this.$store.commit('setToken', response.data.token)
           localStorage.setItem('CHURCHNET_Token', response.data.token)
           localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
-            .then((response) => {
-              this.$store.commit('setUser', response.data)
-              for (var skey in this.$store.state.user.societies) {
-                this.socs.push(this.$store.state.user.societies[skey].id.toString())
-              }
-              this.$store.commit('setSocieties', this.socs)
-              for (var ckey in this.$store.state.user.circuits) {
-                this.circs.push(this.$store.state.user.circuits[ckey].id.toString())
-              }
-              this.$store.commit('setCircuits', this.circs)
-              this.$router.push({ name: 'home' })
-            })
-            .catch(function (error) {
-              console.log(error)
-            })
+          this.$router.push({ name: 'home' })
         })
         .catch(function (error) {
           this.error = error

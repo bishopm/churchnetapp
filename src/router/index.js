@@ -21,5 +21,17 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE
   })
 
+  Router.beforeEach((to, from, next) => {
+    if (to.meta.auth) {
+      if (localStorage.getItem('CHURCHNET_Token')) {
+        next()
+      } else {
+        Router.push({name: 'login'})
+        return false
+      }
+    }
+    next()
+  })
+
   return Router
 }
