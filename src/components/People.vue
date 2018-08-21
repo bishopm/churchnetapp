@@ -37,7 +37,7 @@ export default {
             circuits: this.$store.state.circuits
           })
           .then(response => {
-            this.people = response.data
+            this.people = response.data.people
             this.$q.loading.hide()
           })
           .catch(function (error) {

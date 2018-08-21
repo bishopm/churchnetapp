@@ -8,7 +8,7 @@ const store = new Vuex.Store({
     token: null,
     hassocieties: false,
     hascircuits: false,
-    hostname: 'http://localhost/churchnet/public/api/methodist'
+    hostname: 'http://localhost/churchnet/public/api'
     // hostname: 'https://church.net.za/api'
   },
   mutations: {
