@@ -1,15 +1,15 @@
 <template>
-  <div class="text-center q-mt-lg" v-if="user()">
+  <div class="text-center q-mt-lg" v-if="user">
     <p class="caption">Welcome! &nbsp;<span><b>{{$store.state.user.name}}</b></span></p>
-    <h4 v-if="$store.state.user.districts.length">District permissions</h4>
+    <h4 v-if="user.districts.length">District permissions</h4>
     <p v-for="district in $store.state.user.districts" :key="district.id">
       {{district}}
     </p>
-    <h4 v-if="$store.state.user.circuits.length">Circuit permissions</h4>
+    <h4 v-if="user.circuits.length">Circuit permissions</h4>
     <p v-for="circuit in $store.state.user.circuits" :key="circuit.id">
       {{circuit.circuit}} ({{circuit.pivot.permission}})
     </p>
-    <h4 v-if="$store.state.user.societies.length">Society permissions</h4>
+    <h4 v-if="user.societies.length">Society permissions</h4>
     <p v-for="society in $store.state.user.societies" :key="society.id">
       {{society.society}} ({{society.pivot.permission}})
     </p>
@@ -21,16 +21,8 @@ export default {
   data () {
     return {
       circs: [],
-      socs: []
-    }
-  },
-  methods: {
-    user () {
-      if (this.$store.state.user) {
-        return true
-      } else {
-        return false
-      }
+      socs: [],
+      user: {}
     }
   },
   mounted () {
@@ -47,6 +39,7 @@ export default {
           this.circs.push(this.$store.state.user.circuits[ckey].id.toString())
         }
         this.$store.commit('setCircuits', this.circs)
+        this.user = response.data
       })
       .catch(function (error) {
         console.log(error)
