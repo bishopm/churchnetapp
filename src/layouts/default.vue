@@ -38,14 +38,18 @@
             <q-item-main label="Societies" sublabel="view all societies" />
           </q-item>
         </div>
+        <q-list-header class="text-center"><q-icon name="language"></q-icon> Administration</q-list-header>
+        <q-item to="/publish">
+          <q-item-side icon="publish" />
+          <q-item-main label="Publish content" sublabel="publish to feed" />
+        </q-item>
         <q-item to="/settings">
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
         </q-item>
-        <q-list-header class="text-center"><q-icon name="language"></q-icon> Publish content</q-list-header>
-        <q-item to="/publish">
-          <q-item-side icon="publish" />
-          <q-item-main label="Publish content" sublabel="publish to feed" />
+        <q-item to="/users">
+          <q-item-side icon="person_add" />
+          <q-item-main label="Users" sublabel="user permissions" />
         </q-item>
       </q-list>
     </q-layout-drawer>

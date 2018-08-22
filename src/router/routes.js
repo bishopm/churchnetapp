@@ -19,7 +19,8 @@ export default [
       { name: 'publish', path: '/publish', component: () => import('components/Publish'), meta: {auth: true} },
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
-      { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} }
+      { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },
+      { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} }
     ]
   },
 

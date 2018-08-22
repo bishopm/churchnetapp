@@ -1,6 +1,18 @@
 <template>
-  <div class="text-center q-mt-lg">
-    <p class="caption">Welcome!</p>
+  <div class="text-center q-mt-lg" v-if="user()">
+    <p class="caption">Welcome! &nbsp;<span><b>{{$store.state.user.name}}</b></span></p>
+    <h4 v-if="$store.state.user.districts.length">District permissions</h4>
+    <p v-for="district in $store.state.user.districts" :key="district.id">
+      {{district}}
+    </p>
+    <h4 v-if="$store.state.user.circuits.length">Circuit permissions</h4>
+    <p v-for="circuit in $store.state.user.circuits" :key="circuit.id">
+      {{circuit.circuit}} ({{circuit.pivot.permission}})
+    </p>
+    <h4 v-if="$store.state.user.societies.length">Society permissions</h4>
+    <p v-for="society in $store.state.user.societies" :key="society.id">
+      {{society.society}} ({{society.pivot.permission}})
+    </p>
   </div>
 </template>
 
@@ -14,7 +26,11 @@ export default {
   },
   methods: {
     user () {
-      return this.$store.state.user
+      if (this.$store.state.user) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted () {

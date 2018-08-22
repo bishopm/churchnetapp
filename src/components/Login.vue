@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     login () {
-      this.$axios.post(this.$store.state.hostname + '/login',
+      this.$axios.post(this.$store.state.hostname + '/churchnet/login',
         {
           email: this.email,
           password: this.password
