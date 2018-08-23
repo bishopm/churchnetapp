@@ -1,6 +1,8 @@
 <template>
   <div v-if="society" class="text-center layout-padding">
-    <h3>{{society.society}}</h3>
+    <h3>
+      {{society.society}} <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editSociety()" name="edit"></q-icon>
+    </h3>
     <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})</p>
     <div v-if="society.website"><a target="_blank" :href="society.websiteurl">{{society.website}}</a></div>
     <div id="map" class="q-mt-md"></div>
@@ -13,7 +15,8 @@ export default {
     return {
       society: {},
       map: null,
-      marker: null
+      marker: null,
+      perm: 'view'
     }
   },
   methods: {
@@ -23,6 +26,9 @@ export default {
         zoom: 14
       })
       this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.society.latitude), lng: parseFloat(this.society.longitude)}, map: this.map})
+    },
+    editSociety () {
+      console.log('editing')
     }
   },
   async mounted () {
@@ -42,6 +48,7 @@ export default {
           }
         }
         this.initMap()
+        this.perm = this.$store.state.user.societies.find(society => society.id === this.society.id).pivot.permission
       })
       .catch(function (error) {
         console.log(error)

@@ -17,7 +17,7 @@
       <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }]"/>
+      <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.birthdate.$error" error-label="Must be a valid date">

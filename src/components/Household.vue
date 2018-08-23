@@ -1,6 +1,6 @@
 <template>
   <div v-if="household" class="text-center layout-padding">
-    <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="canedit()" class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
+    <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
     <p class="text-left q-mx-md">
       <q-icon name="place" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
       <q-icon name="email" color="secondary"></q-icon> {{household.post1}} {{household.post2}} {{household.post3}}<br>
@@ -10,7 +10,7 @@
     <q-tabs color="secondary" no-pane-border align="justify">
       <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
       <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-        <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="canedit()" class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
+        <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
         <q-icon v-if="individual.cellphone" name="phone" color="primary"></q-icon> {{individual.cellphone}}<br>
         <q-icon v-if="individual.email" name="email" color="primary"></q-icon> {{individual.email}}<br>
         <q-icon v-if="individual.memberstatus" name="account_box" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
@@ -29,7 +29,8 @@ export default {
     return {
       household: {},
       map: null,
-      marker: null
+      marker: null,
+      perm: ''
     }
   },
   mounted () {
@@ -37,6 +38,7 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
       .then((response) => {
         this.household = response.data
+        this.perm = this.$store.state.user.societies.find(society => society.id === this.household.society_id).pivot.permission
         this.initMap()
       })
       .catch(function (error) {
@@ -44,9 +46,6 @@ export default {
       })
   },
   methods: {
-    canedit () {
-      return false
-    },
     editHousehold () {
       this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
     },

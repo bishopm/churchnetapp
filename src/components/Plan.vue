@@ -1,5 +1,6 @@
 <template>
   <div class="layout-padding">
+    {{perm}}
     <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
     <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
       <div slot="top" slot-scope="props" class="row flex-center fit">
@@ -28,7 +29,7 @@
 
 <script>
 import { date } from 'quasar'
-
+import permissions from './Permissions'
 export default {
   data () {
     return {
@@ -42,6 +43,7 @@ export default {
       circuitOptions: [],
       planyear: parseInt(date.formatDate(Date.now(), 'YYYY')),
       planmonth: parseInt(date.formatDate(Date.now(), 'M')),
+      perm: '',
       form: {
         plan: {
           person: {
@@ -54,6 +56,9 @@ export default {
         servicedate: ''
       }
     }
+  },
+  components: {
+    'permissions': permissions
   },
   computed: {
     monthname () {
@@ -225,6 +230,7 @@ export default {
       this.circuitOptions.push(newc)
     }
     this.circuit = this.$store.state.user.circuits[0].id
+    this.perm = this.$store.state.user.circuits.find(circuit => circuit.id === this.circuit).pivot.permission
     this.$q.loading.show()
     this.showplan(this.planyear, this.planmonth)
   }
@@ -235,5 +241,9 @@ export default {
 <style>
 a {
   text-decoration: none;
+}
+.q-item {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 </style>

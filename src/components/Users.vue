@@ -2,8 +2,9 @@
   <div class="layout-padding">
     <q-list class="no-border">
       <p class="caption text-center">Users</p>
-      <q-item v-for="user in users" :key="user.id">
-        Name: {{user.name}}
+      <q-item v-for="user in users" :key="user.id" :to="'/users/' + user.id">
+        <q-item-main><b>{{user.name}}</b></q-item-main>
+        <q-item-side><small>{{user.email}}</small></q-item-side>
       </q-item>
     </q-list>
     <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; bottom: 68px" />

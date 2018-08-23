@@ -51,6 +51,10 @@
           <q-item-side icon="person_add" />
           <q-item-main label="Users" sublabel="user permissions" />
         </q-item>
+        <q-item @click.native="logout()">
+          <q-item-side icon="logout" />
+          <q-item-main label="Log out" sublabel="log out of ChurchNet" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
     <q-page-container>
@@ -81,6 +85,12 @@ export default {
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
     } else {
+      this.$router.push({ name: 'login' })
+    }
+  },
+  methods: {
+    logout () {
+      localStorage.removeItem('CHURCHNET_Token')
       this.$router.push({ name: 'login' })
     }
   }

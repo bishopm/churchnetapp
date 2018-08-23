@@ -4,6 +4,7 @@ export default [
     path: '/',
     component: () => import('layouts/default'),
     children: [
+      { name: 'addsociety', path: '/societies/add', component: () => import('components/AddSociety'), meta: {auth: true} },
       { name: 'group', path: '/groups/:id', component: () => import('components/Group'), meta: {auth: true} },
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
@@ -20,6 +21,7 @@ export default [
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },
+      { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: {auth: true} },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} }
     ]
   },
