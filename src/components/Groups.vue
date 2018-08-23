@@ -34,7 +34,7 @@ export default {
       this.$axios.post(this.$store.state.hostname + '/groups/search',
         {
           search: this.search,
-          societies: this.$store.state.societies
+          societies: this.$store.state.user.societies.view.concat(this.$store.state.user.societies.edit)
         })
         .then(response => {
           this.groups = response.data

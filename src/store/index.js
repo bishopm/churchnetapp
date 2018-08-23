@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     token: null,
     hassocieties: false,
     hascircuits: false,
+    hasdistricts: false,
     hostname: 'http://localhost/churchnet/public/api'
     // hostname: 'https://church.net.za/api'
   },
@@ -19,19 +20,24 @@ const store = new Vuex.Store({
       state.token = newtoken
     },
     setSocieties (state, newsocieties) {
-      state.societies = newsocieties
-      if (newsocieties.length) {
+      if ((newsocieties.view.length) || (newsocieties.edit.length)) {
         state.hassocieties = true
       } else {
         state.hassocieties = false
       }
     },
     setCircuits (state, newcircuits) {
-      state.circuits = newcircuits
-      if (newcircuits.length) {
+      if ((newcircuits.view.length) || (newcircuits.edit.length)) {
         state.hascircuits = true
       } else {
         state.hascircuits = false
+      }
+    },
+    setDistricts (state, newdistricts) {
+      if ((newdistricts.view.length) || (newdistricts.edit.length)) {
+        state.hasdistricts = true
+      } else {
+        state.hasdistricts = false
       }
     }
   }

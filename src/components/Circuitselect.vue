@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="showme > 1" @input="updateMe" class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
+<q-select @input="$emit('setcircuit', circuits)" class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
 </template>
 
 <script>
@@ -21,11 +21,6 @@ export default {
         this.circuits.push(newitem.value)
         this.circuitOptions.push(newitem)
       }
-    }
-  },
-  methods: {
-    updateMe () {
-      this.$parent.emit('setcircuit', this.circuits)
     }
   }
 }
