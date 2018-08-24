@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     plugins: [
       'axios',
       'maps',
-      'vuelidate'
+      'vuelidate',
+      'firebase'
     ],
     css: [
       'app.styl'
@@ -61,6 +62,7 @@ module.exports = function (ctx) {
         'QModal',
         'QPageContainer',
         'QPage',
+        'QPullToRefresh',
         'QSearch',
         'QSelect',
         'QTable',

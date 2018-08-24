@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "firebase": "^5.0.4",
+    "firebaseui": "^3.0.0",
     "vue-save-state": "^1.2.0",
     "vuelidate": "^0.7.4"
   },

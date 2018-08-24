@@ -26,7 +26,7 @@ export default {
   },
   mounted () {
     this.$q.loading.show()
-    if (this.$store.state.societies) {
+    if (this.$store.state.user.societies) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(this.$store.state.hostname + '/users')
         .then(response => {

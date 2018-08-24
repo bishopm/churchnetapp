@@ -16,6 +16,7 @@ export default [
       { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: false} },
       { name: 'person', path: '/people/:id', component: () => import('components/Person'), meta: {auth: true} },
       { name: 'people', path: '/people', component: () => import('components/People'), meta: {auth: true} },
+      { name: 'phoneverification', path: '/phoneverification', component: () => import('components/Phoneverification'), meta: {auth: false} },
       { name: 'plan', path: '/plan', component: () => import('components/Plan'), meta: {auth: true} },
       { name: 'publish', path: '/publish', component: () => import('components/Publish'), meta: {auth: true} },
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },

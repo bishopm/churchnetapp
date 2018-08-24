@@ -58,7 +58,9 @@
       </q-list>
     </q-layout-drawer>
     <q-page-container>
-      <router-view />
+      <q-pull-to-refresh :handler="refresher">
+        <router-view />
+      </q-pull-to-refresh>
     </q-page-container>
   </q-layout>
 </template>
@@ -92,10 +94,17 @@ export default {
     logout () {
       localStorage.removeItem('CHURCHNET_Token')
       this.$router.push({ name: 'login' })
+    },
+    refresher () {
+      this.$router.push({ name: 'home' })
     }
   }
 }
 </script>
 
 <style>
+.q-item {
+  padding-top:3px;
+  padding-bottom: 3px;
+}
 </style>

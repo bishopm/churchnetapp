@@ -12,20 +12,13 @@ export default {
   },
   props: ['showme'],
   mounted () {
-    for (var ckey in this.$store.state.user.circuits) {
+    for (var ckey in this.$store.state.user.circuits.full) {
       var newitem = {
-        label: this.$store.state.user.circuits[ckey].circuit,
-        value: this.$store.state.user.circuits[ckey].id.toString()
+        label: this.$store.state.user.circuits.full[ckey].circuit,
+        value: this.$store.state.user.circuits.full[ckey].id.toString()
       }
       this.circuits.push(newitem.value)
       this.circuitOptions.push(newitem)
-    }
-    this.$store.commit('setCircuits', this.circuits)
-  },
-  methods: {
-    updateMe () {
-      this.$store.commit('setCircuits', this.circuits)
-      this.$emit('altered')
     }
   }
 }

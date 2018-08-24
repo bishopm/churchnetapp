@@ -20,21 +20,21 @@ const store = new Vuex.Store({
       state.token = newtoken
     },
     setSocieties (state, newsocieties) {
-      if ((newsocieties.view.length) || (newsocieties.edit.length)) {
+      if (newsocieties.keys.length) {
         state.hassocieties = true
       } else {
         state.hassocieties = false
       }
     },
     setCircuits (state, newcircuits) {
-      if ((newcircuits.view.length) || (newcircuits.edit.length)) {
+      if (newcircuits.keys.length) {
         state.hascircuits = true
       } else {
         state.hascircuits = false
       }
     },
     setDistricts (state, newdistricts) {
-      if ((newdistricts.view.length) || (newdistricts.edit.length)) {
+      if (newdistricts.view.length) {
         state.hasdistricts = true
       } else {
         state.hasdistricts = false

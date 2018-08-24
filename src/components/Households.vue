@@ -1,5 +1,6 @@
 <template>
   <div class="layout-padding">
+    <p class="caption" v-if="message">{{$message}}</p>
     <q-list class="no-border">
       <p class="caption text-center">All households</p>
       <societyfilter @altered="searchdb" :showme="showme()"></societyfilter>
@@ -18,7 +19,8 @@ export default {
   data () {
     return {
       households: [],
-      search: ''
+      search: '',
+      message: ''
     }
   },
   components: {
@@ -29,17 +31,17 @@ export default {
       this.$router.push({name: 'householdform', params: { action: 'add' }})
     },
     showme () {
-      return this.$store.state.user.societies.length
+      return this.$store.state.user.societies.keys.length
     },
     searchdb () {
-      if (this.$store.state.societies) {
+      if (this.$store.state.user.societies.keys) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         if (this.search.length > 1) {
           this.$q.loading.show()
           this.$axios.post(this.$store.state.hostname + '/households/search',
             {
               search: this.search,
-              societies: this.$store.state.societies
+              societies: this.$store.state.user.societies.keys
             })
             .then(response => {
               this.households = response.data
@@ -50,6 +52,8 @@ export default {
               this.$q.loading.hide()
             })
         }
+      } else {
+        this.message = 'Sorry! You do not have permission to view households'
       }
     }
   },

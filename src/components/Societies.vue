@@ -8,7 +8,7 @@
         {{society.society}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addSociety" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
+    <q-btn round color="primary" @click="addSociety" class="fixed" icon="add" style="right: 18px; bottom: 28px" />
   </div>
 </template>
 
@@ -29,15 +29,15 @@ export default {
       this.$router.push({name: 'addsociety'})
     },
     showme () {
-      return this.$store.state.user.circuits.length
+      return this.$store.state.user.circuits.keys.length > 1
     },
     searchdb () {
-      if (this.$store.state.societies) {
+      if (this.$store.state.user.societies.keys) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.post(this.$store.state.hostname + '/societies/search',
           {
             search: this.search,
-            circuits: this.$store.state.circuits
+            circuits: this.$store.state.user.circuits.keys
           })
           .then(response => {
             this.societies = response.data

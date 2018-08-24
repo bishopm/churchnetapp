@@ -20,12 +20,19 @@
         </form>
       </q-tab-pane>
       <q-tab-pane class="no-border" name="tab-2">
-        <form autocomplete="off" @submit.prevent="login" method="post">
+        <div class="text-center">
+          <q-btn v-if="!verified" @click="verification">Verify phone number</q-btn>
+          <p v-else class="caption">Your phone number has been verified</p>
+        </div>
+        <form v-if="verified" autocomplete="off" @submit.prevent="login" method="post">
           <div class="q-pa-sm">
             <q-input float-label="Name" v-model="newname" required />
           </div>
           <div class="q-pa-sm">
             <q-input float-label="Email" type="email" v-model="newemail" required />
+          </div>
+          <div class="q-pa-sm">
+            <q-input float-label="Cellphone" v-model="newphone" required readonly />
           </div>
           <div class="q-pa-sm">
             <q-input float-label="Password" type="password" v-model="newpassword" required />
@@ -48,7 +55,14 @@ export default {
       newpassword: '',
       newemail: '',
       newname: '',
-      error: 0
+      newphone: localStorage.getItem('CHURCHNET_verifiedphone'),
+      error: 0,
+      verified: false
+    }
+  },
+  mounted () {
+    if (localStorage.getItem('CHURCHNET_verifiedphone')) {
+      this.verified = true
     }
   },
   methods: {
@@ -67,6 +81,9 @@ export default {
         .catch(function (error) {
           this.error = error
         })
+    },
+    verification () {
+      this.$router.push({name: 'phoneverification'})
     },
     register () {
       this.$axios.post(this.$store.state.hostname + '/users/register',
