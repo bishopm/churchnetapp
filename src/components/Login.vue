@@ -73,10 +73,18 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
           localStorage.setItem('CHURCHNET_Token', response.data.token)
           localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
-          this.$router.push({ name: 'home' })
+          this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+          this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+            .then((response) => {
+              this.$store.commit('setUser', response.data)
+              this.$router.push({name: 'home'})
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
         })
         .catch(function (error) {
           this.error = error

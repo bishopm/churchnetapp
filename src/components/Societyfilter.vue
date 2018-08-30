@@ -25,6 +25,7 @@ export default {
   methods: {
     updateme () {
       this.$store.commit('setFilter', this.societies)
+      this.$emit('altered')
     }
   }
 }

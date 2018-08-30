@@ -7,8 +7,8 @@ const store = new Vuex.Store({
   state: {
     token: null,
     user: {},
-    hostname: 'http://localhost/churchnet/public/api',
-    filter: []
+    filter: [],
+    hostname: 'http://localhost/churchnet/public/api'
     // hostname: 'https://church.net.za/api'
   },
   getters: {
