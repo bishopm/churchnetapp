@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="showme > 1" @input="updateMe" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
+<q-select v-if="showme > 1" @input="updateme" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
 </template>
 
 <script>
@@ -19,6 +19,12 @@ export default {
       }
       this.circuits.push(newitem.value)
       this.circuitOptions.push(newitem)
+    }
+    this.$store.commit('setFilter', this.circuits)
+  },
+  methods: {
+    updateme () {
+      this.$store.commit('setFilter', this.circuits)
     }
   }
 }

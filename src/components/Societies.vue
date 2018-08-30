@@ -29,7 +29,7 @@ export default {
       this.$router.push({name: 'addsociety'})
     },
     showme () {
-      return this.$store.state.user.circuits.keys.length > 1
+      return this.$store.state.user.societies.keys.length
     },
     searchdb () {
       if (this.$store.state.user.societies.keys) {
@@ -37,7 +37,7 @@ export default {
         this.$axios.post(this.$store.state.hostname + '/societies/search',
           {
             search: this.search,
-            circuits: this.$store.state.user.circuits.keys
+            circuits: this.$store.state.filter
           })
           .then(response => {
             this.societies = response.data

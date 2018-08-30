@@ -1,39 +1,30 @@
 <template>
-  <div class="text-center q-mt-lg" v-if="user">
-    <p class="caption">Welcome <b>{{user.name}}</b></p>
+  <div class="text-center q-mt-lg" v-if="$store.state.user">
+    <p class="caption">Welcome, {{$store.state.user.name}}</p>
+    <p>You have the following system permissions:</p>
+    <div v-if="$store.getters.hasEntity('districts')">
+      <b>Districts</b>
+      <p v-for="district in $store.state.user['districts'].full" :key="district.id">
+        {{district.district}} [{{district.pivot.permission}}]
+      </p>
+    </div>
+    <div v-if="$store.getters.hasEntity('circuits')">
+      <b>Circuits</b>
+      <p v-for="circuit in $store.state.user['circuits'].full" :key="circuit.id">
+        {{circuit.circuit}} [{{circuit.pivot.permission}}]
+      </p>
+    </div>
+    <div v-if="$store.getters.hasEntity('societies')">
+      <b>Societies</b>
+      <p v-for="society in $store.state.user['societies'].full" :key="society.id">
+        {{society.society}} [{{society.pivot.permission}}]
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      user: {}
-    }
-  },
-  mounted () {
-    this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
-      .then((response) => {
-        this.$store.commit('setUser', response.data)
-        this.user = response.data
-        if (this.user.societies) {
-          this.$store.commit('setSocieties', this.user.societies)
-        }
-        if (this.user.circuits) {
-          this.$store.commit('setCircuits', this.user.circuits)
-        }
-        if (this.user.districts) {
-          this.$store.commit('setDistricts', this.user.districts)
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-        localStorage.removeItem('CHURCHNET_Token')
-        this.$router.push({ name: 'login' })
-      })
-  }
 }
 </script>
 

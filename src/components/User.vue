@@ -1,9 +1,14 @@
 <template>
   <div v-if="user" class="text-center layout-padding">
-    {{perm}}
-    <h4>{{user.name}}</h4>
-    <p v-for="society in user.societies" :key="society.id">{{society.society}} ({{society.pivot.permission}})</p>
-    <p v-for="circuit in user.circuits" :key="circuit.id">{{circuit.circuit}} ({{circuit.pivot.permission}})</p>
+    <h3>{{user.name}}</h3>
+    <div v-if="user.societies">
+      <h4><b>Societies</b></h4>
+      <p  v-for="society in user.societies.full" :key="society.id">{{society.society}} ({{society.pivot.permission}})</p>
+    </div>
+    <div v-if="user.circuits">
+      <h4><b>Circuits</b></h4>
+      <p v-for="circuit in user.circuits.full" :key="circuit.id">{{circuit.circuit}} ({{circuit.pivot.permission}})</p>
+    </div>
   </div>
 </template>
 
@@ -11,8 +16,7 @@
 export default {
   data () {
     return {
-      user: {},
-      perm: ''
+      user: {}
     }
   },
   mounted () {
@@ -20,28 +24,11 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/users/' + this.$route.params.id)
       .then((response) => {
         this.user = response.data
-        this.perm = this.$store.state.user.circuits.find(circuit => circuit.id === 164).pivot.permission
-        this.initMap()
+        console.log(this.user)
       })
       .catch(function (error) {
         console.log(error)
       })
-  },
-  methods: {
-    editHousehold () {
-      this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
-    },
-    editIndividual (individual) {
-      this.$router.push({name: 'individualform', params: { individual: individual, action: 'edit' }})
-    },
-    async initMap () {
-      await this.$google()
-      this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.household.latitude), lng: parseFloat(this.household.longitude)},
-        zoom: 15
-      })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.latitude), lng: parseFloat(this.household.longitude)}, map: this.map})
-    }
   }
 }
 </script>

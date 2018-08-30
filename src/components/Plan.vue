@@ -1,6 +1,5 @@
 <template>
   <div class="layout-padding">
-    {{perm}}
     <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
     <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
       <div slot="top" slot-scope="props" class="row flex-center fit">
@@ -115,20 +114,24 @@ export default {
       return label
     },
     editplan (item, row, label, fld) {
-      this.form.servicedate = label
-      this.form.societyname = JSON.parse(row.society).society + ' ' + JSON.parse(row.society).servicetime
-      if (item) {
-        this.form.plan = item
+      if (this.perm === 'view') {
+        this.$q.notify('Sorry! You are not permitted to edit this plan')
       } else {
-        this.form.plan.person.name = ''
-        this.form.plan.person.id = ''
-        this.form.plan.tag = ''
+        this.form.servicedate = label
+        this.form.societyname = JSON.parse(row.society).society + ' ' + JSON.parse(row.society).servicetime
+        if (item) {
+          this.form.plan = item
+        } else {
+          this.form.plan.person.name = ''
+          this.form.plan.person.id = ''
+          this.form.plan.tag = ''
+        }
+        this.form.plan.service_id = JSON.parse(row.society).service_id
+        this.form.plan.society_id = JSON.parse(row.society).society_id
+        this.modalopen = true
+        this.form.rowndx = row.__index
+        this.form.rowfld = fld
       }
-      this.form.plan.service_id = JSON.parse(row.society).service_id
-      this.form.plan.society_id = JSON.parse(row.society).society_id
-      this.modalopen = true
-      this.form.rowndx = row.__index
-      this.form.rowfld = fld
     },
     savechanges () {
       for (var lll in this.preacherOptions) {
@@ -164,7 +167,8 @@ export default {
       this.modalopen = false
     },
     showplan (yy, mm) {
-      if (this.$store.state.societies) {
+      this.perm = this.$store.state.user.circuits[this.circuit]
+      if (this.$store.state.user.societies) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.get(this.$store.state.hostname + '/circuits/' + this.circuit + '/mplans/monthlyplan/' + yy + '/' + mm)
           .then(response => {
@@ -222,15 +226,14 @@ export default {
     }
   },
   mounted () {
-    for (var ck in this.$store.state.user.circuits) {
+    for (var ck in this.$store.state.user.circuits.full) {
       var newc = {
-        label: this.$store.state.user.circuits[ck].circuit,
-        value: this.$store.state.user.circuits[ck].id
+        label: this.$store.state.user.circuits.full[ck].circuit,
+        value: this.$store.state.user.circuits.full[ck].id
       }
       this.circuitOptions.push(newc)
     }
-    this.circuit = this.$store.state.user.circuits[0].id
-    this.perm = this.$store.state.user.circuits.find(circuit => circuit.id === this.circuit).pivot.permission
+    this.circuit = this.$store.state.user.circuits.full[0].id
     this.$q.loading.show()
     this.showplan(this.planyear, this.planmonth)
   }

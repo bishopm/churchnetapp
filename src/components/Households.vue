@@ -9,7 +9,7 @@
         {{household.addressee}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addHousehold" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
+    <q-btn round color="primary" @click="addHousehold" class="fixed" icon="add" style="right: 18px; top: 88px" />
   </div>
 </template>
 
@@ -31,7 +31,7 @@ export default {
       this.$router.push({name: 'householdform', params: { action: 'add' }})
     },
     showme () {
-      return this.$store.state.user.societies.keys.length
+      return this.$store.state.user.societies.full.length
     },
     searchdb () {
       if (this.$store.state.user.societies.keys) {

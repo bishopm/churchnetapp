@@ -62,6 +62,7 @@ module.exports = function (ctx) {
         'QModal',
         'QPageContainer',
         'QPage',
+        'QPopupEdit',
         'QPullToRefresh',
         'QSearch',
         'QSelect',

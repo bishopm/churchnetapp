@@ -12,7 +12,7 @@
     </q-layout-header>
     <q-layout-drawer v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
-        <div v-if="hassocieties">
+        <div v-if="$store.getters.hasEntity('societies')">
           <q-list-header class="text-center"><q-icon name="person"></q-icon> Church members</q-list-header>
           <q-item to="/groups">
             <q-item-side icon="group" />
@@ -23,7 +23,7 @@
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
         </div>
-        <div v-if="hascircuits">
+        <div v-if="$store.getters.hasEntity('circuits')">
           <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
           <q-item to="/people">
             <q-item-side icon="person" />
@@ -70,22 +70,20 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop,
-      socs: [],
-      circs: []
-    }
-  },
-  computed: {
-    hascircuits () {
-      return this.$store.state.hascircuits
-    },
-    hassocieties () {
-      return this.$store.state.hassocieties
+      leftDrawerOpen: this.$q.platform.is.desktop
     }
   },
   mounted () {
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+        .then((response) => {
+          this.$store.commit('setUser', response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     } else {
       this.$router.push({ name: 'login' })
     }

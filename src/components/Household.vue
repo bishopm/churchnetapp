@@ -38,7 +38,7 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
       .then((response) => {
         this.household = response.data
-        this.perm = this.$store.state.user.societies.find(society => society.id === this.household.society_id).pivot.permission
+        this.perm = this.$store.state.user.societies[this.household.society_id]
         this.initMap()
       })
       .catch(function (error) {

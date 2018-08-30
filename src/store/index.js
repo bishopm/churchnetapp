@@ -6,11 +6,26 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     token: null,
-    hassocieties: false,
-    hascircuits: false,
-    hasdistricts: false,
-    hostname: 'http://localhost/churchnet/public/api'
+    user: {},
+    hostname: 'http://localhost/churchnet/public/api',
+    filter: []
     // hostname: 'https://church.net.za/api'
+  },
+  getters: {
+    hasEntity: (state) => (entity) => {
+      if (state.user) {
+        return state.user[entity]
+      } else {
+        return false
+      }
+    },
+    hasUser: (state) => (entity) => {
+      if (state.user) {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   mutations: {
     setUser (state, newuser) {
@@ -19,26 +34,8 @@ const store = new Vuex.Store({
     setToken (state, newtoken) {
       state.token = newtoken
     },
-    setSocieties (state, newsocieties) {
-      if (newsocieties.keys.length) {
-        state.hassocieties = true
-      } else {
-        state.hassocieties = false
-      }
-    },
-    setCircuits (state, newcircuits) {
-      if (newcircuits.keys.length) {
-        state.hascircuits = true
-      } else {
-        state.hascircuits = false
-      }
-    },
-    setDistricts (state, newdistricts) {
-      if (newdistricts.view.length) {
-        state.hasdistricts = true
-      } else {
-        state.hasdistricts = false
-      }
+    setFilter (state, newfilter) {
+      state.filter = newfilter
     }
   }
 })
