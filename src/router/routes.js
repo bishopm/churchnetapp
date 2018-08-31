@@ -4,7 +4,6 @@ export default [
     path: '/',
     component: () => import('layouts/default'),
     children: [
-      { name: 'addsociety', path: '/societies/add', component: () => import('components/AddSociety'), meta: {auth: true} },
       { name: 'group', path: '/groups/:id', component: () => import('components/Group'), meta: {auth: true} },
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
@@ -19,7 +18,9 @@ export default [
       { name: 'phoneverification', path: '/phoneverification', component: () => import('components/Phoneverification'), meta: {auth: false} },
       { name: 'plan', path: '/plan', component: () => import('components/Plan'), meta: {auth: true} },
       { name: 'publish', path: '/publish', component: () => import('components/Publish'), meta: {auth: true} },
+      { name: 'serviceform', path: '/services/:action/:society?/:service?', component: () => import('components/forms/Service'), meta: {auth: true} },
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
+      { name: 'societyform', path: '/societies/:action', component: () => import('components/forms/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },
       { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: {auth: true} },

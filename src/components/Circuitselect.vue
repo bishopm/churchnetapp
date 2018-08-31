@@ -1,5 +1,5 @@
 <template>
-<q-select v-model="circuit" class="q-my-md" float-label="Circuits" :options="circuitOptions" />
+<q-select v-model="circuit" @input="updateme" class="q-my-md" float-label="Circuits" :options="circuitOptions" />
 </template>
 
 <script>
@@ -22,6 +22,13 @@ export default {
       }
     }
     this.circuit = newitem.value
+    this.$store.commit('setSelect', this.circuit)
+  },
+  methods: {
+    updateme () {
+      this.$store.commit('setSelect', this.circuit)
+      this.$emit('altered')
+    }
   }
 }
 </script>

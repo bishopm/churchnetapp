@@ -8,7 +8,7 @@
         {{society.society}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addSociety" class="fixed" icon="add" style="right: 18px; bottom: 28px" />
+    <q-btn round color="primary" @click="addSociety" class="fixed" icon="add" style="right: 18px; top: 88px" />
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     addSociety () {
-      this.$router.push({name: 'addsociety'})
+      this.$router.push({name: 'societyform', params: { action: 'add' }})
     },
     showme () {
       return this.$store.state.user.societies.keys.length

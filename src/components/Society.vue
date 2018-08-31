@@ -3,7 +3,11 @@
     <h3>
       {{society.society}} <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editSociety()" name="edit"></q-icon>
     </h3>
-    <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})</p>
+    <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
+      <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="edit"></q-icon>
+    </p>
+    <p v-if="!society.services">No services have been added yet</p>
+    <q-btn v-if="perm === 'edit'" @click="addService()" color="primary">Add a service</q-btn>
     <div v-if="society.website"><a target="_blank" :href="society.websiteurl">{{society.website}}</a></div>
     <div id="map" class="q-mt-md"></div>
   </div>
@@ -16,7 +20,7 @@ export default {
       society: {},
       map: null,
       marker: null,
-      perm: 'view'
+      perm: ''
     }
   },
   methods: {
@@ -29,6 +33,13 @@ export default {
     },
     editSociety () {
       console.log('editing')
+    },
+    addService () {
+      this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' }})
+    },
+    editService (id) {
+      console.log(id)
+      this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'edit', service: id }})
     }
   },
   async mounted () {
@@ -38,6 +49,7 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/circuits/' + cs[0] + '/societies/' + cs[1])
       .then((response) => {
         this.society = response.data
+        this.perm = this.$store.state.user.circuits[this.society.circuit_id]
         if (this.society.website) {
           if ((this.society.website) && (!this.society.website.includes('http'))) {
             this.society.websiteurl = 'http://' + this.society.website
@@ -48,7 +60,6 @@ export default {
           }
         }
         this.initMap()
-        this.perm = this.$store.state.user.societies.find(society => society.id === this.society.id).pivot.permission
       })
       .catch(function (error) {
         console.log(error)

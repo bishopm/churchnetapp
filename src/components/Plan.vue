@@ -14,14 +14,15 @@
     </q-table>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <h4>{{form.societyname}}</h4>
-      <q-input float-label="Service date" v-model="form.servicedate"/>
+      <q-input readonly float-label="Service date" v-model="form.servicedate"/>
       <div class="q-my-md">
         <q-select float-label="Preacher" v-model="form.plan.person.id" :options="preacherOptions"/>
       </div>
       <div class="q-my-md">
         <q-select float-label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
       </div>
-      <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Close" />
+      <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
+      <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
     </q-modal>
   </div>
 </template>
@@ -50,8 +51,12 @@ export default {
             id: ''
           },
           service_id: '',
-          society_id: ''
+          society_id: '',
+          tag: '',
+          id: 0
         },
+        rowndx: '',
+        rowfld: '',
         servicedate: ''
       }
     }
@@ -125,6 +130,7 @@ export default {
           this.form.plan.person.name = ''
           this.form.plan.person.id = ''
           this.form.plan.tag = ''
+          this.form.plan.id = 0
         }
         this.form.plan.service_id = JSON.parse(row.society).service_id
         this.form.plan.society_id = JSON.parse(row.society).society_id
@@ -156,7 +162,8 @@ export default {
           planday: parseInt(this.form.servicedate.split(' ')[0]),
           person_id: this.form.plan.person.id,
           servicetype: this.form.plan.tag,
-          trialservice: null
+          trialservice: null,
+          id: this.form.plan.id
         })
         .then(response => {
           console.log(response.data)
@@ -181,7 +188,8 @@ export default {
                 var vname = '' + pkey
                 newitem[vname] = {
                   person: response.data.plans[skey][pkey].person,
-                  tag: response.data.plans[skey][pkey].tag
+                  tag: response.data.plans[skey][pkey].tag,
+                  id: response.data.plans[skey][pkey].id
                 }
               }
               this.rows.push(newitem)

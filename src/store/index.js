@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     token: null,
     user: {},
     filter: [],
+    select: '',
     hostname: 'http://localhost/churchnet/public/api'
     // hostname: 'https://church.net.za/api'
   },
@@ -36,6 +37,9 @@ const store = new Vuex.Store({
     },
     setFilter (state, newfilter) {
       state.filter = newfilter
+    },
+    setSelect (state, newselect) {
+      state.select = newselect
     }
   }
 })
