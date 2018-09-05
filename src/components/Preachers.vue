@@ -1,14 +1,14 @@
 <template>
   <div>
     <q-list class="no-border">
-      <p class="caption text-center">Circuit preachers / leaders</p>
+      <p class="caption text-center">Circuit preachers</p>
       <circuitfilter @altered="searchdb" :showme="showme()"></circuitfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
-      <q-item v-if="people" v-for="person in people" :key="person.id" :to="'/people/' + person.person.id">
-        {{person.surname}}, {{person.title}} {{person.firstname}}
+      <q-item v-if="preachers" v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/' + preacher.person.id">
+        {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addPerson" class="fixed" icon="add" style="right: 18px; bottom: 18px" />
+    <q-btn round color="positive" @click="addPerson" class="fixed" icon="add" style="right: 4px; top: 72px" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@ import circuitfilter from './Circuitfilter'
 export default {
   data () {
     return {
-      people: [],
+      preachers: [],
       search: ''
     }
   },
@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     addPerson () {
-      this.$router.push({name: 'addperson'})
+      this.$router.push({name: 'preacherform', params: { action: 'add' }})
     },
     showme () {
       return this.$store.state.user.circuits.full.length
@@ -40,7 +40,7 @@ export default {
             circuits: this.$store.state.user.circuits.keys
           })
           .then(response => {
-            this.people = response.data.people
+            this.preachers = response.data.people
             this.$q.loading.hide()
           })
           .catch(function (error) {

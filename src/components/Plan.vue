@@ -29,7 +29,6 @@
 
 <script>
 import { date } from 'quasar'
-import permissions from './Permissions'
 export default {
   data () {
     return {
@@ -60,9 +59,6 @@ export default {
         servicedate: ''
       }
     }
-  },
-  components: {
-    'permissions': permissions
   },
   computed: {
     monthname () {
@@ -225,6 +221,12 @@ export default {
               this.labelOptions.push(newl)
             }
             this.$q.loading.hide()
+            if (this.rows.length === 0) {
+              this.$q.notify('Add services or societies to edit the preaching plan')
+            }
+            if (response.data.preachers.length === 0) {
+              this.$q.notify('Add preachers to edit the preaching plan')
+            }
           })
           .catch(function (error) {
             console.log(error)

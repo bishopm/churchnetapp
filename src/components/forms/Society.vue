@@ -1,7 +1,7 @@
 <template>
   <div class="text-center layout-padding">
     <p class="caption" v-if="title">{{title}} a new society</p>
-    <circuitselect @setcircuit="sc(circuits)" :perms="['edit','admin']"></circuitselect>
+    <circuitselect :perms="['edit','admin']"></circuitselect>
     <div id="map" class="q-mt-md"></div>
     <p>Drag the marker to the correct position</p>
     <form>
@@ -56,9 +56,6 @@ export default {
     'circuitselect': circuitselect
   },
   methods: {
-    sc (circs) {
-      console.log(circs)
-    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {

@@ -6,7 +6,7 @@
     <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
       <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="edit"></q-icon>
     </p>
-    <p v-if="!society.services">No services have been added yet</p>
+    <p v-if="noservices">No services have been added yet</p>
     <q-btn v-if="perm === 'edit'" @click="addService()" color="primary">Add a service</q-btn>
     <div v-if="society.website"><a target="_blank" :href="society.websiteurl">{{society.website}}</a></div>
     <div id="map" class="q-mt-md"></div>
@@ -18,6 +18,7 @@ export default {
   data () {
     return {
       society: {},
+      noservices: false,
       map: null,
       marker: null,
       perm: ''
@@ -38,7 +39,6 @@ export default {
       this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' }})
     },
     editService (id) {
-      console.log(id)
       this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'edit', service: id }})
     }
   },
@@ -49,6 +49,9 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/circuits/' + cs[0] + '/societies/' + cs[1])
       .then((response) => {
         this.society = response.data
+        if (!this.society.services.length) {
+          this.noservices = true
+        }
         this.perm = this.$store.state.user.circuits[this.society.circuit_id]
         if (this.society.website) {
           if ((this.society.website) && (!this.society.website.includes('http'))) {

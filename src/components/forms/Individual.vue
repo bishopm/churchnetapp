@@ -20,8 +20,8 @@
       <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.birthdate.$error" error-label="Must be a valid date">
-        <q-input float-label="Date of birth" v-model="form.birthdate" @blur="$v.form.birthdate.$touch()" :error="$v.form.birthdate.$error" />
+      <q-field>
+        <q-input float-label="Date of birth" v-model="form.birthdate" />
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -35,9 +35,11 @@
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-btn color="primary" @click="submit">Submit</q-btn>
+      <q-select float-label="Roles" v-model="form.roles" :options="roleOptions"/>
+    </div>
+    <div class="q-ma-md text-center">
+      <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
-      <q-btn class="q-ml-md" color="red">Delete</q-btn>
     </div>
   </div>
 </template>
@@ -54,15 +56,17 @@ export default {
         birthdate: '',
         title: '',
         email: '',
-        cellphone: ''
-      }
+        sex: '',
+        cellphone: '',
+        roles: []
+      },
+      roleOptions: []
     }
   },
   validations: {
     form: {
       surname: { required },
       firstname: { required },
-      birthdate: { required },
       email: { email },
       cellphone: { numeric }
     }
@@ -73,14 +77,63 @@ export default {
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        // if action = edit / add
-        this.$q.notify('Good to go!')
+        if (this.$route.params.action === 'edit') {
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/individuals/' + this.form.id,
+            {
+              surname: this.form.surname,
+              firstname: this.form.firstname,
+              sex: this.form.sex,
+              title: this.form.title,
+              birthdate: this.form.birthdate,
+              email: this.form.email,
+              cellphone: this.form.cellphone,
+              roles: this.form.roles
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$q.notify('Individual updated')
+              this.$router.push({ name: 'household', params: { id: response.data.household_id } })
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        } else {
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/individuals',
+            {
+              surname: this.form.surname,
+              firstname: this.form.firstname,
+              sex: this.form.sex,
+              title: this.form.title,
+              birthdate: this.form.birthdate,
+              email: this.form.email,
+              cellphone: this.form.cellphone,
+              roles: this.form.roles,
+              household_id: this.form.household_id
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$q.notify('Individual added')
+              this.$router.push({ name: 'household', params: { id: response.data.household_id } })
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        }
       }
     }
   },
   mounted () {
-    if (this.$route.params.action === 'edit') {
-      this.form = this.$route.params.individual
+    this.form = this.$route.params.individual
+    for (var rkey in this.form.tags) {
+      var newitem = {
+        label: this.form.tags[rkey].name,
+        value: this.form.tags[rkey].tag_id
+      }
+      this.roleOptions.push(newitem)
     }
   }
 }

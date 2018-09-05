@@ -25,9 +25,9 @@
         </div>
         <div v-if="$store.getters.hasEntity('circuits')">
           <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
-          <q-item to="/people">
+          <q-item to="/preachers">
             <q-item-side icon="person" />
-            <q-item-main label="Preachers" sublabel="preachers and circuit leaders" />
+            <q-item-main label="Preachers" sublabel="circuit preachers and ministers" />
           </q-item>
           <q-item to="/plan">
             <q-item-side icon="mic" />

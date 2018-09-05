@@ -1,5 +1,5 @@
 <template>
-<q-select v-model="circuit" @input="updateme" class="q-my-md" float-label="Circuits" :options="circuitOptions" />
+<q-select v-model="circuit" @input="updateme" class="q-my-md" float-label="Circuit" :options="circuitOptions" />
 </template>
 
 <script>

@@ -3,6 +3,7 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
+    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
     <div class="q-ma-md">
       <q-field :error="$v.form.addressee.$error" error-label="The addressee field is required">
         <q-input float-label="Addressee" v-model="form.addressee" @blur="$v.form.addressee.$touch()" :error="$v.form.addressee.$error" />
@@ -22,8 +23,8 @@
       <q-select float-label="Household cellphone" v-model="form.householdcell" :options="housecellOptions"/>
     </div>
     <div id="map" class="q-mt-md"></div>
-    <div class="q-ma-md">
-      <q-btn color="primary" @click="submit">Submit</q-btn>
+    <div class="q-ma-md text-center">
+      <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn class="q-ml-md" color="red">Delete</q-btn>
     </div>
@@ -32,6 +33,7 @@
 
 <script>
 import { required, numeric } from 'vuelidate/lib/validators'
+import societyselect from './../Societyselect'
 // https://github.com/monterail/vuelidate/tree/master/src/validators
 export default {
   data () {
@@ -41,7 +43,9 @@ export default {
         addr1: '',
         addr2: '',
         addr3: '',
-        homephone: ''
+        homephone: '',
+        latitude: '',
+        longitude: ''
       },
       map: '',
       marker: '',
@@ -54,20 +58,69 @@ export default {
       homephone: { numeric }
     }
   },
+  components: {
+    'societyselect': societyselect
+  },
   methods: {
     submit () {
       this.$v.form.$touch()
-      this.form.latitude = this.marker.position.lat().toString()
-      this.form.longitude = this.marker.position.lng().toString()
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        // if action = edit / add
-        this.$q.notify('Good to go!')
+        if (this.$route.params.action === 'edit') {
+          this.form.latitude = this.marker.position.lat().toString()
+          this.form.longitude = this.marker.position.lng().toString()
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/households/' + this.form.id,
+            {
+              addressee: this.form.addressee,
+              addr1: this.form.addr1,
+              addr2: this.form.addr2,
+              addr3: this.form.addr3,
+              homephone: this.form.homephone,
+              householdcell: this.form.householdcell,
+              latitude: this.form.latitude,
+              longitude: this.form.longitude
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$q.notify('Household updated')
+              this.$router.push({ name: 'household', params: { id: response.data.id } })
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        } else {
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/households',
+            {
+              addressee: this.form.addressee,
+              addr1: this.form.addr1,
+              addr2: this.form.addr2,
+              addr3: this.form.addr3,
+              homephone: this.form.homephone,
+              householdcell: this.form.householdcell,
+              society_id: this.$store.state.select,
+              latitude: this.form.latitude,
+              longitude: this.form.longitude
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$q.notify('Household added')
+              this.$router.push({ name: 'household', params: { id: response.data.id } })
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        }
       }
     },
     async initMap () {
       await this.$google()
+      this.form.latitude = this.$store.state.user.societies.full[this.$store.state.select].latitude
+      this.form.longitude = this.$store.state.user.societies.full[this.$store.state.select].longitude
       this.map = new window.google.maps.Map(document.getElementById('map'), {
         center: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)},
         zoom: 15
@@ -95,6 +148,8 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    } else {
+      this.initMap()
     }
   }
 }
