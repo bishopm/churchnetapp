@@ -20,11 +20,11 @@ export default {
       this.societies.push(newitem.value)
       this.societyOptions.push(newitem)
     }
-    this.$store.commit('setFilter', this.societies)
+    this.$store.commit('setSFilter', this.societies)
   },
   methods: {
     updateme () {
-      this.$store.commit('setFilter', this.societies)
+      this.$store.commit('setSFilter', this.societies)
       this.$emit('altered')
     }
   }

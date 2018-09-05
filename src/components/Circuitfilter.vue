@@ -20,11 +20,11 @@ export default {
       this.circuits.push(newitem.value)
       this.circuitOptions.push(newitem)
     }
-    this.$store.commit('setFilter', this.circuits)
+    this.$store.commit('setCFilter', this.circuits)
   },
   methods: {
     updateme () {
-      this.$store.commit('setFilter', this.circuits)
+      this.$store.commit('setCFilter', this.circuits)
       this.$emit('altered')
     }
   }

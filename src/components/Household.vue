@@ -29,7 +29,7 @@
       </q-tabs>
     </div>
     <div v-else class="q-mt-md">
-      No household members have been added yet
+      <p>No household members have been added yet</p>
       <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
     </div>
   </div>

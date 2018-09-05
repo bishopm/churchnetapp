@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     token: null,
     user: {},
-    filter: [],
+    circuitfilter: [],
+    societyfilter: [],
     select: '',
     hostname: 'http://localhost/churchnet/public/api'
     // hostname: 'https://church.net.za/api'
@@ -35,8 +36,11 @@ const store = new Vuex.Store({
     setToken (state, newtoken) {
       state.token = newtoken
     },
-    setFilter (state, newfilter) {
-      state.filter = newfilter
+    setSFilter (state, newsfilter) {
+      state.societyfilter = newsfilter
+    },
+    setCFilter (state, newcfilter) {
+      state.circuitfilter = newcfilter
     },
     setSelect (state, newselect) {
       state.select = newselect

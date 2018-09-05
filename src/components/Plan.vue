@@ -243,7 +243,7 @@ export default {
       }
       this.circuitOptions.push(newc)
     }
-    this.circuit = this.$store.state.user.circuits.full[0].id
+    this.circuit = this.$store.state.user.circuits.keys[0]
     this.$q.loading.show()
     this.showplan(this.planyear, this.planmonth)
   }

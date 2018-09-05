@@ -74,8 +74,8 @@ export default {
       this.$axios.post(this.$store.state.hostname + '/feeditems',
         {
           post: this.post,
-          societies: this.$store.state.societies,
-          circuits: this.$store.state.circuits
+          societies: this.$store.state.societyfilter,
+          circuits: this.$store.state.circuitfilter
         })
         .then(response => {
           this.$q.notify('Your content has been published!')

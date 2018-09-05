@@ -39,7 +39,7 @@
           </q-item>
         </div>
         <q-list-header class="text-center"><q-icon name="language"></q-icon> Administration</q-list-header>
-        <q-item to="/publish">
+        <q-item v-if="$store.state.user.level === 'publisher' || $store.state.user.level === 'admin'" to="/publish">
           <q-item-side icon="publish" />
           <q-item-main label="Publish content" sublabel="publish to feed" />
         </q-item>
@@ -47,7 +47,7 @@
           <q-item-side icon="settings" />
           <q-item-main label="Settings" sublabel="user settings" />
         </q-item>
-        <q-item to="/users">
+        <q-item v-if="$store.state.user.level === 'admin'" to="/users">
           <q-item-side icon="person_add" />
           <q-item-main label="Users" sublabel="user permissions" />
         </q-item>

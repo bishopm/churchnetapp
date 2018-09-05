@@ -7,7 +7,7 @@
         <q-item-side><small>{{user.email}}</small></q-item-side>
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
+    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 78px" />
   </div>
 </template>
 

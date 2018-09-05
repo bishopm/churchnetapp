@@ -2,7 +2,7 @@
   <div>
     <q-list class="no-border">
       <p class="caption text-center">Circuit preachers</p>
-      <circuitfilter @altered="searchdb" :showme="showme()"></circuitfilter>
+      <circuitfilter class="q-mx-md" @altered="searchdb" :showme="showme()"></circuitfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
       <q-item v-if="preachers" v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/' + preacher.person.id">
         {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
@@ -29,7 +29,7 @@ export default {
       this.$router.push({name: 'preacherform', params: { action: 'add' }})
     },
     showme () {
-      return this.$store.state.user.circuits.full.length
+      return this.$store.state.user.circuits.keys.length
     },
     searchdb () {
       if (this.$store.state.user.circuits.keys) {
@@ -37,7 +37,7 @@ export default {
         this.$axios.post(this.$store.state.hostname + '/people/search',
           {
             search: this.search,
-            circuits: this.$store.state.user.circuits.keys
+            circuits: this.$store.state.circuitfilter
           })
           .then(response => {
             this.preachers = response.data.people

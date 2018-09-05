@@ -37,7 +37,7 @@ export default {
       this.$axios.post(this.$store.state.hostname + '/groups/search',
         {
           search: this.search,
-          societies: this.$store.state.filter
+          societies: this.$store.state.societyfilter
         })
         .then(response => {
           this.groups = response.data
