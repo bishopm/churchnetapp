@@ -58,9 +58,27 @@ export default {
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
+        this.$q.loading.show()
         if (this.$route.params.action === 'add') {
-          this.form.circuit_id = this.$store.state.select
-          this.$q.notify('Good to go!')
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/circuits/' + this.$store.state.select + '/people',
+            {
+              circuit_id: this.$store.state.select,
+              fullplan: this.form.fullplan,
+              individual_id: this.form.individual_id,
+              roles: this.form.roles,
+              status: this.form.status
+            })
+            .then(response => {
+              console.log(response.data)
+              this.$q.loading.hide()
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        } else {
+          this.$q.notify('Good to update!')
         }
       }
     },
@@ -79,9 +97,9 @@ export default {
       }
     },
     searchdb () {
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       if (this.search.length > 2) {
         this.$q.loading.show()
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.post(this.$store.state.hostname + '/individuals/search',
           {
             search: this.search,
