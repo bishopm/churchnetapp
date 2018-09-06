@@ -70,15 +70,33 @@ export default {
               status: this.form.status
             })
             .then(response => {
-              console.log(response.data)
               this.$q.loading.hide()
+              this.$q.notify('Preacher added')
+              this.$router.push({ name: 'preachers' })
             })
             .catch(function (error) {
               console.log(error)
               this.$q.loading.hide()
             })
         } else {
-          this.$q.notify('Good to update!')
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(this.$store.state.hostname + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
+            {
+              circuit_id: this.form.circuit_id,
+              fullplan: this.form.fullplan,
+              individual_id: this.form.individual_id,
+              roles: this.form.roles,
+              status: this.form.status
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$q.notify('Preacher updated')
+              this.$router.push({ name: 'preachers' })
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
         }
       }
     },
