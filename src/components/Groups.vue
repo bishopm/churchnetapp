@@ -2,7 +2,7 @@
   <div>
     <q-list class="no-border">
       <p class="caption text-center">All groups</p>
-      <societyfilter @altered="searchdb" :showme="showme()"></societyfilter>
+      <societyfilter class="q-mx-md" @altered="searchdb" :showme="showme()"></societyfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
       <q-item v-if="groups" v-for="group in groups" :key="group.id" :to="'/groups/' + group.id">
         {{group.groupname}}
@@ -29,7 +29,7 @@ export default {
       this.$router.push({name: 'addgroup'})
     },
     showme () {
-      return this.$store.state.user.societies.full.length
+      return this.$store.state.user.societies.keys.length
     },
     searchdb () {
       this.$q.loading.show()
