@@ -31,7 +31,7 @@ export default {
       this.$router.push({name: 'householdform', params: { action: 'add' }})
     },
     showme () {
-      return this.$store.state.user.societies.full.length
+      return this.$store.state.user.societies.keys.length
     },
     searchdb () {
       if (this.$store.state.user.societies.keys) {

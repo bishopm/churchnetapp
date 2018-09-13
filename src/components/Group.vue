@@ -1,7 +1,7 @@
 <template>
   <div v-if="group" class="text-center layout-padding">
     <p class="caption"><b>{{group.groupname}}</b> <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="edit"></q-icon>
-      <small class="q-ml-sm" v-if="$store.state.user">{{$store.state.user.societies.full[group.society_id].society}} society</small>
+      <small class="q-ml-sm" v-if="soc">{{soc.society}} society</small>
     </p>
     <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
     <div class="q-ma-md" v-if="search.length > 2">
@@ -39,6 +39,9 @@ export default {
       if ((this.$store.state.user.societies) && (this.$store.state.user.societies[this.group.society_id] === 'edit')) {
         return true
       }
+    },
+    soc () {
+      return this.$store.state.user.societies.full[this.group.society_id]
     }
   },
   methods: {
@@ -102,7 +105,7 @@ export default {
           })
       } else {
         this.individualOptions = []
-        this.form.individual_id = ''
+        this.group.individual_id = ''
       }
     }
   }
