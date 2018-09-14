@@ -3,17 +3,24 @@
     <q-layout-header>
       <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
-          <q-icon name="menu" />
+          <q-icon name="contacts" />
         </q-btn>
         <q-toolbar-title>
           <router-link to="/" class="text-white" style="text-decoration:none;">ChurchNet</router-link>
         </q-toolbar-title>
+        <q-btn flat dense round v-if="$store.getters.hasEntity('circuits')" @click="rightDrawerOpen = !rightDrawerOpen" aria-label="Menu">
+          <q-icon name="people_outline" />
+        </q-btn>
       </q-toolbar>
     </q-layout-header>
     <q-layout-drawer v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
         <div v-if="$store.getters.hasEntity('societies')">
-          <q-list-header class="text-center"><q-icon name="person"></q-icon> Church members</q-list-header>
+          <q-list-header class="text-center"><q-icon name="person"></q-icon> Members</q-list-header>
+          <q-item to="/communicate">
+            <q-item-side icon="phonelink_ring" />
+            <q-item-main label="Communication" sublabel="send emails or messages" />
+          </q-item>
           <q-item to="/groups">
             <q-item-side icon="group" />
             <q-item-main label="Groups" sublabel="view all groups" />
@@ -22,20 +29,14 @@
             <q-item-side icon="home" />
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
-        </div>
-        <div v-if="$store.getters.hasEntity('circuits')">
-          <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
-          <q-item to="/preachers">
-            <q-item-side icon="person" />
-            <q-item-main label="Preachers" sublabel="circuit preachers and ministers" />
+          <q-list-header class="text-center"><q-icon name="person"></q-icon> Society admin</q-list-header>
+          <q-item to="/rosters">
+            <q-item-side icon="format_list_bulleted" />
+            <q-item-main label="Rosters" sublabel="society rosters" />
           </q-item>
-          <q-item to="/plan">
-            <q-item-side icon="mic" />
-            <q-item-main label="Plan" sublabel="preaching plan" />
-          </q-item>
-          <q-item to="/societies">
-            <q-item-side icon="room" />
-            <q-item-main label="Societies" sublabel="view all societies" />
+          <q-item to="/statistics">
+            <q-item-side icon="timeline" />
+            <q-item-main label="Statistics" sublabel="view worship service statistics" />
           </q-item>
         </div>
         <q-list-header class="text-center"><q-icon name="language"></q-icon> Administration</q-list-header>
@@ -62,6 +63,23 @@
         <router-view />
       </q-pull-to-refresh>
     </q-page-container>
+    <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
+      <div v-if="$store.getters.hasEntity('circuits')">
+        <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
+        <q-item to="/preachers">
+          <q-item-side icon="person" />
+          <q-item-main label="Preachers" sublabel="circuit preachers and ministers" />
+        </q-item>
+        <q-item to="/plan">
+          <q-item-side icon="mic" />
+          <q-item-main label="Plan" sublabel="preaching plan" />
+        </q-item>
+        <q-item to="/societies">
+          <q-item-side icon="room" />
+          <q-item-main label="Societies" sublabel="view all societies" />
+        </q-item>
+      </div>
+    </q-layout-drawer>
   </q-layout>
 </template>
 
@@ -70,7 +88,8 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      rightDrawerOpen: false
     }
   },
   mounted () {

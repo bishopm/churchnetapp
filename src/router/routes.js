@@ -23,6 +23,7 @@ export default [
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societyform', path: '/societies/:action', component: () => import('components/forms/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
+      { name: 'statistics', path: '/statistics', component: () => import('components/Statistics'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },
       { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: {auth: true} },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} }
