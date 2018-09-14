@@ -62,6 +62,7 @@ export default {
       this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
     },
     editIndividual (individual) {
+      individual.alltags = this.household.alltags
       this.$router.push({name: 'individualform', params: { individual: individual, action: 'edit' }})
     },
     addIndividual () {

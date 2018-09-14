@@ -35,7 +35,7 @@
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Roles" v-model="form.roles" :options="roleOptions"/>
+      <q-select multiple chips float-label="Roles" v-model="roles" :options="roleOptions"/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -57,10 +57,10 @@ export default {
         title: '',
         email: '',
         sex: '',
-        cellphone: '',
-        roles: []
+        cellphone: ''
       },
-      roleOptions: []
+      roleOptions: [],
+      roles: []
     }
   },
   validations: {
@@ -88,7 +88,7 @@ export default {
               birthdate: this.form.birthdate,
               email: this.form.email,
               cellphone: this.form.cellphone,
-              roles: this.form.roles
+              roles: this.roles
             })
             .then(response => {
               this.$q.loading.hide()
@@ -128,12 +128,17 @@ export default {
   },
   mounted () {
     this.form = this.$route.params.individual
-    for (var rkey in this.form.tags) {
+    for (var rkey in this.form.alltags) {
       var newitem = {
-        label: this.form.tags[rkey].name,
-        value: this.form.tags[rkey].tag_id
+        label: this.form.alltags[rkey].name,
+        value: this.form.alltags[rkey].tag_id
       }
       this.roleOptions.push(newitem)
+    }
+    if (this.$route.params.action === 'edit') {
+      for (var tkey in this.form.tags) {
+        this.roles.push(this.form.tags[tkey].tag_id)
+      }
     }
   }
 }

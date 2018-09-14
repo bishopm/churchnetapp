@@ -41,7 +41,7 @@ export default {
           this.$axios.post(this.$store.state.hostname + '/households/search',
             {
               search: this.search,
-              societies: this.$store.state.user.societies.keys
+              societies: this.$store.state.societyfilter
             })
             .then(response => {
               this.households = response.data
