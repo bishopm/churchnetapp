@@ -6,7 +6,7 @@
       <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom>
         <q-td slot='body-cell' slot-scope='props' :props='props'>
           <div>
-            <b>{{JSON.parse(props)}}</b>
+            <b>{{JSON.parse(props.row[props.col.field])}}</b>
           </div>
         </q-td>
       </q-table>
