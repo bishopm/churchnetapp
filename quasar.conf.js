@@ -7,7 +7,8 @@ module.exports = function (ctx) {
       'axios',
       'maps',
       'vuelidate',
-      'firebase'
+      'firebase',
+      'frappe'
     ],
     css: [
       'app.styl'

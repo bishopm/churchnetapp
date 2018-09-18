@@ -60,7 +60,7 @@
     </q-layout-drawer>
     <q-page-container>
       <q-pull-to-refresh :handler="refresher">
-        <router-view />
+        <router-view :key="$route.fullPath"></router-view>
       </q-pull-to-refresh>
     </q-page-container>
     <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
