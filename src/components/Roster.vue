@@ -3,12 +3,7 @@
     <div class="text-center" v-if="roster">
       <p v-if="roster.society" class="caption">{{roster.name}} <small>{{roster.society.society}}</small></p>
       <p class="text-italic">{{roster.message}}</p>
-      <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom>
-        <q-td slot='body-cell' slot-scope='props' :props='props'>
-          <div>
-            <b>{{JSON.parse(props.row[props.col.field])}}</b>
-          </div>
-        </q-td>
+      <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom row-key="groups">
       </q-table>
     </div>
   </div>
