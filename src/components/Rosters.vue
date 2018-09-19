@@ -4,7 +4,8 @@
       <p class="caption text-center">Rosters</p>
       <societyselect @altered="displayrosters" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
       <q-item v-if="rosters" v-for="roster in rosters" :key="roster.id" :to="'/rosters/' + roster.id + '/' + (new Date()).getFullYear() + '/' + month">
-        {{roster.name}}
+        <q-item-main>{{roster.name}}</q-item-main>
+        <q-item-side icon="edit"></q-item-side>
       </q-item>
     </q-list>
     <div class="text-center">{{emptymessage}}</div>
