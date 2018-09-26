@@ -3,7 +3,12 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
-    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <div class="q-ma-md" v-if="$route.params.action === 'add' && $route.params.scope === 'circuit'">
+      <circuitselect @altered="setsocieties" :perms="['edit','admin']" showme="1"></circuitselect>
+      <q-select float-label="Society" v-model="society" :options="csocietyOptions" @input="setMap()">
+      </q-select>
+    </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.addressee.$error" error-label="The addressee field is required">
         <q-input float-label="Addressee" v-model="form.addressee" @blur="$v.form.addressee.$touch()" :error="$v.form.addressee.$error" />
@@ -34,6 +39,7 @@
 <script>
 import { required, numeric } from 'vuelidate/lib/validators'
 import societyselect from './../Societyselect'
+import circuitselect from './../Circuitselect'
 // https://github.com/monterail/vuelidate/tree/master/src/validators
 export default {
   data () {
@@ -49,7 +55,13 @@ export default {
       },
       map: '',
       marker: '',
-      housecellOptions: []
+      housecellOptions: [],
+      csocietyOptions: [],
+      society: {
+        value: '',
+        label: ''
+      },
+      soc: ''
     }
   },
   validations: {
@@ -59,9 +71,45 @@ export default {
     }
   },
   components: {
-    'societyselect': societyselect
+    'societyselect': societyselect,
+    'circuitselect': circuitselect
   },
   methods: {
+    setsocieties () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(this.$store.state.hostname + '/societies/search',
+        {
+          search: '',
+          circuits: this.$store.state.circuitfilter
+        })
+        .then(response => {
+          for (var skey in response.data) {
+            var newitem = {
+              label: response.data[skey].society,
+              value: {
+                id: response.data[skey].id,
+                lat: response.data[skey].latitude,
+                lng: response.data[skey].longitude
+              }
+            }
+            this.csocietyOptions.push(newitem)
+          }
+          this.$q.loading.hide()
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    },
+    setMap () {
+      this.form.latitude = this.society.lat
+      this.form.longitude = this.society.lng
+      this.map = new window.google.maps.Map(document.getElementById('map'), {
+        center: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)},
+        zoom: 15
+      })
+      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)}, map: this.map, draggable: true})
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
@@ -93,6 +141,11 @@ export default {
             })
         } else {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          if (this.$route.params.scope === 'circuit') {
+            this.soc = this.society.id
+          } else {
+            this.soc = this.$store.state.select
+          }
           this.$axios.post(this.$store.state.hostname + '/households',
             {
               addressee: this.form.addressee,
@@ -101,7 +154,7 @@ export default {
               addr3: this.form.addr3,
               homephone: this.form.homephone,
               householdcell: this.form.householdcell,
-              society_id: this.$store.state.select,
+              society_id: this.soc,
               latitude: this.form.latitude,
               longitude: this.form.longitude
             })
@@ -129,6 +182,7 @@ export default {
     }
   },
   mounted () {
+    this.setsocieties()
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)

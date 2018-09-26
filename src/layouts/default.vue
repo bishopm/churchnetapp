@@ -78,6 +78,15 @@
           <q-item-side icon="room" />
           <q-item-main label="Societies" sublabel="view all societies" />
         </q-item>
+        <q-item to="/circuithouseholds">
+          <q-item-side icon="home" />
+          <q-item-main label="Households" sublabel="view all circuit households" />
+        </q-item>
+        <q-list-header class="text-center"><q-icon name="zoom_out_map"></q-icon> District</q-list-header>
+        <q-item to="/circuits">
+          <q-item-side icon="my_location" />
+          <q-item-main label="Circuits" sublabel="view all circuits" />
+        </q-item>
       </div>
     </q-layout-drawer>
   </q-layout>

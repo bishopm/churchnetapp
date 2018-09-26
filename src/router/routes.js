@@ -4,11 +4,14 @@ export default [
     path: '/',
     component: () => import('layouts/default'),
     children: [
+      { name: 'circuithouseholds', path: '/circuithouseholds', component: () => import('components/Circuithouseholds'), meta: {auth: true} },
+      { name: 'circuit', path: '/circuits/:id', component: () => import('components/Circuit'), meta: {auth: true} },
+      { name: 'circuits', path: '/circuits', component: () => import('components/Circuits'), meta: {auth: true} },
       { name: 'group', path: '/groups/:id', component: () => import('components/Group'), meta: {auth: true} },
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
       { name: 'editgroup', path: '/group/:id/edit', component: () => import('components/forms/Group'), meta: {auth: true} },
-      { name: 'householdform', path: '/household/:action/:id?', component: () => import('components/forms/Household'), meta: {auth: true} },
+      { name: 'householdform', path: '/household/:action/:scope/:id?', component: () => import('components/forms/Household'), meta: {auth: true} },
       { name: 'household', path: '/households/:id', component: () => import('components/Household'), meta: {auth: true} },
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'individualform', path: '/individual/:action/:id?', component: () => import('components/forms/Individual'), meta: {auth: true} },
@@ -29,6 +32,7 @@ export default [
       { name: 'statistic', path: '/statistics/:society/:yr', component: () => import('components/Statistic'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },
       { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: {auth: true} },
+      { name: 'userform', path: '/user/:action/:id?', component: () => import('components/forms/User'), meta: {auth: true} },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} }
     ]
   },

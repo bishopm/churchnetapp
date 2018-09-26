@@ -10,8 +10,8 @@ const store = new Vuex.Store({
     circuitfilter: [],
     societyfilter: [],
     select: '',
-    // hostname: 'http://localhost/churchnet/public/api'
-    hostname: 'https://church.net.za/api'
+    hostname: 'http://localhost/churchnet/public/api'
+    // hostname: 'https://church.net.za/api'
   },
   getters: {
     hasEntity: (state) => (entity) => {
@@ -41,6 +41,9 @@ const store = new Vuex.Store({
     },
     setCFilter (state, newcfilter) {
       state.circuitfilter = newcfilter
+    },
+    setDFilter (state, newdfilter) {
+      state.districtfilter = newdfilter
     },
     setSelect (state, newselect) {
       state.select = newselect

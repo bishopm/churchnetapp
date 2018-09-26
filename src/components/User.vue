@@ -9,6 +9,10 @@
       <h4><b>Circuits</b></h4>
       <p v-for="circuit in user.circuits.full" :key="circuit.id">{{circuit.circuit}} ({{circuit.pivot.permission}})</p>
     </div>
+    <div v-if="user.districts">
+      <h4><b>Districts</b></h4>
+      <p v-for="district in user.districts.full" :key="district.id">{{district.district}} ({{district.pivot.permission}})</p>
+    </div>
   </div>
 </template>
 
@@ -24,7 +28,6 @@ export default {
     this.$axios.get(this.$store.state.hostname + '/users/' + this.$route.params.id)
       .then((response) => {
         this.user = response.data
-        console.log(this.user)
       })
       .catch(function (error) {
         console.log(error)

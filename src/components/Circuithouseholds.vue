@@ -3,7 +3,7 @@
     <p class="caption" v-if="message">{{$message}}</p>
     <q-list class="no-border">
       <p class="caption text-center">All households</p>
-      <societyfilter @altered="searchdb" :showme="showme()"></societyfilter>
+      <circuitfilter @altered="searchdb" :showme="showme()"></circuitfilter>
       <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
       <q-item v-if="households" v-for="household in households" :key="household.id" :to="'/households/' + household.id">
         {{household.addressee}}
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import societyfilter from './Societyfilter'
+import circuitfilter from './Circuitfilter'
 export default {
   data () {
     return {
@@ -24,14 +24,14 @@ export default {
     }
   },
   components: {
-    'societyfilter': societyfilter
+    'circuitfilter': circuitfilter
   },
   methods: {
     addHousehold () {
-      this.$router.push({name: 'householdform', params: { action: 'add', scope: 'society' }})
+      this.$router.push({name: 'householdform', params: { action: 'add', scope: 'circuit' }})
     },
     showme () {
-      return this.$store.state.user.societies.keys.length
+      return this.$store.state.user.circuits.keys.length
     },
     searchdb () {
       if (this.$store.state.user.societies.keys) {
@@ -41,7 +41,7 @@ export default {
           this.$axios.post(this.$store.state.hostname + '/households/search',
             {
               search: this.search,
-              societies: this.$store.state.societyfilter
+              circuit: this.$store.state.circuitfilter
             })
             .then(response => {
               this.households = response.data

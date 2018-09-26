@@ -51,6 +51,9 @@ export default {
       .then((response) => {
         this.household = response.data
         this.perm = this.$store.state.user.societies[this.household.society_id]
+        if (this.$store.state.user.level === 'admin') {
+          this.perm = 'edit'
+        }
         this.initMap()
       })
       .catch(function (error) {
@@ -66,7 +69,7 @@ export default {
       this.$router.push({name: 'individualform', params: { individual: individual, action: 'edit' }})
     },
     addIndividual () {
-      this.$router.push({name: 'individualform', params: { individual: {household_id: this.household.id, surname: this.household.sortsurname, sex: 'female'}, action: 'add' }})
+      this.$router.push({name: 'individualform', params: { individual: {household_id: this.household.id, surname: this.household.sortsurname, sex: 'female', alltags: this.household.alltags}, action: 'add' }})
     },
     async initMap () {
       await this.$google()

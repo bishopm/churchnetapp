@@ -1,7 +1,11 @@
 <template>
   <div class="layout-padding">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{$route.params.action.toUpperCase()}} INDIVIDUAL
+      {{$route.params.action.toUpperCase()}} USER
+    </div>
+    <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name for an existing member" />
+    <div class="q-ma-md" v-if="search.length > 2">
+      <q-select @input="populateIndiv()" float-label="Individual" v-model="form.indiv" :options="individualOptions"/>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
@@ -20,22 +24,9 @@
       <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
     </div>
     <div class="q-ma-md">
-      <q-field>
-        <q-input float-label="Date of birth" v-model="form.birthdate" />
-      </q-field>
-    </div>
-    <div class="q-ma-md">
-      <q-field :error="$v.form.email.$error" error-label="Must be a valid email address">
-        <q-input float-label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
-      </q-field>
-    </div>
-    <div class="q-ma-md">
       <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
         <q-input float-label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
       </q-field>
-    </div>
-    <div class="q-ma-md">
-      <q-select multiple chips float-label="Roles" v-model="roles" :options="roleOptions"/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -53,14 +44,13 @@ export default {
       form: {
         surname: '',
         firstname: '',
-        birthdate: '',
         title: '',
-        email: '',
         sex: '',
-        cellphone: ''
+        cellphone: '',
+        indiv: ''
       },
-      roleOptions: [],
-      roles: []
+      search: '',
+      individualOptions: []
     }
   },
   validations: {
@@ -72,6 +62,43 @@ export default {
     }
   },
   methods: {
+    searchdb () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(this.$store.state.hostname + '/individuals/search',
+        {
+          search: this.search,
+          circuit: this.$store.state.select
+        })
+        .then(response => {
+          this.individualOptions = []
+          for (var ikey in response.data) {
+            var newitem = {
+              label: response.data[ikey].surname + ', ' + response.data[ikey].title + ' ' + response.data[ikey].firstname + ' (' + response.data[ikey].household.society.society + ')',
+              value: {
+                id: response.data[ikey].id,
+                surname: response.data[ikey].surname,
+                firstname: response.data[ikey].firstname,
+                sex: response.data[ikey].sex,
+                title: response.data[ikey].title,
+                cellphone: response.data[ikey].cellphone
+              }
+            }
+            this.individualOptions.push(newitem)
+          }
+          this.$q.loading.hide()
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    },
+    populateIndiv () {
+      this.form.surname = this.form.indiv.surname
+      this.form.firstname = this.form.indiv.firstname
+      this.form.sex = this.form.indiv.sex
+      this.form.cellphone = this.form.indiv.cellphone
+      this.form.title = this.form.indiv.title
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
@@ -85,10 +112,7 @@ export default {
               firstname: this.form.firstname,
               sex: this.form.sex,
               title: this.form.title,
-              birthdate: this.form.birthdate,
-              email: this.form.email,
-              cellphone: this.form.cellphone,
-              roles: this.roles
+              cellphone: this.form.cellphone
             })
             .then(response => {
               this.$q.loading.hide()
@@ -107,10 +131,7 @@ export default {
               firstname: this.form.firstname,
               sex: this.form.sex,
               title: this.form.title,
-              birthdate: this.form.birthdate,
-              email: this.form.email,
               cellphone: this.form.cellphone,
-              roles: this.roles,
               household_id: this.form.household_id
             })
             .then(response => {
@@ -123,21 +144,6 @@ export default {
               this.$q.loading.hide()
             })
         }
-      }
-    }
-  },
-  mounted () {
-    this.form = this.$route.params.individual
-    for (var rkey in this.form.alltags) {
-      var newitem = {
-        label: this.form.alltags[rkey].name,
-        value: this.form.alltags[rkey].tag_id
-      }
-      this.roleOptions.push(newitem)
-    }
-    if (this.$route.params.action === 'edit') {
-      for (var tkey in this.form.tags) {
-        this.roles.push(this.form.tags[tkey].tag_id)
       }
     }
   }

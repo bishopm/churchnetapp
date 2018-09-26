@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="showme > 1" @input="updateme" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
+<q-select @input="updateme" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
 </template>
 
 <script>
