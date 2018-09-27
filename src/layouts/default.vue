@@ -82,6 +82,8 @@
           <q-item-side icon="home" />
           <q-item-main label="Households" sublabel="view all circuit households" />
         </q-item>
+      </div>
+      <div v-if="$store.getters.hasEntity('districts')">
         <q-list-header class="text-center"><q-icon name="zoom_out_map"></q-icon> District</q-list-header>
         <q-item to="/circuits">
           <q-item-side icon="my_location" />

@@ -5,7 +5,7 @@
     </div>
     <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></circuitselect>
     <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name" />
-    <div class="q-ma-md" v-if="search.length > 2">
+    <div class="q-ma-md" v-if="individualOptions.length">
       <q-select float-label="Individual" v-model="form.individual_id" :options="individualOptions"/>
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
@@ -34,6 +34,7 @@ export default {
   data () {
     return {
       search: '',
+      showdropdown: false,
       individualOptions: [],
       roleOptions: [],
       form: {
@@ -118,7 +119,7 @@ export default {
       if (this.search.length > 2) {
         this.$q.loading.show()
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/individuals/search',
+        this.$axios.post(this.$store.state.hostname + '/individuals/searchnp',
           {
             search: this.search,
             circuit: this.$store.state.select
