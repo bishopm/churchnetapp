@@ -27,7 +27,7 @@ export default {
       console.log('editing')
     },
     addUser () {
-      this.$router.push({name: 'userform', params: { user: { }, action: 'add' }})
+      this.$router.push({name: 'userform', params: { user: { sex: 'male', title: 'Mr' }, action: 'add' }})
     }
   },
   mounted () {

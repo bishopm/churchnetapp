@@ -9,6 +9,10 @@
     </div>
     <div class="q-ma-md" v-html="userdetails">
     </div>
+    <div v-if="userdetails" class="q-ma-md text-center">
+      <q-btn color="primary" @click="submitexist">OK</q-btn>
+      <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
+    </div>
     <div v-if="!form.indiv" class="text-center">or add a new individual
       <div class="q-ma-md">
         <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
@@ -21,7 +25,7 @@
         </q-field>
       </div>
       <div class="q-ma-md">
-        <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+        <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
       </div>
       <div class="q-ma-md">
         <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
@@ -105,51 +109,36 @@ export default {
     populateIndiv () {
       this.userdetails = '<b>Link new user to: </b>' + this.form.indiv.title + ' ' + this.form.indiv.firstname + ' ' + this.form.indiv.surname + ' (Phone: ' + this.form.indiv.cellphone + ')'
     },
+    submitexist () {
+      console.log(this.form)
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        if (this.$route.params.action === 'edit') {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/individuals/' + this.form.id,
-            {
-              surname: this.form.surname,
-              firstname: this.form.firstname,
-              sex: this.form.sex,
-              title: this.form.title,
-              cellphone: this.form.cellphone
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Individual updated')
-              this.$router.push({ name: 'household', params: { id: response.data.household_id } })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
-        } else {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/individuals',
-            {
-              surname: this.form.surname,
-              firstname: this.form.firstname,
-              sex: this.form.sex,
-              title: this.form.title,
-              cellphone: this.form.cellphone,
-              household_id: this.form.household_id
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Individual added')
-              this.$router.push({ name: 'household', params: { id: response.data.household_id } })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
-        }
+        console.log(this.form)
+        /*
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(this.$store.state.hostname + '/individuals',
+          {
+            surname: this.form.surname,
+            firstname: this.form.firstname,
+            sex: this.form.sex,
+            title: this.form.title,
+            cellphone: this.form.cellphone,
+            household_id: this.form.household_id
+          })
+          .then(response => {
+            this.$q.loading.hide()
+            this.$q.notify('Individual added')
+            this.$router.push({ name: 'household', params: { id: response.data.household_id } })
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
+        */
       }
     }
   }
