@@ -1,8 +1,8 @@
 {
   "name": "churchnet",
   "version": "1.0.0",
-  "description": "PWA for ChurchNet",
-  "productName": "ChurchNet PWA",
+  "description": "ChurchNet",
+  "productName": "ChurchNet",
   "cordovaId": "org.cordova.quasar.app",
   "author": "Michael Bishop <michael@goodworx.co.za>",
   "private": true,

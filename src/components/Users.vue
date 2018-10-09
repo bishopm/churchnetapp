@@ -6,6 +6,7 @@
         <q-item-main><b>{{user.name}}</b></q-item-main>
         <q-item-side><small>{{user.email}}</small></q-item-side>
       </q-item>
+      <div class="text-center">{{emptymessage}}</div>
     </q-list>
     <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 78px" />
   </div>
@@ -16,6 +17,7 @@ export default {
   data () {
     return {
       users: [],
+      emptymessage: '',
       search: ''
     }
   },
@@ -31,6 +33,9 @@ export default {
       this.$axios.get(this.$store.state.hostname + '/users')
         .then(response => {
           this.users = response.data
+          if (!this.users.length) {
+            this.emptymessage = 'No editor or admin users have been created yet'
+          }
           this.$q.loading.hide()
         })
         .catch(function (error) {
