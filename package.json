@@ -1,10 +1,10 @@
 {
   "name": "churchnet",
   "version": "1.0.0",
-  "description": "ChurchNet",
-  "productName": "ChurchNet",
+  "description": "Churchnet",
+  "productName": "Churchnet",
   "cordovaId": "org.cordova.quasar.app",
-  "author": "Michael Bishop <michael@goodworx.co.za>",
+  "author": "Michael Bishop",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
@@ -23,14 +23,13 @@
     "eslint": "^4.18.2",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^4.0.1",
-    "eslint-loader": "^2.1.1",
+    "eslint-loader": "^2.0.0",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^4.3.0",
-    "quasar-cli": "^0.17.20",
-    "quasar-framework": "^0.17.17",
+    "quasar-cli": "^0.17.0",
     "strip-ansi": "=3.0.1"
   },
   "engines": {

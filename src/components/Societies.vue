@@ -34,7 +34,7 @@ export default {
     searchdb () {
       if (this.$store.state.user.societies.keys) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/societies/search',
+        this.$axios.post(process.env.API + '/societies/search',
           {
             search: this.search,
             circuits: this.$store.state.circuitfilter

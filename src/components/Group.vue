@@ -26,7 +26,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/groups/' + this.$route.params.id)
+    this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
       .then((response) => {
         this.group = response.data
       })
@@ -50,7 +50,7 @@ export default {
     },
     removeIndiv (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/groups/' + this.group.id + '/remove',
+      this.$axios.post(process.env.API + '/groups/' + this.group.id + '/remove',
         {
           id: id
         })
@@ -65,7 +65,7 @@ export default {
     },
     addIndiv () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/groups/' + this.group.id + '/add',
+      this.$axios.post(process.env.API + '/groups/' + this.group.id + '/add',
         {
           id: this.individual_id
         })
@@ -83,7 +83,7 @@ export default {
       if (this.search.length > 2) {
         this.$q.loading.show()
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/individuals/search',
+        this.$axios.post(process.env.API + '/individuals/search',
           {
             search: this.search,
             society: this.group.society_id

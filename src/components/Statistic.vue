@@ -59,7 +59,7 @@ export default {
     this.statdate = date.formatDate(sun, 'YYYY-MM-DD')
     this.currentyr = this.$route.params.yr
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/statistics/' + this.$route.params.society + '/' + this.currentyr)
+    this.$axios.get(process.env.API + '/statistics/' + this.$route.params.society + '/' + this.currentyr)
       .then((response) => {
         if (response.data.labels.length === 0) {
           this.header = 'No statistics have been entered this year'
@@ -104,7 +104,7 @@ export default {
     submit () {
       this.statdate = this.statdate.slice(0, 10)
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/statistics',
+      this.$axios.post(process.env.API + '/statistics',
         {
           statdate: this.statdate,
           attendance: this.attendance
@@ -124,7 +124,7 @@ export default {
     },
     checkdate () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/statistics/' + this.$route.params.society + '/getfordate/' + this.statdate.slice(0, 10))
+      this.$axios.get(process.env.API + '/statistics/' + this.$route.params.society + '/getfordate/' + this.statdate.slice(0, 10))
         .then((response) => {
           if (response.data.length !== 0) {
             for (var akey in this.attendance) {

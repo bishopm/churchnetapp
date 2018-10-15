@@ -32,7 +32,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/circuits/' + this.$route.params.id)
+    this.$axios.get(process.env.API + '/circuits/' + this.$route.params.id)
       .then((response) => {
         this.circuit = response.data
         this.$store.commit('setSelect', this.circuit.id)

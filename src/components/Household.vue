@@ -47,7 +47,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
+    this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
       .then((response) => {
         this.household = response.data
         this.perm = this.$store.state.user.societies[this.household.society_id]

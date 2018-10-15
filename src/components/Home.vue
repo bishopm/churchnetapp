@@ -1,6 +1,6 @@
 <template>
   <div class="text-center q-mt-lg" v-if="$store.state.user">
-    <p v-if="$store.state.user.name" class="caption">Welcome, {{$store.state.user.name}}</p>
+    <p v-if="$store.state.user.name" class="caption">Welcome back, {{$store.state.user.name}}</p>
     <p>You have the following system permissions:</p>
     <div v-if="$store.getters.hasEntity('districts')">
       <b>Districts</b>

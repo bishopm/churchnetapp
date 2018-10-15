@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
     <q-list class="no-border">
-      <p class="caption text-center">Users</p>
+      <p class="caption text-center">Admin and editor Users</p>
       <q-item v-for="user in users" :key="user.id" :to="'/users/' + user.id">
         <q-item-main><b>{{user.name}}</b></q-item-main>
         <q-item-side><small>{{user.email}}</small></q-item-side>
@@ -30,7 +30,7 @@ export default {
     this.$q.loading.show()
     if (this.$store.state.user.societies) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/users')
+      this.$axios.get(process.env.API + '/users')
         .then(response => {
           this.users = response.data
           if (!this.users.length) {

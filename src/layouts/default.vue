@@ -104,10 +104,20 @@ export default {
     }
   },
   mounted () {
+    if (localStorage.getItem('CHURCHNET_Version')) {
+      if (localStorage.getItem('CHURCHNET_Version') === process.env.VERSION) {
+        console.log('Current version')
+      } else {
+        localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
+        window.location.reload()
+      }
+    } else {
+      localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
+    }
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+      this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
           this.$store.commit('setUser', response.data)
         })

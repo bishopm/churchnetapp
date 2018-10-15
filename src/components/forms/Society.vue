@@ -61,7 +61,7 @@ export default {
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        this.$axios.post(this.$store.state.hostname + '/addsociety',
+        this.$axios.post(process.env.API + '/addsociety',
           {
             society: this.form.society,
             address: this.form.address,

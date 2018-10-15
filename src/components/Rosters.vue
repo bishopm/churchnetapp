@@ -38,7 +38,7 @@ export default {
     displayrosters () {
       if (this.$store.state.user.societies.keys) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/rosters',
+        this.$axios.post(process.env.API + '/rosters',
           {
             society: this.$store.state.select
           })

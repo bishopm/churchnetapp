@@ -22,7 +22,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/people/' + this.$route.params.id)
+    this.$axios.get(process.env.API + '/people/' + this.$route.params.id)
       .then((response) => {
         this.preacher = response.data
         this.perm = this.$store.state.user.circuits[this.preacher.individual.household.society.circuit_id]

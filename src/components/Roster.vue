@@ -44,7 +44,7 @@ export default {
     this.$q.loading.show()
     if (this.$store.state.user.societies.keys) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/rosters/' + this.$route.params.id + '/' + this.$route.params.year + '/' + this.$route.params.month)
+      this.$axios.get(process.env.API + '/rosters/' + this.$route.params.id + '/' + this.$route.params.year + '/' + this.$route.params.month)
         .then(response => {
           this.roster = response.data.roster
           this.columns = response.data.columns
@@ -63,7 +63,7 @@ export default {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
       } else {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.get(this.$store.state.hostname + '/groups/' + grp.id)
+        this.$axios.get(process.env.API + '/groups/' + grp.id)
           .then(response => {
             this.indivOptions = []
             for (var ikey in response.data.individuals) {
@@ -97,7 +97,7 @@ export default {
           }
         }
       }
-      this.$axios.post(this.$store.state.hostname + '/circuits/' + this.circuit + '/updateplan',
+      this.$axios.post(process.env.API + '/circuits/' + this.circuit + '/updateplan',
         {
           society_id: this.form.plan.society_id,
           service_id: this.form.plan.service_id,

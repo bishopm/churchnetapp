@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     login () {
-      this.$axios.post(this.$store.state.hostname + '/churchnet/login',
+      this.$axios.post(process.env.API + '/churchnet/login',
         {
           email: this.email,
           password: this.password
@@ -77,7 +77,7 @@ export default {
           localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
           this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-          this.$axios.get(this.$store.state.hostname + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+          this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
             .then((response) => {
               this.$store.commit('setUser', response.data)
               this.$router.push({name: 'home'})
@@ -94,7 +94,7 @@ export default {
       this.$router.push({name: 'phoneverification'})
     },
     register () {
-      this.$axios.post(this.$store.state.hostname + '/users/register',
+      this.$axios.post(process.env.API + '/users/register',
         {
           email: this.newemail,
           password: this.newpassword,

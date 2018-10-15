@@ -71,7 +71,7 @@ export default {
     submit () {
       this.post.publicationdate = this.post.publicationdate.slice(0, 10)
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/feeditems',
+      this.$axios.post(process.env.API + '/feeditems',
         {
           post: this.post,
           societies: this.$store.state.societyfilter,

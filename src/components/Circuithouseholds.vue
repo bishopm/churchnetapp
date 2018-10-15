@@ -38,7 +38,7 @@ export default {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         if (this.search.length > 1) {
           this.$q.loading.show()
-          this.$axios.post(this.$store.state.hostname + '/households/search',
+          this.$axios.post(process.env.API + '/households/search',
             {
               search: this.search,
               circuit: this.$store.state.circuitfilter

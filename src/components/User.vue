@@ -25,7 +25,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(this.$store.state.hostname + '/users/' + this.$route.params.id)
+    this.$axios.get(process.env.API + '/users/' + this.$route.params.id)
       .then((response) => {
         this.user = response.data
       })

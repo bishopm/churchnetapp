@@ -79,7 +79,7 @@ export default {
       } else {
         if (this.$route.params.action === 'edit') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/individuals/' + this.form.id,
+          this.$axios.post(process.env.API + '/individuals/' + this.form.id,
             {
               surname: this.form.surname,
               firstname: this.form.firstname,
@@ -101,7 +101,7 @@ export default {
             })
         } else {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/individuals',
+          this.$axios.post(process.env.API + '/individuals',
             {
               surname: this.form.surname,
               firstname: this.form.firstname,

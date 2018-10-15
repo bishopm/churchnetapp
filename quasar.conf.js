@@ -1,4 +1,5 @@
 // Configuration for your app
+var version = JSON.stringify('0.2.0')
 
 module.exports = function (ctx) {
   return {
@@ -22,8 +23,17 @@ module.exports = function (ctx) {
     ],
     supportIE: false,
     build: {
+      env: ctx.dev
+        ? { // so on dev we'll have
+          API: JSON.stringify('http://localhost/churchnet/public/api'),
+          VERSION: version
+        }
+        : { // and on build (production):
+          API: JSON.stringify('https://church.net.za/api'),
+          VERSION: version
+        },
       scopeHoisting: true,
-      vueRouterMode: 'history',
+      // vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
@@ -33,7 +43,7 @@ module.exports = function (ctx) {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules|quasar)/
+          exclude: /node_modules/
         })
       }
     },
@@ -85,7 +95,12 @@ module.exports = function (ctx) {
       plugins: [
         'Notify',
         'Loading'
-      ]
+      ],
+      config: {
+        notify: {
+          color: 'black'
+        }
+      },
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language
     },
@@ -104,7 +119,7 @@ module.exports = function (ctx) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#000000',
         icons: [
           {
             'src': 'statics/icons/icon-128x128.png',

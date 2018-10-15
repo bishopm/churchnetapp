@@ -46,7 +46,7 @@ export default {
     await this.$google()
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     var cs = this.$route.params.id.split('_')
-    this.$axios.get(this.$store.state.hostname + '/circuits/' + cs[0] + '/societies/' + cs[1])
+    this.$axios.get(process.env.API + '/circuits/' + cs[0] + '/societies/' + cs[1])
       .then((response) => {
         this.society = response.data
         if (!this.society.services.length) {

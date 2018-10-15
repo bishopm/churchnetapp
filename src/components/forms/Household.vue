@@ -77,7 +77,7 @@ export default {
   methods: {
     setsocieties () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/societies/search',
+      this.$axios.post(process.env.API + '/societies/search',
         {
           search: '',
           circuits: this.$store.state.circuitfilter
@@ -119,7 +119,7 @@ export default {
           this.form.latitude = this.marker.position.lat().toString()
           this.form.longitude = this.marker.position.lng().toString()
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/households/' + this.form.id,
+          this.$axios.post(process.env.API + '/households/' + this.form.id,
             {
               addressee: this.form.addressee,
               addr1: this.form.addr1,
@@ -146,7 +146,7 @@ export default {
           } else {
             this.soc = this.$store.state.select
           }
-          this.$axios.post(this.$store.state.hostname + '/households',
+          this.$axios.post(process.env.API + '/households',
             {
               addressee: this.form.addressee,
               addr1: this.form.addr1,
@@ -185,7 +185,7 @@ export default {
     this.setsocieties()
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/households/' + this.$route.params.id)
+      this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
         .then((response) => {
           this.form = response.data
           for (var ikey in this.form.individuals) {

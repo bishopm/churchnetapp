@@ -148,7 +148,7 @@ export default {
           }
         }
       }
-      this.$axios.post(this.$store.state.hostname + '/circuits/' + this.circuit + '/updateplan',
+      this.$axios.post(process.env.API + '/circuits/' + this.circuit + '/updateplan',
         {
           society_id: this.form.plan.society_id,
           service_id: this.form.plan.service_id,
@@ -173,7 +173,7 @@ export default {
       this.perm = this.$store.state.user.circuits[this.circuit]
       if (this.$store.state.user.societies) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.get(this.$store.state.hostname + '/circuits/' + this.circuit + '/mplans/monthlyplan/' + yy + '/' + mm)
+        this.$axios.get(process.env.API + '/circuits/' + this.circuit + '/mplans/monthlyplan/' + yy + '/' + mm)
           .then(response => {
             this.rows = []
             for (var skey in response.data.plans) {

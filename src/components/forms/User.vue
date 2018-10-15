@@ -77,7 +77,7 @@ export default {
         this.individualOptions = []
       } else {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/individuals/search',
+        this.$axios.post(process.env.API + '/individuals/search',
           {
             search: this.search,
             circuit: this.$store.state.select
@@ -120,7 +120,7 @@ export default {
         console.log(this.form)
         /*
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/individuals',
+        this.$axios.post(process.env.API + '/individuals',
           {
             surname: this.form.surname,
             firstname: this.form.firstname,

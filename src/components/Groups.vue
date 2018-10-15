@@ -34,7 +34,7 @@ export default {
     searchdb () {
       this.$q.loading.show()
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(this.$store.state.hostname + '/groups/search',
+      this.$axios.post(process.env.API + '/groups/search',
         {
           search: this.search,
           societies: this.$store.state.societyfilter

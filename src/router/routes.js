@@ -1,5 +1,5 @@
 
-export default [
+const routes = [
   {
     path: '/',
     component: () => import('layouts/default'),
@@ -7,6 +7,7 @@ export default [
       { name: 'circuithouseholds', path: '/circuithouseholds', component: () => import('components/Circuithouseholds'), meta: {auth: true} },
       { name: 'circuit', path: '/circuits/:id', component: () => import('components/Circuit'), meta: {auth: true} },
       { name: 'circuits', path: '/circuits', component: () => import('components/Circuits'), meta: {auth: true} },
+      { name: 'communicate', path: '/communicate', component: () => import('components/Communicate'), meta: {auth: true} },
       { name: 'group', path: '/groups/:id', component: () => import('components/Group'), meta: {auth: true} },
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
@@ -22,6 +23,7 @@ export default [
       { name: 'phoneverification', path: '/phoneverification', component: () => import('components/Phoneverification'), meta: {auth: false} },
       { name: 'plan', path: '/plan', component: () => import('components/Plan'), meta: {auth: true} },
       { name: 'publish', path: '/publish', component: () => import('components/Publish'), meta: {auth: true} },
+      { name: 'rosterform', path: '/roster/:action/:id?', component: () => import('components/forms/Roster'), meta: {auth: true} },
       { name: 'rosters', path: '/rosters', component: () => import('components/Rosters'), meta: {auth: true} },
       { name: 'roster', path: '/rosters/:id/:year/:month', component: () => import('components/Roster'), meta: {auth: true} },
       { name: 'serviceform', path: '/services/:action/:society?/:service?', component: () => import('components/forms/Service'), meta: {auth: true} },
@@ -35,10 +37,15 @@ export default [
       { name: 'userform', path: '/user/:action/:id?', component: () => import('components/forms/User'), meta: {auth: true} },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} }
     ]
-  },
-
-  { // Always leave this as last one
-    path: '*',
-    component: () => import('pages/Error404')
   }
 ]
+
+// Always leave this as last one
+if (process.env.MODE !== 'ssr') {
+  routes.push({
+    path: '*',
+    component: () => import('pages/Error404.vue')
+  })
+}
+
+export default routes

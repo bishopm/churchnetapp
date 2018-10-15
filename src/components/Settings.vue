@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    <h3 class="text-center">App settings</h3>
+    <h3 class="text-center">App settings <small>(v{{version}})</small></h3>
   </div>
 </template>
 
@@ -9,6 +9,7 @@ import saveState from 'vue-save-state'
 export default {
   data () {
     return {
+      version: ''
     }
   },
   mixins: [saveState],
@@ -20,7 +21,9 @@ export default {
     }
   },
   mounted () {
-    localStorage.setItem('CHURCHNET_user_id', 1)
+    if (localStorage.getItem('CHURCHNET_Version')) {
+      this.version = localStorage.getItem('CHURCHNET_Version')
+    }
   }
 }
 </script>

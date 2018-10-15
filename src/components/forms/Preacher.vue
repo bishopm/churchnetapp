@@ -62,7 +62,7 @@ export default {
         this.$q.loading.show()
         if (this.$route.params.action === 'add') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/circuits/' + this.$store.state.select + '/people',
+          this.$axios.post(process.env.API + '/circuits/' + this.$store.state.select + '/people',
             {
               circuit_id: this.$store.state.select,
               fullplan: this.form.fullplan,
@@ -81,7 +81,7 @@ export default {
             })
         } else {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(this.$store.state.hostname + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
+          this.$axios.post(process.env.API + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
             {
               circuit_id: this.form.circuit_id,
               fullplan: this.form.fullplan,
@@ -119,7 +119,7 @@ export default {
       if (this.search.length > 2) {
         this.$q.loading.show()
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(this.$store.state.hostname + '/individuals/searchnp',
+        this.$axios.post(process.env.API + '/individuals/searchnp',
           {
             search: this.search,
             circuit: this.$store.state.select
@@ -159,7 +159,7 @@ export default {
       this.populateTags(this.form.status)
     } else {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(this.$store.state.hostname + '/tags')
+      this.$axios.get(process.env.API + '/tags')
         .then((response) => {
           this.form.alltags = response.data
         })
