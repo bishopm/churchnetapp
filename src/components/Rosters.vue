@@ -3,9 +3,11 @@
     <q-list class="no-border">
       <p class="caption text-center">Rosters</p>
       <societyselect @altered="displayrosters" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
-      <q-item v-if="rosters" v-for="roster in rosters" :key="roster.id" :to="'/rosters/' + roster.id + '/' + (new Date()).getFullYear() + '/' + month">
+      <q-item v-if="rosters" v-for="roster in rosters" :key="roster.id" @click.native.prevent="showRoster(roster.id)" class="cursor-pointer">
         <q-item-main>{{roster.name}}</q-item-main>
-        <q-item-side icon="edit"></q-item-side>
+        <q-item-side right>
+          <q-btn @click.capture.stop="editRoster(roster.id)" icon="edit"></q-btn>
+        </q-item-side>
       </q-item>
     </q-list>
     <div class="text-center">{{emptymessage}}</div>
@@ -34,6 +36,12 @@ export default {
   methods: {
     addRoster () {
       this.$router.push({name: 'rosterform', params: { action: 'add' }})
+    },
+    editRoster (id) {
+      this.$router.push({name: 'rosterform', params: { action: 'edit', id: id }})
+    },
+    showRoster (id) {
+      this.$router.push({name: 'roster', params: { id: id, year: new Date().getFullYear(), month: this.month }})
     },
     displayrosters () {
       if (this.$store.state.user.societies.keys) {

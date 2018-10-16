@@ -31,7 +31,8 @@ export default {
       id: '',
       form: {
         title: '',
-        dayofweek: 'Sunday'
+        dayofweek: 'Sunday',
+        society_id: ''
       }
     }
   },
@@ -46,9 +47,11 @@ export default {
   mounted () {
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/rosters/' + this.$route.params.roster)
+      this.$axios.get(process.env.API + '/rosters/' + this.$route.params.id)
         .then((response) => {
-          this.form = response.data
+          this.form.title = response.data.name
+          this.form.dayofweek = response.data.dayofweek
+          this.form.society_id = parseInt(response.data.society_id)
         })
         .catch(function (error) {
           console.log(error)
