@@ -8,7 +8,10 @@
         <q-input float-label="Roster title" v-model="form.title" @blur="$v.form.title.$touch()" :error="$v.form.title.$error" />
       </q-field>
     </div>
-    <societyselect @altered="displayrosters" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <div class="q-ma-md">
+      <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
+    </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
@@ -19,7 +22,7 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import societyselect from './../Societyselect'
-import { date, format } from 'quasar'
+import { format } from 'quasar'
 const { capitalize } = format
 export default {
   data () {
@@ -27,15 +30,14 @@ export default {
       title: capitalize(this.$route.params.action),
       id: '',
       form: {
-        servicetime: '09:00',
-        society_id: 'isiZulu'
+        title: '',
+        dayofweek: 'Sunday'
       }
     }
   },
   validations: {
     form: {
-      title: { required },
-      society_id: { required }
+      title: { required }
     }
   },
   components: {
@@ -44,16 +46,13 @@ export default {
   mounted () {
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service)
+      this.$axios.get(process.env.API + '/rosters/' + this.$route.params.roster)
         .then((response) => {
-          this.form.language = response.data.language
-          this.form.servicetime = date.buildDate({ hours: response.data.servicetime.slice(0, 2), minutes: response.data.servicetime.slice(3) })
+          this.form = response.data
         })
         .catch(function (error) {
           console.log(error)
         })
-    } else {
-      this.form.society = 667
     }
   },
   methods: {
@@ -64,31 +63,17 @@ export default {
       } else {
         if (this.$route.params.action === 'add') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-          this.$axios.post(process.env.API + '/circuits/' + this.society.circuit_id + '/services',
+          this.$axios.post(process.env.API + '/rosters',
             {
-              society_id: this.society.id,
-              servicetime: date.formatDate(this.form.servicetime, 'HH:mm'),
-              language: this.form.language
+              name: this.form.title,
+              dayofweek: this.form.dayofweek,
+              society_id: this.$store.state.select
             })
             .then(response => {
               this.$router.go(-1)
             })
             .catch(function (error) {
               this.error = error
-            })
-        } else {
-          this.$axios.post(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service,
-            {
-              society_id: this.society.id,
-              servicetime: date.formatDate(this.form.servicetime, 'HH:mm'),
-              language: this.form.language
-            })
-            .then(response => {
-              console.log(response.data)
-              this.$router.go(-1)
-            })
-            .catch(function (error) {
-              console.log(error)
             })
         }
       }
