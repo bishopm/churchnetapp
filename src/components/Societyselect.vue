@@ -21,7 +21,7 @@ export default {
         this.societyOptions.push(newitem)
       }
     }
-    this.society = newitem.value
+    this.society = this.societyOptions[0].value
     this.$store.commit('setSelect', this.society)
   },
   methods: {

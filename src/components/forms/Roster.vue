@@ -1,17 +1,20 @@
 <template>
   <div class="layout-padding">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{title}} a roster
+      {{title}} a roster <small>{{society}}</small>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.title.$error" error-label="The roster title field is required">
         <q-input float-label="Roster title" v-model="form.title" @blur="$v.form.title.$touch()" :error="$v.form.title.$error" />
       </q-field>
     </div>
-    <societyselect class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1" :start="startingval"></societyselect>
     <div class="q-ma-md">
       <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
+    <p class="q-ma-md" v-for="group in form.rostergroups" :key="group.id">
+      {{group.group.groupname}}
+    </p>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
@@ -29,10 +32,12 @@ export default {
     return {
       title: capitalize(this.$route.params.action),
       id: '',
+      society: '',
+      startingval: '',
       form: {
         title: '',
         dayofweek: 'Sunday',
-        society_id: ''
+        rostergroups: []
       }
     }
   },
@@ -51,7 +56,8 @@ export default {
         .then((response) => {
           this.form.title = response.data.name
           this.form.dayofweek = response.data.dayofweek
-          this.form.society_id = parseInt(response.data.society_id)
+          this.society = response.data.society.society
+          this.form.rostergroups = response.data.rostergroups
         })
         .catch(function (error) {
           console.log(error)
