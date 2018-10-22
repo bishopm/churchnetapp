@@ -17,9 +17,9 @@ export default {
         label: this.$store.state.user.circuits.full[ckey].circuit,
         value: this.$store.state.user.circuits.full[ckey].id.toString()
       }
-      this.circuits.push(newitem.value)
       this.circuitOptions.push(newitem)
     }
+    this.circuits = this.$store.state.circuitfilter
     this.$store.commit('setCFilter', this.circuits)
   },
   methods: {

@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import societyfilter from './Societyfilter'
-import circuitfilter from './Circuitfilter'
+import societyfilter from './../Societyfilter'
+import circuitfilter from './../Circuitfilter'
 import { date } from 'quasar'
 export default {
   data () {
@@ -65,7 +65,23 @@ export default {
     'societyfilter': societyfilter
   },
   mounted () {
-    this.$refs.title.focus()
+    if (this.$route.params.action === 'edit') {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(process.env.API + '/feedpost/' + this.$route.params.id)
+        .then(response => {
+          this.$store.commit('setSFilter', response.data.societies)
+          this.$store.commit('setCFilter', response.data.circuits)
+          this.post = response.data
+          console.log(this.$store.state.societyfilter)
+          console.log(this.$store.state.circuitfilter)
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    } else {
+      this.$refs.title.focus()
+    }
   },
   methods: {
     submit () {

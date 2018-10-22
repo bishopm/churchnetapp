@@ -17,9 +17,9 @@ export default {
         label: this.$store.state.user.societies.full[skey].society,
         value: this.$store.state.user.societies.full[skey].id.toString()
       }
-      this.societies.push(newitem.value)
       this.societyOptions.push(newitem)
     }
+    this.societies = this.$store.state.societyfilter
     this.$store.commit('setSFilter', this.societies)
   },
   methods: {

@@ -39,9 +39,9 @@
             <q-item-main label="Statistics" sublabel="view worship service statistics" />
           </q-item>
         </div>
-        <q-item v-if="$store.state.user.level === 'publisher' || $store.state.user.level === 'admin'" to="/publish">
+        <q-item v-if="$store.state.user.level === 'publisher' || $store.state.user.level === 'admin'" to="/feeds">
           <q-item-side icon="publish" />
-          <q-item-main label="Publish content" sublabel="publish to feed" />
+          <q-item-main label="Published content" sublabel="current & historic feed content" />
         </q-item>
         <q-item @click.native="logout()">
           <q-item-side icon="logout" />
