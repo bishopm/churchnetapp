@@ -57,6 +57,10 @@
     <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
         <q-list-header class="text-center"><q-icon name="group_work"></q-icon> Circuit</q-list-header>
+        <q-item to="/meetings">
+          <q-item-side icon="person" />
+          <q-item-main label="Meetings" sublabel="circuit meetings" />
+        </q-item>
         <q-item to="/preachers">
           <q-item-side icon="person" />
           <q-item-main label="Preachers" sublabel="circuit preachers and ministers" />

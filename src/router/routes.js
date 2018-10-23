@@ -19,6 +19,7 @@ const routes = [
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'individualform', path: '/individual/:action/:id?', component: () => import('components/forms/Individual'), meta: {auth: true} },
       { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: false} },
+      { name: 'meetings', path: '/meetings', component: () => import('components/Meetings'), meta: {auth: true} },
       { name: 'preacher', path: '/preachers/:id', component: () => import('components/Preacher'), meta: {auth: true} },
       { name: 'preacherform', path: '/preachers/:action/:preacher?', component: () => import('components/forms/Preacher'), meta: {auth: true} },
       { name: 'preachers', path: '/preachers', component: () => import('components/Preachers'), meta: {auth: true} },

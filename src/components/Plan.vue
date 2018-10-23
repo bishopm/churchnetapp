@@ -3,7 +3,7 @@
     <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
     <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
       <div slot="top" slot-scope="props" class="row flex-center fit">
-        <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-secondary text-white" label=">" @click="forwardmonth()"></q-btn>
+        <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-secondary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan">View</q-btn>
       </div>
       <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
         <div v-if="props.col.field === 'society'">
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { date } from 'quasar'
+import { date, openURL } from 'quasar'
 export default {
   data () {
     return {
@@ -63,18 +63,18 @@ export default {
   computed: {
     monthname () {
       var mths = []
-      mths[1] = 'January'
-      mths[2] = 'February'
-      mths[3] = 'March'
-      mths[4] = 'April'
+      mths[1] = 'Jan'
+      mths[2] = 'Feb'
+      mths[3] = 'Mar'
+      mths[4] = 'Apr'
       mths[5] = 'May'
-      mths[6] = 'June'
-      mths[7] = 'July'
-      mths[8] = 'August'
-      mths[9] = 'September'
-      mths[10] = 'October'
-      mths[11] = 'November'
-      mths[12] = 'December'
+      mths[6] = 'Jun'
+      mths[7] = 'Jul'
+      mths[8] = 'Aug'
+      mths[9] = 'Sep'
+      mths[10] = 'Oct'
+      mths[11] = 'Nov'
+      mths[12] = 'Dec'
       return mths[this.planmonth]
     }
   },
@@ -134,6 +134,9 @@ export default {
         this.form.rowndx = row.__index
         this.form.rowfld = fld
       }
+    },
+    viewplan () {
+      openURL('https://church.net.za/plan/' + this.circuit + '/' + this.planyear + '/' + this.planmonth)
     },
     savechanges () {
       for (var lll in this.preacherOptions) {
