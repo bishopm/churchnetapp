@@ -10,7 +10,7 @@ export default {
       societyOptions: []
     }
   },
-  props: ['showme'],
+  props: ['showme', 'initial'],
   mounted () {
     for (var skey in this.$store.state.user.societies.full) {
       var newitem = {
@@ -18,8 +18,13 @@ export default {
         value: this.$store.state.user.societies.full[skey].id.toString()
       }
       this.societyOptions.push(newitem)
+      if (this.initial === 'all') {
+        this.societies.push(newitem.value)
+      }
     }
-    this.societies = this.$store.state.societyfilter
+    if (this.initial !== 'all') {
+      this.societies = this.$store.state.societyfilter
+    }
     this.$store.commit('setSFilter', this.societies)
   },
   methods: {

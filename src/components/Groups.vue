@@ -2,7 +2,7 @@
   <div>
     <q-list class="no-border">
       <p class="caption text-center">All groups</p>
-      <societyfilter class="q-mx-md" @altered="searchdb" :showme="showme()"></societyfilter>
+      <societyfilter class="q-mx-md" @altered="searchdb" :showme="showme()" initial="all"></societyfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
       <q-item v-if="groups" v-for="group in groups" :key="group.id" :to="'/groups/' + group.id">
         {{group.groupname}}

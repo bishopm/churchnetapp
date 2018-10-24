@@ -10,7 +10,7 @@ export default {
       circuitOptions: []
     }
   },
-  props: ['showme'],
+  props: ['showme', 'initial'],
   mounted () {
     for (var ckey in this.$store.state.user.circuits.full) {
       var newitem = {
@@ -18,8 +18,13 @@ export default {
         value: this.$store.state.user.circuits.full[ckey].id.toString()
       }
       this.circuitOptions.push(newitem)
+      if (this.initial === 'all') {
+        this.circuits.push(newitem.value)
+      }
     }
-    this.circuits = this.$store.state.circuitfilter
+    if (this.initial !== 'all') {
+      this.circuits = this.$store.state.circuitfilter
+    }
     this.$store.commit('setCFilter', this.circuits)
   },
   methods: {

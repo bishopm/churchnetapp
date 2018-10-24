@@ -20,11 +20,7 @@
         </form>
       </q-tab-pane>
       <q-tab-pane class="no-border" name="tab-2">
-        <div class="text-center">
-          <q-btn v-if="!verified" @click="verification">Verify phone number</q-btn>
-          <p v-else class="caption">Your phone number has been verified</p>
-        </div>
-        <form v-if="verified" autocomplete="off" @submit.prevent="login" method="post">
+        <form autocomplete="off" @submit.prevent="login" method="post">
           <div class="q-pa-sm">
             <q-input float-label="Name" v-model="newname" required />
           </div>
@@ -32,7 +28,7 @@
             <q-input float-label="Email" type="email" v-model="newemail" required />
           </div>
           <div class="q-pa-sm">
-            <q-input float-label="Cellphone" v-model="newphone" required readonly />
+            <q-input float-label="Cellphone" v-model="newphone" required />
           </div>
           <div class="q-pa-sm">
             <q-input float-label="Password" type="password" v-model="newpassword" required />
@@ -73,18 +69,22 @@ export default {
           password: this.password
         })
         .then(response => {
-          localStorage.setItem('CHURCHNET_Token', response.data.token)
-          localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
-          this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-          this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
-            .then((response) => {
-              this.$store.commit('setUser', response.data)
-              this.$router.push({name: 'home'})
-            })
-            .catch(function (error) {
-              console.log(error)
-            })
+          if (response.data !== 'Invalid credentials') {
+            localStorage.setItem('CHURCHNET_Token', response.data.token)
+            localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
+            this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
+            this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+            this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+              .then((response) => {
+                this.$store.commit('setUser', response.data)
+                this.$router.push({name: 'home'})
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+          } else {
+            this.$q.notify('Incorrect login details! Do you still need to register?')
+          }
         })
         .catch(function (error) {
           this.error = error
@@ -94,11 +94,12 @@ export default {
       this.$router.push({name: 'phoneverification'})
     },
     register () {
-      this.$axios.post(process.env.API + '/users/register',
+      this.$axios.post(process.env.API + '/register',
         {
           email: this.newemail,
           password: this.newpassword,
-          name: this.newname
+          name: this.newname,
+          cellphone: this.newphone
         })
         .then(response => {
           this.email = this.newemail

@@ -10,7 +10,7 @@
         </q-item-side>
       </q-item>
     </q-list>
-    <q-btn round color="positive" @click="addMeeting" class="fixed" icon="add" style="right: 4px; top: 72px" />
+    <q-btn round color="primary" @click="addMeeting" class="fixed" icon="add" style="right: 4px; top: 72px" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addMeeting () {
-      this.$router.push({name: 'meetingform', params: { action: 'add' }})
+      this.$router.push({name: 'meetingform', params: { action: 'add', circuit: this.$store.state.select }})
     },
     showme () {
       return this.$store.state.user.circuits.keys.length

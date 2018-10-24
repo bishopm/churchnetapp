@@ -36,8 +36,10 @@ export default {
   },
   computed: {
     edit () {
-      if ((this.$store.state.user.societies) && (this.$store.state.user.societies[this.group.society_id] === 'edit')) {
-        return true
+      if (this.$store.state.user.societies) {
+        if ((this.$store.state.user.societies[this.group.society_id] === 'edit') || (this.$store.state.user.societies[this.group.society_id] === 'admin')) {
+          return true
+        }
       }
     },
     soc () {
