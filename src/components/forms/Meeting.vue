@@ -14,19 +14,20 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.meetingdatetime.$error" error-label="The date field is required">
-        <q-datetime float-label="Meeting date" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
+        <q-datetime float-label="Meeting date" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
       </q-field>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
+      <q-btn class="q-ml-md" @click="$router.go(-1)" color="tertiary">Delete</q-btn>
     </div>
   </div>
 </template>
 
 <script>
 import { required } from 'vuelidate/lib/validators'
-import { date, format } from 'quasar'
+import { format } from 'quasar'
 const { capitalize } = format
 export default {
   data () {
@@ -67,10 +68,11 @@ export default {
         }
         if (this.$route.params.action === 'edit') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.get(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service)
+          this.$axios.get(process.env.API + '/meetings/' + this.$route.params.id)
             .then((response) => {
-              this.form.language = response.data.language
-              this.form.servicetime = date.buildDate({ hours: response.data.servicetime.slice(0, 2), minutes: response.data.servicetime.slice(3) })
+              this.form.description = response.data.description
+              this.form.society_id = response.data.society_id
+              this.form.meetingdatetime = 1000 * response.data.meetingdatetime
             })
             .catch(function (error) {
               console.log(error)
@@ -94,7 +96,7 @@ export default {
               society_id: this.form.society_id,
               circuit_id: this.circuit,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime
+              meetingdatetime: this.form.meetingdatetime / 1000
             })
             .then(response => {
               console.log(response.data)
@@ -104,18 +106,20 @@ export default {
               this.error = error
             })
         } else {
-          this.$axios.post(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service,
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+          this.$axios.post(process.env.API + '/meetings/' + this.$route.params.id + '/update',
             {
-              society_id: this.society.id,
-              servicetime: date.formatDate(this.form.servicetime, 'HH:mm'),
-              language: this.form.language
+              society_id: this.form.society_id,
+              circuit_id: this.circuit,
+              description: this.form.description,
+              meetingdatetime: this.form.meetingdatetime / 1000
             })
             .then(response => {
               console.log(response.data)
               this.$router.go(-1)
             })
             .catch(function (error) {
-              console.log(error)
+              this.error = error
             })
         }
       }

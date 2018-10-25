@@ -3,7 +3,7 @@
     <q-list class="no-border">
       <p class="q-mt-md caption text-center">Circuit meetings</p>
       <circuitselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></circuitselect>
-      <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meetings/' + meeting.id">
+      <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + meeting.circuit_id + '/edit/' + meeting.id">
         <q-item-main>{{meeting.description}}&nbsp;<small>({{meeting.society.society}})</small></q-item-main>
         <q-item-side>
           <small>{{formatme(meeting.meetingdatetime)}}</small>
