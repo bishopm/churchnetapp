@@ -20,7 +20,7 @@
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
-      <q-btn class="q-ml-md" @click="$router.go(-1)" color="tertiary">Delete</q-btn>
+      <q-btn class="q-ml-md" @click="deleteme" color="tertiary">Delete</q-btn>
     </div>
   </div>
 </template>
@@ -72,7 +72,7 @@ export default {
             .then((response) => {
               this.form.description = response.data.description
               this.form.society_id = response.data.society_id
-              this.form.meetingdatetime = 1000 * response.data.meetingdatetime
+              this.form.meetingdatetime = response.data.datestr
             })
             .catch(function (error) {
               console.log(error)
@@ -84,6 +84,17 @@ export default {
       })
   },
   methods: {
+    deleteme () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+      this.$axios.delete(process.env.API + '/meetings/' + this.$route.params.id)
+        .then(response => {
+          console.log(response.data)
+          this.$router.go(-1)
+        })
+        .catch(function (error) {
+          this.error = error
+        })
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
@@ -96,7 +107,7 @@ export default {
               society_id: this.form.society_id,
               circuit_id: this.circuit,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime / 1000
+              meetingdatetime: this.form.meetingdatetime
             })
             .then(response => {
               console.log(response.data)
@@ -112,7 +123,7 @@ export default {
               society_id: this.form.society_id,
               circuit_id: this.circuit,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime / 1000
+              meetingdatetime: this.form.meetingdatetime
             })
             .then(response => {
               console.log(response.data)
