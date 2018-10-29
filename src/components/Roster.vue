@@ -4,7 +4,7 @@
       <p v-if="roster.society" class="caption">{{roster.name}} <small>{{roster.society.society}}</small></p>
       <p class="text-italic">{{roster.message}}</p>
       <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom row-key="groups.id">
-        <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editrosteritem(props.row[props.col.field].id, props.row.groups, props.col.label)">
+        <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editrosteritem(props.row[props.col.field], props.row, props.col)">
           <div v-if="props.col.field === 'groups'">
             <b>{{props.row[props.col.field].label}}</b>
           </div>
@@ -34,7 +34,9 @@ export default {
       columns: [],
       form: {
         individual_id: '',
-        rostergroup_id: ''
+        rostergroup_id: '',
+        rowndx: '',
+        colndx: ''
       },
       modalopen: false,
       indivOptions: []
@@ -58,17 +60,18 @@ export default {
     }
   },
   methods: {
-    editrosteritem (indiv, grp, rosterdate) {
+    editrosteritem (record, row, col) {
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
       } else {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.get(process.env.API + '/groups/' + grp.id)
+        this.$axios.get(process.env.API + '/groups/' + row.groups.id)
           .then(response => {
             this.indivOptions = []
             for (var ikey in response.data.individuals) {
               var newitem = {
                 label: response.data.individuals[ikey].surname + ', ' + response.data.individuals[ikey].firstname,
+                display: response.data.individuals[ikey].firstname.substr(0, 1) + ' ' + response.data.individuals[ikey].surname,
                 value: parseInt(response.data.individuals[ikey].id)
               }
               this.indivOptions.push(newitem)
@@ -77,41 +80,29 @@ export default {
           .catch(function (error) {
             console.log(error)
           })
-        this.form.rosterdate = rosterdate
-        this.form.individual_id = parseInt(indiv)
-        this.form.rostergroup_id = grp.id
-        this.form.grouplabel = grp.label
+        this.form.rosterdate = col.label
+        this.form.individual_id = parseInt(record.id)
+        this.form.rostergroup_id = row.groups.id
+        this.form.grouplabel = row.groups.label
+        this.form.rowndx = row.__index
+        this.form.colndx = col.field
         this.modalopen = true
       }
     },
     savechanges () {
-      for (var lll in this.indivOptions) {
-        if (this.indivOptions[lll].value === this.form.plan.person.id) {
-          if (this.rows[this.form.rowndx][this.form.rowfld]) {
-            this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
-            this.rows[this.form.rowndx][this.form.rowfld].person.name = this.preacherOptions[lll].abbr
-          } else {
-            this.form.plan.person.name = this.preacherOptions[lll].abbr
-            this.rows[this.form.rowndx][this.form.rowfld] = this.form.plan
-            this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
-          }
-        }
-      }
-      this.$axios.post(process.env.API + '/circuits/' + this.circuit + '/updateplan',
+      this.$axios.post(process.env.API + '/rosteritems',
         {
-          society_id: this.form.plan.society_id,
-          service_id: this.form.plan.service_id,
-          circuit_id: this.circuit,
-          planyear: this.planyear,
-          planmonth: this.planmonth,
-          planday: parseInt(this.form.servicedate.split(' ')[0]),
-          person_id: this.form.plan.person.id,
-          servicetype: this.form.plan.tag,
-          trialservice: null,
-          id: this.form.plan.id
+          rostergroup_id: this.form.rostergroup_id,
+          rosterdate: this.form.rosterdate,
+          individual_id: this.form.individual_id,
+          roster_id: this.$route.params.id
         })
         .then(response => {
-          console.log(response.data)
+          for (var lll in this.indivOptions) {
+            if (this.indivOptions[lll].value === this.form.individual_id) {
+              this.rows[this.form.rowndx][this.form.colndx].label = this.indivOptions[lll].display
+            }
+          }
         })
         .catch(function (error) {
           this.error = error

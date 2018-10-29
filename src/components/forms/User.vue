@@ -107,7 +107,7 @@ export default {
       }
     },
     populateIndiv () {
-      this.userdetails = '<b>Link new user to: </b>' + this.form.indiv.title + ' ' + this.form.indiv.firstname + ' ' + this.form.indiv.surname + ' (Phone: ' + this.form.indiv.cellphone + ')'
+      this.userdetails = '<b>Link user to: </b>' + this.form.indiv.title + ' ' + this.form.indiv.firstname + ' ' + this.form.indiv.surname + ' (Phone: ' + this.form.indiv.cellphone + ')'
     },
     submitexist () {
       console.log(this.form)

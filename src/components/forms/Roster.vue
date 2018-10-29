@@ -2,6 +2,7 @@
   <div class="layout-padding">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a roster <small>{{society}}</small>
+      <q-btn v-if="this.$route.params.action === 'edit'" class="q-ml-md" @click="showRoster($route.params.id)">View roster</q-btn>
     </div>
     <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
     <div class="q-mx-md">
@@ -75,6 +76,24 @@ export default {
     }
   },
   methods: {
+    showRoster (id) {
+      var yr = new Date().getFullYear()
+      var months = new Array(12)
+      months[0] = 'January'
+      months[1] = 'February'
+      months[2] = 'March'
+      months[3] = 'April'
+      months[4] = 'May'
+      months[5] = 'June'
+      months[6] = 'July'
+      months[7] = 'August'
+      months[8] = 'September'
+      months[9] = 'October'
+      months[10] = 'November'
+      months[11] = 'December'
+      var mth = months[new Date().getMonth()]
+      this.$router.push({name: 'roster', params: { id: id, year: yr, month: mth }})
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
