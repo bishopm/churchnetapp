@@ -82,7 +82,7 @@ export default {
           })
         this.form.rosterdate = col.label
         this.form.individual_id = parseInt(record.id)
-        this.form.rostergroup_id = row.groups.id
+        this.form.rostergroup_id = row.groups.rostergroup_id
         this.form.grouplabel = row.groups.label
         this.form.rowndx = row.__index
         this.form.colndx = col.field
@@ -94,8 +94,7 @@ export default {
         {
           rostergroup_id: this.form.rostergroup_id,
           rosterdate: this.form.rosterdate,
-          individual_id: this.form.individual_id,
-          roster_id: this.$route.params.id
+          individual_id: this.form.individual_id
         })
         .then(response => {
           for (var lll in this.indivOptions) {

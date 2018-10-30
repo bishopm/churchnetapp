@@ -121,9 +121,9 @@ export default {
     },
     addGroup () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(process.env.API + '/groups/' + this.group.id + '/add',
+      this.$axios.post(process.env.API + '/rostergroups',
         {
-          id: this.individual_id
+          id: this.group_id
         })
         .then(response => {
           this.group = response.data
