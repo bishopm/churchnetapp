@@ -8,14 +8,17 @@
           <div v-if="props.col.field === 'groups'">
             <b>{{props.row[props.col.field].label}}</b>
           </div>
-          <div v-else v-html="props.row[props.col.field].label"></div>
+          <div v-else>
+            <span v-for="person in props.row[props.col.field].people" :key="person.id">{{person.label}}<br></span>
+          </div>
         </q-td>
       </q-table>
       <q-modal minimized v-model="modalopen" content-css="padding: 50px">
         <h4>{{form.grouplabel}}</h4>
         <q-input readonly float-label="Roster date" v-model="form.rosterdate"/>
         <div class="q-my-md">
-          <q-select float-label="Individual" v-model="form.individual_id" :options="indivOptions"/>
+          <q-select v-if="checkpeople" float-label="Individual" multiple v-model="form.individualarray" :options="indivOptions"/>
+          <q-select v-else float-label="Individual" v-model="form.individual_id" :options="indivOptions"/>
         </div>
         <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
@@ -34,12 +37,23 @@ export default {
       columns: [],
       form: {
         individual_id: '',
+        individualarray: [],
         rostergroup_id: '',
         rowndx: '',
-        colndx: ''
+        colndx: '',
+        maxpeople: ''
       },
       modalopen: false,
       indivOptions: []
+    }
+  },
+  computed: {
+    checkpeople () {
+      if (this.form.maxpeople > 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted () {
@@ -61,6 +75,8 @@ export default {
   },
   methods: {
     editrosteritem (record, row, col) {
+      this.form.individualarray = []
+      this.form.individual_id = ''
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
       } else {
@@ -81,8 +97,15 @@ export default {
             console.log(error)
           })
         this.form.rosterdate = col.label
-        this.form.individual_id = parseInt(record.id)
         this.form.rostergroup_id = row.groups.rostergroup_id
+        this.form.maxpeople = row.groups.maxpeople
+        if (this.form.maxpeople > 1) {
+          for (var pkey in record.people) {
+            this.form.individualarray.push(record.people[pkey].id)
+          }
+        } else {
+          this.form.individual_id = parseInt(record.people[0].id)
+        }
         this.form.grouplabel = row.groups.label
         this.form.rowndx = row.__index
         this.form.colndx = col.field
@@ -94,7 +117,8 @@ export default {
         {
           rostergroup_id: this.form.rostergroup_id,
           rosterdate: this.form.rosterdate,
-          individual_id: this.form.individual_id
+          individual_id: this.form.individual_id,
+          individualarray: this.form.individualarray
         })
         .then(response => {
           for (var lll in this.indivOptions) {

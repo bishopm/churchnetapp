@@ -13,19 +13,27 @@
     <div class="q-ma-md">
       <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
-    <h4 class="text-center">Roster Groups</h4>
-    <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name to add roster groups" />
-    <div class="q-ma-md" v-if="search.length > 2">
-      <q-select @input="addGroup()" float-label="Group" v-model="group_id" :options="groupOptions"/>
-    </div>
+    <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
     <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
-      <q-item-main>{{rostergroup.group.groupname}}</q-item-main>
+      <q-item-main>{{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})</q-item-main>
       <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
     </q-item>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
     </div>
+    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+      <h4>Add a roster group</h4>
+      <q-search ref="search" @input="searchdb" v-model="search" placeholder="search by group name" />
+      <div v-if="search.length > 2">
+        <q-select float-label="Group" v-model="form.group_id" :options="groupOptions"/>
+        <q-input float-label="Maximum people" type="number" v-model="form.maxpeople"/>
+      </div>
+      <div class="text-center">
+        <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
+        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+      </div>
+    </q-modal>
   </div>
 </template>
 
@@ -39,15 +47,17 @@ export default {
     return {
       title: capitalize(this.$route.params.action),
       id: '',
-      group_id: '',
       groupOptions: [],
       society: '',
       societies: [],
       search: '',
+      modalopen: false,
       form: {
         title: '',
         dayofweek: 'Sunday',
-        rostergroups: []
+        rostergroups: [],
+        maxpeople: 1,
+        group_id: ''
       }
     }
   },
@@ -117,18 +127,31 @@ export default {
       }
     },
     removeRostergroup (id) {
-      console.log(id)
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.delete(process.env.API + '/rostergroups/' + id)
+        .then(response => {
+          for (var gkey in this.form.rostergroups) {
+            if (this.form.rostergroups[gkey].id === id) {
+              this.form.rostergroups.splice(gkey, 1)
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
     },
     addGroup () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.post(process.env.API + '/rostergroups',
         {
-          id: this.group_id
+          roster_id: this.$route.params.id,
+          group_id: this.form.group_id,
+          maxpeople: this.form.maxpeople
         })
         .then(response => {
-          this.group = response.data
-          this.search = ''
-          this.$q.loading.hide()
+          this.modalopen = false
+          this.form.rostergroups.push(response.data)
         })
         .catch(function (error) {
           console.log(error)
