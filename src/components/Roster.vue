@@ -17,8 +17,8 @@
         <h4>{{form.grouplabel}}</h4>
         <q-input readonly float-label="Roster date" v-model="form.rosterdate"/>
         <div class="q-my-md">
-          <q-select v-if="checkpeople" float-label="Individual" multiple v-model="form.individualarray" :options="indivOptions"/>
-          <q-select v-else float-label="Individual" v-model="form.individual_id" :options="indivOptions"/>
+          <q-select v-if="checkpeople" float-label="Individual" multiple v-model="form.individuals" :options="indivOptions"/>
+          <q-select v-else float-label="Individual" v-model="form.indivint" :options="indivOptions"/>
         </div>
         <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
@@ -36,8 +36,8 @@ export default {
       rows: [],
       columns: [],
       form: {
-        individual_id: '',
-        individualarray: [],
+        indivint: '',
+        individuals: [],
         rostergroup_id: '',
         rowndx: '',
         colndx: '',
@@ -75,8 +75,8 @@ export default {
   },
   methods: {
     editrosteritem (record, row, col) {
-      this.form.individualarray = []
-      this.form.individual_id = ''
+      this.form.individuals = []
+      this.form.indivint = ''
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
       } else {
@@ -99,12 +99,8 @@ export default {
         this.form.rosterdate = col.label
         this.form.rostergroup_id = row.groups.rostergroup_id
         this.form.maxpeople = row.groups.maxpeople
-        if (this.form.maxpeople > 1) {
-          for (var pkey in record.people) {
-            this.form.individualarray.push(record.people[pkey].id)
-          }
-        } else {
-          this.form.individual_id = parseInt(record.people[0].id)
+        for (var pkey in record.people) {
+          this.form.individuals.push(record.people[pkey].id)
         }
         this.form.grouplabel = row.groups.label
         this.form.rowndx = row.__index
@@ -113,22 +109,35 @@ export default {
       }
     },
     savechanges () {
+      if (this.form.indivint) {
+        this.form.individuals.push(this.form.indivint)
+      }
+      this.form.indivint = ''
       this.$axios.post(process.env.API + '/rosteritems',
         {
           rostergroup_id: this.form.rostergroup_id,
           rosterdate: this.form.rosterdate,
-          individual_id: this.form.individual_id,
-          individualarray: this.form.individualarray
+          individuals: this.form.individuals
         })
         .then(response => {
-          for (var lll in this.indivOptions) {
-            if (this.indivOptions[lll].value === this.form.individual_id) {
-              this.rows[this.form.rowndx][this.form.colndx].label = this.indivOptions[lll].display
+          var indarray = response.data.individuals.split(',').map(function (item) {
+            return parseInt(item, 10)
+          })
+          if (this.form.maxpeople > 1) {
+            for (var lll in this.indivOptions) {
+              if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
+                var newitem = {
+                  label: this.indivOptions[lll].display
+                }
+                this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
+              }
             }
+          } else {
+            // pass
           }
         })
         .catch(function (error) {
-          this.error = error
+          console.log(error)
         })
       this.modalopen = false
     }
