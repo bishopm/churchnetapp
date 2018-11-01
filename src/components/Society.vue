@@ -1,7 +1,7 @@
 <template>
   <div v-if="society" class="text-center layout-padding">
     <h3>
-      {{society.society}} <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editSociety()" name="edit"></q-icon>
+      {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="edit"></q-icon>
     </h3>
     <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
       <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="edit"></q-icon>
@@ -33,7 +33,7 @@ export default {
       this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.society.latitude), lng: parseFloat(this.society.longitude)}, map: this.map})
     },
     editSociety () {
-      console.log('editing')
+      this.$router.push({name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' }})
     },
     addService () {
       this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' }})
