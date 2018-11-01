@@ -21,7 +21,7 @@
           <q-select v-else float-label="Individual" v-model="form.indivint" :options="indivOptions"/>
         </div>
         <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
-        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="resetmodal" label="Cancel" />
       </q-modal>
     </div>
   </div>
@@ -74,9 +74,12 @@ export default {
     }
   },
   methods: {
-    editrosteritem (record, row, col) {
+    resetmodal () {
       this.form.individuals = []
       this.form.indivint = ''
+      this.modalopen = false
+    },
+    editrosteritem (record, row, col) {
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
       } else {
@@ -86,7 +89,7 @@ export default {
             this.indivOptions = []
             for (var ikey in response.data.individuals) {
               var newitem = {
-                label: response.data.individuals[ikey].surname + ', ' + response.data.individuals[ikey].firstname,
+                label: response.data.individuals[ikey].firstname + '&nbsp;<b>' + response.data.individuals[ikey].surname + '</b>',
                 display: response.data.individuals[ikey].firstname.substr(0, 1) + ' ' + response.data.individuals[ikey].surname,
                 value: parseInt(response.data.individuals[ikey].id)
               }
@@ -102,6 +105,9 @@ export default {
         for (var pkey in record.people) {
           this.form.individuals.push(record.people[pkey].id)
         }
+        if ((this.form.maxpeople === 1) && (record.people.length)) {
+          this.form.indivint = record.people[0].id
+        }
         this.form.grouplabel = row.groups.label
         this.form.rowndx = row.__index
         this.form.colndx = col.field
@@ -110,6 +116,7 @@ export default {
     },
     savechanges () {
       if (this.form.indivint) {
+        this.form.individuals = []
         this.form.individuals.push(this.form.indivint)
       }
       this.form.indivint = ''
@@ -123,23 +130,21 @@ export default {
           var indarray = response.data.individuals.split(',').map(function (item) {
             return parseInt(item, 10)
           })
-          if (this.form.maxpeople > 1) {
-            for (var lll in this.indivOptions) {
-              if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
-                var newitem = {
-                  label: this.indivOptions[lll].display
-                }
-                this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
+          this.rows[this.form.rowndx][this.form.colndx].people = []
+          for (var lll in this.indivOptions) {
+            if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
+              var newitem = {
+                label: this.indivOptions[lll].display,
+                id: this.indivOptions[lll].value
               }
+              this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
             }
-          } else {
-            // pass
           }
         })
         .catch(function (error) {
           console.log(error)
         })
-      this.modalopen = false
+      this.resetmodal()
     }
   }
 }
