@@ -8,7 +8,7 @@
     </p>
     <p v-if="noservices">No services have been added yet</p>
     <q-btn v-if="perm === 'edit'" @click="addService()" color="primary">Add a service</q-btn>
-    <div v-if="society.website"><a target="_blank" :href="society.websiteurl">{{society.website}}</a></div>
+    <div v-if="society.website"><a target="_blank" :href="websiteurl">{{society.website}}</a></div>
     <div id="map" class="q-mt-md"></div>
   </div>
 </template>
@@ -52,13 +52,13 @@ export default {
         if (!this.society.services.length) {
           this.noservices = true
         }
-        this.perm = this.$store.state.user.circuits[this.society.circuit_id]
+        this.perm = this.$store.state.user.societies[this.society.id]
         if (this.society.website) {
           if ((this.society.website) && (!this.society.website.includes('http'))) {
-            this.society.websiteurl = 'http://' + this.society.website
+            this.websiteurl = 'http://' + this.society.website
           } else {
             if (this.society.website) {
-              this.society.websiteurl = this.society.website
+              this.websiteurl = this.society.website
             }
           }
         }

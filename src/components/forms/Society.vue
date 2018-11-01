@@ -102,34 +102,57 @@ export default {
   methods: {
     submit () {
       this.$v.form.$touch()
+      this.form.society.circuit_id = this.$store.state.select
+      this.form.society.latitude = localStorage.getItem('CHURCHNET_newLat')
+      this.form.society.longitude = localStorage.getItem('CHURCHNET_newLng')
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        this.$axios.post(process.env.API + '/addsociety',
-          {
-            society: this.form,
-            latitude: localStorage.getItem('CHURCHNET_newLat'),
-            longitude: localStorage.getItem('CHURCHNET_newLng'),
-            circuit_id: this.$store.state.select
-          })
-          .then(response => {
-            this.$q.loading.hide()
-            this.$router.push({ name: 'society', params: { id: response.data.id } })
-          })
-          .catch(function (error) {
-            console.log(error)
-            this.$q.loading.hide()
-          })
+        if (this.$route.params.action === 'add') {
+          this.$axios.post(process.env.API + '/addsociety',
+            {
+              society: this.society
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$router.go(-1)
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        } else {
+          this.$axios.post(process.env.API + '/societies/update',
+            {
+              society: this.society
+            })
+            .then(response => {
+              this.$q.loading.hide()
+              this.$router.go(-1)
+            })
+            .catch(function (error) {
+              console.log(error)
+              this.$q.loading.hide()
+            })
+        }
       }
     },
     initMap () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-          var latlng = new window.google.maps.LatLng(
-            {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            })
+          if (this.$route.params.action === 'add') {
+            var latlng = new window.google.maps.LatLng(
+              {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              })
+          } else {
+            latlng = new window.google.maps.LatLng(
+              {
+                lat: this.society.latitude,
+                lng: this.society.longitude
+              })
+          }
           localStorage.setItem('CHURCHNET_newLat', latlng.lat())
           localStorage.setItem('CHURCHNET_newLng', latlng.lng())
           this.map = new window.google.maps.Map(document.getElementById('map'), {
@@ -154,14 +177,16 @@ export default {
   async mounted () {
     localStorage.removeItem('CHURCHNET_newLat')
     localStorage.removeItem('CHURCHNET_newLng')
-    await this.$google()
-    this.initMap()
     if (this.$route.params.action === 'edit') {
       this.society = JSON.parse(this.$route.params.society)
       this.form = this.society
+      this.form.society.latitude = parseFloat(this.society.latitude)
+      this.form.society.longitude = parseFloat(this.society.longitude)
     } else {
       // pass
     }
+    await this.$google()
+    this.initMap()
   }
 }
 </script>
