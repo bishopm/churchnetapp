@@ -1,25 +1,42 @@
 <template>
   <div class="layout-padding">
-    <p class="caption text-center">Send a message</p>
-    <societyselect altered="searchdb" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
-    <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
-    <q-input v-if="this.message.messagetype === 'email'" ref="title" class="q-ma-md" float-label="Title" v-model="message.title" />
-    <q-select class="q-ma-md" filter filter-placeholder="Search" chips multiple v-model="message.groups" float-label="Group" :options="groupOptions" />
-    <q-select class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
-    <q-editor class="q-ma-md" v-model="message.body" :toolbar="[
-      ['bold', 'italic', 'underline'],
-      ['hr', 'link'],
-      ['quote', 'unordered', 'ordered'],
-      [
-      {
-        label: 'Headings',
-        list: 'no-icons',
-        options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-      },
-      ['custom_btn','custom_btn1','custom_btn2'],
-    ],
-    ]"/>
-    <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="send" @click="submit" />
+    <div v-if="results.length">
+      <p class="caption text-center">Results</p>
+      <q-list class="no-border">
+        <q-item v-for="result in results" :key="result.name">
+          <q-item-main>
+            <b>{{result.name}}</b> <small class="q-ml-sm">{{result.address}}</small>
+          </q-item-main>
+          <q-item-side>
+            <q-icon v-if="checkresult(result)" name="check" />
+            <q-icon v-else name="cross" />
+          </q-item-side>
+        </q-item>
+      </q-list>
+    </div>
+    <div v-else>
+      <p class="caption text-center">Send a message</p>
+      <societyselect altered="searchdb" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+      <q-select class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
+      <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
+      <q-input v-if="this.message.messagetype === 'email'" ref="title" class="q-ma-md" float-label="Title" v-model="message.title" />
+      <q-select class="q-ma-md" filter filter-placeholder="Search" chips multiple v-model="message.groups" float-label="Group" :options="groupOptions" />
+      <q-editor v-if="this.message.messagetype === 'email'" class="q-ma-md" v-model="message.body" :toolbar="[
+        ['bold', 'italic', 'underline'],
+        ['hr', 'link'],
+        ['quote', 'unordered', 'ordered'],
+        [
+        {
+          label: 'Headings',
+          list: 'no-icons',
+          options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+        },
+        ['custom_btn','custom_btn1','custom_btn2'],
+      ],
+      ]"/>
+      <q-input class="q-ma-md" type="textarea" rows="6" v-else v-model="message.textmessage" float-label="Message" />
+      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="send" @click="submit" />
+    </div>
   </div>
 </template>
 
@@ -28,10 +45,12 @@ import societyselect from './Societyselect'
 export default {
   data () {
     return {
+      results: [],
       societies: [],
       groupOptions: [],
       message: {
         groups: [],
+        individuals: [],
         sender: '',
         title: '',
         body: '',
@@ -58,6 +77,21 @@ export default {
     this.searchdb()
   },
   methods: {
+    checkresult (res) {
+      if (res.smsresult) {
+        if (res.smsresult.success) {
+          return true
+        } else {
+          return false
+        }
+      } else if (res.emailresult) {
+        if (res.emailresult === 'OK') {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
     searchdb () {
       this.societies.push(this.$store.state.select)
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
@@ -80,16 +114,14 @@ export default {
         })
     },
     submit () {
+      this.message.society_id = this.$store.state.select
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(process.env.API + '/feeditems',
+      this.$axios.post(process.env.API + '/messages',
         {
-          post: this.post,
-          societies: this.$store.state.societyfilter,
-          circuits: this.$store.state.circuitfilter
+          message: this.message
         })
         .then(response => {
-          this.$q.notify('Your content has been published!')
-          this.$router.push({name: 'home'})
+          this.results = response.data
         })
         .catch(function (error) {
           console.log(error)

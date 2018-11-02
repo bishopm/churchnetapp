@@ -5,7 +5,7 @@
     <div id="map" class="q-mt-md"></div>
     <p>Drag the marker to the correct position</p>
     <form>
-      <q-tabs v-model="selectedTab" color="primary" class="no-border" q-tabs-two-lines>
+      <q-tabs color="primary" class="no-border" q-tabs-two-lines>
         <q-tab default slot="title" name="contactDetails">Contact</q-tab>
         <q-tab slot="title" name="adminDetails">Admin</q-tab>
         <q-tab-pane name="contactDetails" class="no-border">
@@ -57,6 +57,9 @@
             </q-field>
           </div>
           <div class="q-mt-sm">
+            <q-select float-label="Email encryption" v-model="form.email_encryption" :options="[{ label: 'Transport Layer Security (TLS)', value: 'tls' }, { label: 'Secure Sockets Layer (SSL)', value: 'ssl' }, { label: 'No encryption', value: 'null' }]"/>
+          </div>
+          <div class="q-mt-sm">
             <q-field>
               <q-input float-label="BulkSMS user" v-model="form.bulksms_user" />
             </q-field>
@@ -102,9 +105,9 @@ export default {
   methods: {
     submit () {
       this.$v.form.$touch()
-      this.form.society.circuit_id = this.$store.state.select
-      this.form.society.latitude = localStorage.getItem('CHURCHNET_newLat')
-      this.form.society.longitude = localStorage.getItem('CHURCHNET_newLng')
+      this.form.circuit_id = this.$store.state.select
+      this.form.latitude = localStorage.getItem('CHURCHNET_newLat')
+      this.form.longitude = localStorage.getItem('CHURCHNET_newLng')
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
@@ -128,6 +131,7 @@ export default {
             })
             .then(response => {
               this.$q.loading.hide()
+              this.$q.notify('Society has been updated')
               this.$router.go(-1)
             })
             .catch(function (error) {
@@ -153,6 +157,7 @@ export default {
                 lng: this.society.longitude
               })
           }
+          console.log(latlng)
           localStorage.setItem('CHURCHNET_newLat', latlng.lat())
           localStorage.setItem('CHURCHNET_newLng', latlng.lng())
           this.map = new window.google.maps.Map(document.getElementById('map'), {
@@ -180,8 +185,8 @@ export default {
     if (this.$route.params.action === 'edit') {
       this.society = JSON.parse(this.$route.params.society)
       this.form = this.society
-      this.form.society.latitude = parseFloat(this.society.latitude)
-      this.form.society.longitude = parseFloat(this.society.longitude)
+      this.form.latitude = parseFloat(this.society.latitude)
+      this.form.longitude = parseFloat(this.society.longitude)
     } else {
       // pass
     }
