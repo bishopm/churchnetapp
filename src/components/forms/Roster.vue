@@ -83,6 +83,8 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    } else {
+      this.societies.push(this.$store.state.select)
     }
   },
   methods: {
