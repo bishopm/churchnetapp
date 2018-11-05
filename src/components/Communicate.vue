@@ -19,8 +19,12 @@
       <societyselect altered="searchdb" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
       <q-select class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
       <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
-      <q-input v-if="this.message.messagetype === 'email'" ref="title" class="q-ma-md" float-label="Title" v-model="message.title" />
-      <q-select class="q-ma-md" filter filter-placeholder="Search" chips multiple v-model="message.groups" float-label="Group" :options="groupOptions" />
+      <q-field class="q-ma-md" :error="$v.message.title.$error" error-label="Please set an email title">
+        <q-input v-if="this.message.messagetype === 'email'" ref="title" float-label="Title" v-model="message.title" @blur="$v.message.title.$touch()" :error="$v.message.title.$error" />
+      </q-field>
+      <q-field class="q-ma-md" :error="$v.message.groups.$error" error-label="Please choose a group">
+        <q-select filter filter-placeholder="Search" chips multiple v-model="message.groups" float-label="Group" :options="groupOptions" @blur="$v.message.groups.$touch()" :error="$v.message.groups.$error"/>
+      </q-field>
       <q-editor v-if="this.message.messagetype === 'email'" class="q-ma-md" v-model="message.body" :toolbar="[
         ['bold', 'italic', 'underline'],
         ['hr', 'link'],
@@ -41,6 +45,7 @@
 </template>
 
 <script>
+import { required, requiredIf } from 'vuelidate/lib/validators'
 import societyselect from './Societyselect'
 export default {
   data () {
@@ -67,6 +72,14 @@ export default {
         }
       ],
       showHtml: false
+    }
+  },
+  validations: {
+    message: {
+      groups: { required },
+      title: { required: requiredIf(function (a) {
+        return this.message.messagetype === 'email'
+      })}
     }
   },
   components: {
@@ -114,18 +127,23 @@ export default {
         })
     },
     submit () {
-      this.message.society_id = this.$store.state.select
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(process.env.API + '/messages',
-        {
-          message: this.message
-        })
-        .then(response => {
-          this.results = response.data
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      this.$v.message.$touch()
+      if (this.$v.message.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        this.message.society_id = this.$store.state.select
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/messages',
+          {
+            message: this.message
+          })
+          .then(response => {
+            this.results = response.data
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
     }
   }
 }

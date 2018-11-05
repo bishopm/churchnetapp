@@ -13,11 +13,13 @@
     <div class="q-ma-md">
       <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
-    <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
-    <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
-      <q-item-main>{{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})</q-item-main>
-      <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
-    </q-item>
+    <div v-if="this.$route.params.action === 'edit'">
+      <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
+      <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
+        <q-item-main>{{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})</q-item-main>
+        <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
+      </q-item>
+    </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
@@ -120,7 +122,7 @@ export default {
               society_id: this.$store.state.select
             })
             .then(response => {
-              this.$router.go(-1)
+              this.$router.push({name: 'rosterform', params: { action: 'edit', id: response.data.id }})
             })
             .catch(function (error) {
               this.error = error
