@@ -1,7 +1,7 @@
-\<template>
+<template>
   <div class="layout-padding">
     <div class="text-center" v-if="roster">
-      <p v-if="roster.society" class="caption">{{roster.name}} <small>{{roster.society.society}}</small></p>
+      <p v-if="roster.society" class="caption">{{roster.name}} <small>{{roster.society.society}}</small><q-btn class="q-ml-md" @click="viewroster">View</q-btn></p>
       <p class="text-italic">{{roster.message}}</p>
       <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom row-key="groups.id">
         <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editrosteritem(props.row[props.col.field], props.row, props.col)">
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { openURL } from 'quasar'
 export default {
   data () {
     return {
@@ -79,6 +80,9 @@ export default {
       this.form.indivint = ''
       this.modalopen = false
     },
+    viewroster () {
+      openURL('http://localhost/churchnet/public/admin/rosters/' + this.$route.params.id + '/report/' + this.$route.params.year + '/' + this.$route.params.month)
+    },
     editrosteritem (record, row, col) {
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
         this.$q.notify('Sorry! You are not permitted to edit this roster')
@@ -115,36 +119,40 @@ export default {
       }
     },
     savechanges () {
-      if (this.form.indivint) {
-        this.form.individuals = []
-        this.form.individuals.push(this.form.indivint)
-      }
-      this.form.indivint = ''
-      this.$axios.post(process.env.API + '/rosteritems',
-        {
-          rostergroup_id: this.form.rostergroup_id,
-          rosterdate: this.form.rosterdate,
-          individuals: this.form.individuals
-        })
-        .then(response => {
-          var indarray = response.data.individuals.split(',').map(function (item) {
-            return parseInt(item, 10)
+      if (this.form.individuals.length <= this.form.maxpeople) {
+        if (this.form.indivint) {
+          this.form.individuals = []
+          this.form.individuals.push(this.form.indivint)
+        }
+        this.form.indivint = ''
+        this.$axios.post(process.env.API + '/rosteritems',
+          {
+            rostergroup_id: this.form.rostergroup_id,
+            rosterdate: this.form.rosterdate,
+            individuals: this.form.individuals
           })
-          this.rows[this.form.rowndx][this.form.colndx].people = []
-          for (var lll in this.indivOptions) {
-            if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
-              var newitem = {
-                label: this.indivOptions[lll].display,
-                id: this.indivOptions[lll].value
+          .then(response => {
+            var indarray = response.data.individuals.split(',').map(function (item) {
+              return parseInt(item, 10)
+            })
+            this.rows[this.form.rowndx][this.form.colndx].people = []
+            for (var lll in this.indivOptions) {
+              if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
+                var newitem = {
+                  label: this.indivOptions[lll].display,
+                  id: this.indivOptions[lll].value
+                }
+                this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
               }
-              this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
             }
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-      this.resetmodal()
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+        this.resetmodal()
+      } else {
+        this.$q.notify('Sorry, only ' + this.form.maxpeople + ' names for this category!')
+      }
     }
   }
 }
