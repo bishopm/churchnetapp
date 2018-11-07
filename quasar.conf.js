@@ -78,6 +78,7 @@ module.exports = function (ctx) {
         'QSearch',
         'QSelect',
         'QTable',
+        'QToggle',
         'QTh',
         'QTr',
         'QTd',

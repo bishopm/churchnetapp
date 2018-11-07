@@ -16,7 +16,10 @@
     <div v-if="this.$route.params.action === 'edit'">
       <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
       <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
-        <q-item-main>{{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})</q-item-main>
+        <q-item-main>
+          {{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})
+          <span v-if="rostergroup.extrainfo === 1">*</span>
+        </q-item-main>
         <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
       </q-item>
     </div>
@@ -30,6 +33,7 @@
       <div v-if="search.length > 2">
         <q-select float-label="Group" v-model="form.group_id" :options="groupOptions"/>
         <q-input float-label="Maximum people" type="number" v-model="form.maxpeople"/>
+        <q-toggle class="q-mt-md" v-model="form.extrainfo" label="Extra info required?"/>
       </div>
       <div class="text-center">
         <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
@@ -59,7 +63,8 @@ export default {
         dayofweek: 'Sunday',
         rostergroups: [],
         maxpeople: 1,
-        group_id: ''
+        group_id: '',
+        extrainfo: 0
       }
     }
   },
@@ -151,7 +156,8 @@ export default {
         {
           roster_id: this.$route.params.id,
           group_id: this.form.group_id,
-          maxpeople: this.form.maxpeople
+          maxpeople: this.form.maxpeople,
+          extrainfo: this.form.extrainfo
         })
         .then(response => {
           this.modalopen = false
