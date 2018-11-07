@@ -29,6 +29,7 @@ const routes = [
       { name: 'rosterform', path: '/roster/:action/:id?', component: () => import('components/forms/Roster'), meta: {auth: true} },
       { name: 'rosters', path: '/rosters', component: () => import('components/Rosters'), meta: {auth: true} },
       { name: 'roster', path: '/rosters/:id/:year/:month', component: () => import('components/Roster'), meta: {auth: true} },
+      { name: 'rostermessages', path: '/rostermessages/:id/:year/:month', component: () => import('components/Rostermessages'), meta: {auth: true} },
       { name: 'serviceform', path: '/services/:action/:society?/:service?', component: () => import('components/forms/Service'), meta: {auth: true} },
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societyform', path: '/societies/:action', component: () => import('components/forms/Society'), meta: {auth: true} },

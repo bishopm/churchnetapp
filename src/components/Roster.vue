@@ -1,7 +1,15 @@
 <template>
   <div class="layout-padding">
     <div class="text-center" v-if="roster">
-      <p v-if="roster.society" class="caption">{{roster.name}} <small>{{roster.society.society}}</small><q-btn class="q-ml-md" @click="viewroster">View</q-btn></p>
+      <div v-if="roster.society" class="caption">
+        <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>
+        {{roster.name}} <small>{{roster.society.society}}</small>
+        <q-btn class="q-ml-md bg-secondary text-white" label=">" @click="forwardmonth()"></q-btn>
+        <div>
+          <q-btn class="q-ma-sm" @click="viewroster">View roster</q-btn>
+          <q-btn class="q-ma-sm" @click="preview">Preview Messages</q-btn>
+        </div>
+      </div>
       <p class="text-italic">{{roster.message}}</p>
       <q-table v-if="columns" dense :data="rows" :columns="columns" :pagination.sync="paginationControl" hide-bottom row-key="groups.id">
         <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editrosteritem(props.row[props.col.field], props.row, props.col)">
@@ -36,6 +44,8 @@ export default {
       paginationControl: { rowsPerPage: 0 },
       rows: [],
       columns: [],
+      newmonth: '',
+      newyear: '',
       form: {
         indivint: '',
         individuals: [],
@@ -44,6 +54,7 @@ export default {
         colndx: '',
         maxpeople: ''
       },
+      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       modalopen: false,
       indivOptions: []
     }
@@ -75,6 +86,28 @@ export default {
     }
   },
   methods: {
+    backmonth () {
+      var ndx = this.months.indexOf(this.$route.params.month)
+      if (ndx !== 0) {
+        this.newmonth = this.months[ndx - 1]
+        this.newyear = this.$route.params.year
+      } else {
+        this.newmonth = this.months[11]
+        this.newyear = this.$route.params.year - 1
+      }
+      this.$router.push({name: 'roster', params: { year: this.newyear, month: this.newmonth }})
+    },
+    forwardmonth () {
+      var ndx = this.months.indexOf(this.$route.params.month)
+      if (ndx !== 11) {
+        this.newmonth = this.months[ndx + 1]
+        this.newyear = this.$route.params.year
+      } else {
+        this.newmonth = this.months[0]
+        this.newyear = this.$route.params.year + 1
+      }
+      this.$router.push({name: 'roster', params: { year: this.newyear, month: this.newmonth }})
+    },
     resetmodal () {
       this.form.individuals = []
       this.form.indivint = ''
@@ -82,6 +115,9 @@ export default {
     },
     viewroster () {
       openURL('http://localhost/churchnet/public/admin/rosters/' + this.$route.params.id + '/report/' + this.$route.params.year + '/' + this.$route.params.month)
+    },
+    preview () {
+      this.$router.push({name: 'rostermessages', params: { roster: this.$route.params.id, year: this.$route.params.year, month: this.$route.params.month }})
     },
     editrosteritem (record, row, col) {
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {
