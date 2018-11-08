@@ -3,6 +3,7 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} USER
     </div>
+    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></circuitselect>
     <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name for an existing circuit member" />
     <div class="q-ma-md" v-if="individualOptions.length">
       <q-select @input="populateIndiv()" float-label="Individual" v-model="form.indiv" :options="individualOptions"/>
@@ -14,29 +15,34 @@
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
     </div>
     <div v-if="!form.indiv" class="text-center">or add a new individual
-      <div class="q-ma-md">
+      <div class="q-mx-md">
         <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
           <q-input float-label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
         </q-field>
       </div>
-      <div class="q-ma-md">
+      <div class="q-mx-md">
         <q-field :error="$v.form.firstname.$error" error-label="The firstname field is required">
           <q-input float-label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
         </q-field>
       </div>
-      <div class="q-ma-md">
+      <div class="q-mx-md">
         <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
       </div>
-      <div class="q-ma-md">
+      <div class="q-mx-md">
         <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
       </div>
-      <div class="q-ma-md">
+      <div class="q-mx-md">
         <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
           <q-input float-label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
         </q-field>
       </div>
-      <div class="q-ma-md text-center">
-        <q-btn color="primary" @click="submit">OK</q-btn>
+      <div class="q-mx-md">
+        <q-field :error="$v.form.email.$error" error-label="Email address is required">
+          <q-input float-label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
+        </q-field>
+      </div>
+      <div class="q-mx-md text-center">
+        <q-btn color="primary" @click="submitnew">OK</q-btn>
         <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       </div>
     </div>
@@ -45,6 +51,7 @@
 
 <script>
 import { required, numeric, email } from 'vuelidate/lib/validators'
+import circuitselect from './../Circuitselect'
 // https://github.com/monterail/vuelidate/tree/master/src/validators
 export default {
   data () {
@@ -62,11 +69,14 @@ export default {
       individualOptions: []
     }
   },
+  components: {
+    'circuitselect': circuitselect
+  },
   validations: {
     form: {
       surname: { required },
       firstname: { required },
-      email: { email },
+      email: { required, email },
       cellphone: { numeric }
     }
   },
@@ -93,6 +103,7 @@ export default {
                   firstname: response.data[ikey].firstname,
                   sex: response.data[ikey].sex,
                   title: response.data[ikey].title,
+                  email: response.data[ikey].email,
                   cellphone: response.data[ikey].cellphone
                 }
               }
@@ -110,36 +121,31 @@ export default {
       this.userdetails = '<b>Link user to: </b>' + this.form.indiv.title + ' ' + this.form.indiv.firstname + ' ' + this.form.indiv.surname + ' (Phone: ' + this.form.indiv.cellphone + ')'
     },
     submitexist () {
-      console.log(this.form)
+      this.submit()
     },
-    submit () {
+    submitnew () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        console.log(this.form)
-        /*
-        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(process.env.API + '/individuals',
-          {
-            surname: this.form.surname,
-            firstname: this.form.firstname,
-            sex: this.form.sex,
-            title: this.form.title,
-            cellphone: this.form.cellphone,
-            household_id: this.form.household_id
-          })
-          .then(response => {
-            this.$q.loading.hide()
-            this.$q.notify('Individual added')
-            this.$router.push({ name: 'household', params: { id: response.data.household_id } })
-          })
-          .catch(function (error) {
-            console.log(error)
-            this.$q.loading.hide()
-          })
-        */
+        this.submit()
       }
+    },
+    submit () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/users',
+        {
+          user: this.form
+        })
+        .then(response => {
+          this.$q.loading.hide()
+          this.$q.notify('User added')
+          this.$router.push({ name: 'user', params: { id: response.data.id } })
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
     }
   }
 }
