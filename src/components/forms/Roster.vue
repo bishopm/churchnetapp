@@ -18,7 +18,7 @@
       <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
         <q-item-main>
           {{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})
-          <span v-if="rostergroup.extrainfo === 1">*</span>
+          <span v-if="rostergroup.extrainfo === 'yes'">*</span>
         </q-item-main>
         <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
       </q-item>
@@ -33,7 +33,7 @@
       <div v-if="search.length > 2">
         <q-select float-label="Group" v-model="form.group_id" :options="groupOptions"/>
         <q-input float-label="Maximum people" type="number" v-model="form.maxpeople"/>
-        <q-toggle class="q-mt-md" v-model="form.extrainfo" label="Extra info required?"/>
+        <q-toggle class="q-mt-md" v-model="form.extrainfo" true-value="yes" false-value="no" label="Extra info required?"/>
       </div>
       <div class="text-center">
         <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
@@ -64,7 +64,7 @@ export default {
         rostergroups: [],
         maxpeople: 1,
         group_id: '',
-        extrainfo: 0
+        extrainfo: ''
       }
     }
   },
