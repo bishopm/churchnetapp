@@ -8,7 +8,7 @@
       </q-item>
       <div class="text-center">{{emptymessage}}</div>
     </q-list>
-    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 78px" />
+    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 68px" />
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     addUser () {
-      this.$router.push({name: 'addsociety'})
+      this.$router.push({name: 'userform', params: { action: 'add' }})
     }
   },
   mounted () {
