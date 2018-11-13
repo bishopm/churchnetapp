@@ -1,16 +1,17 @@
 <template>
   <div v-if="user" class="text-center layout-padding">
     <h3>{{user.name}}</h3>
+    <h4><b>Societies</b></h4>
     <div v-if="user.societies">
-      <h4><b>Societies</b></h4>
-      <p  v-for="society in user.societies.full" :key="society.id">{{society.society}} ({{society.pivot.permission}})</p>
+      <p v-for="society in user.societies.full" :key="society.id">{{society.society}} ({{society.pivot.permission}})</p>
     </div>
+    <div v-if="$store.state.user.level==='admin'">{{$store.state.user}}</div>
+    <h4><b>Circuits</b></h4>
     <div v-if="user.circuits">
-      <h4><b>Circuits</b></h4>
       <p v-for="circuit in user.circuits.full" :key="circuit.id">{{circuit.circuit}} ({{circuit.pivot.permission}})</p>
     </div>
+    <h4><b>Districts</b></h4>
     <div v-if="user.districts">
-      <h4><b>Districts</b></h4>
       <p v-for="district in user.districts.full" :key="district.id">{{district.district}} ({{district.pivot.permission}})</p>
     </div>
   </div>
