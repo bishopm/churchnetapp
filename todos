@@ -1,0 +1,34 @@
+POWER TO ADD USERS
+
+Users with admin level 1,2,3,4 may add users and give them up to and including the same levels of user power as they have
+
+They may also give them admin or editor powers in respect of any societies, circuits, districts (or children) which they have access to.
+
+eg: Level 3 (Circuit) admin can create more level 3 users (or level 4 users)
+
+Level 3 admin can give such users admin or editor rights in circuit as well as admin or editor rights in any societies in that circuit
+
+Implications:
+
+1. On the users page, only display users in the districts, circuits, societies I have admin rights to.
+2. When adding a user, only allow me to add rights up to mine and access up to mine.
+3. When editing a user, only allow me to add societies, circuits, districts I have admin rights to
+
+Regarding user access:
+
+Circuit admins can:
+
+- approve new societies, services or edit society details
+- change circuit officers 
+- change settings
+
+Circuit editors can:
+- edit the preaching plan
+
+Society admins:
+- change settings
+
+Society editors:
+- add update indivs
+- add stats
+- send messages
