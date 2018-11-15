@@ -3,7 +3,7 @@
     <p class="caption" v-if="message">{{$message}}</p>
     <q-list class="no-border">
       <p class="caption text-center">All households</p>
-      <societyfilter @altered="searchdb" :showme="showme()"></societyfilter>
+      <societyfilter @altered="searchdb" initial="all" :showme="showme()"></societyfilter>
       <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by addressee" />
       <q-item v-if="households" v-for="household in households" :key="household.id" :to="'/households/' + household.id">
         {{household.addressee}}
