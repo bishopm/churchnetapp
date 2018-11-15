@@ -57,8 +57,8 @@ export default {
     }
   },
   mounted () {
-    if (localStorage.getItem('CHURCHNET_verifiedphone')) {
-      this.verified = true
+    if ((!localStorage.getItem('CHURCHNET_phonetoken')) && (!localStorage.getItem('CHURCHNET_verifiedphone'))) {
+      this.verification()
     }
   },
   methods: {
@@ -66,10 +66,15 @@ export default {
       this.$axios.post(process.env.API + '/churchnet/login',
         {
           email: this.email,
-          password: this.password
+          password: this.password,
+          phonetoken: localStorage.getItem('CHURCHNET_phonetoken')
         })
         .then(response => {
-          if (response.data !== 'Invalid credentials') {
+          if (response.data === 'Invalid credentials') {
+            this.$q.notify('Incorrect login details! Do you still need to register?')
+          } else if (response.data === 'Wrong phone token') {
+            this.$q.notify('Re-directing to phone number authentication')
+          } else {
             localStorage.setItem('CHURCHNET_Token', response.data.token)
             localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
             this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
@@ -82,8 +87,6 @@ export default {
               .catch(function (error) {
                 console.log(error)
               })
-          } else {
-            this.$q.notify('Incorrect login details! Do you still need to register?')
           }
         })
         .catch(function (error) {

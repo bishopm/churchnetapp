@@ -14,8 +14,8 @@ export default {
     }
   },
   mounted () {
-    if ((localStorage.getItem('JOURNEY_VerifiedPhone')) && (localStorage.getItem('JOURNEY_Phonetoken'))) {
-      this.$router.push({ name: 'home' })
+    if ((localStorage.getItem('CHURCHNET_verifiedphone')) && (localStorage.getItem('JOURNEY_phonetoken'))) {
+      this.$router.push({ name: 'login' })
     } else {
       this.uiConfig = {
         signInSuccessUrl: 'https://db.church.net.za',

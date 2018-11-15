@@ -39,7 +39,7 @@
             <q-item-main label="Statistics" sublabel="view worship service statistics" />
           </q-item>
         </div>
-        <q-item v-if="$store.state.user.level === 'publisher' || $store.state.user.level === 'admin'" to="/feeds">
+        <q-item v-if="$store.state.user.level < 5" to="/feeds">
           <q-item-side icon="publish" />
           <q-item-main label="Published content" sublabel="current & historic feed content" />
         </q-item>
@@ -90,7 +90,7 @@
         <q-item-side icon="settings" />
         <q-item-main label="Settings" sublabel="user settings" />
       </q-item>
-      <q-item v-if="$store.state.user.level === 'admin'" to="/users">
+      <q-item v-if="$store.state.user.level < 5" to="/users">
         <q-item-side icon="person_add" />
         <q-item-main label="Users" sublabel="user permissions" />
       </q-item>

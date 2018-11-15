@@ -51,7 +51,7 @@ export default {
       .then((response) => {
         this.household = response.data
         this.perm = this.$store.state.user.societies[this.household.society_id]
-        if (this.$store.state.user.level === 'admin') {
+        if (this.$store.state.user.level < 5) {
           this.perm = 'edit'
         }
         this.initMap()
