@@ -20,10 +20,6 @@ register(process.env.SERVICE_WORKER_FILE, {
   },
   updated (registration) { // registration -> a ServiceWorkerRegistration instance
     console.log('New content is available; refreshing now.')
-    var refreshing
-    if (refreshing) return
-    refreshing = true
-    window.location.reload()
   },
   offline () {
     console.log('No internet connection found. App is running in offline mode.')

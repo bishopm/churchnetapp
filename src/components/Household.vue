@@ -1,37 +1,40 @@
 <template>
-  <div v-if="household.addressee" class="text-center layout-padding">
-    <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
-    <p class="text-left q-mx-md">
-      <q-icon name="place" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
-      <q-icon name="phone" color="secondary"></q-icon> {{household.homephone}}
-    </p>
-    <div id="map" class="q-mt-md"></div>
-    <div v-if="household.individuals.length">
-      <q-tabs color="secondary" no-pane-border align="justify">
-        <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
-        <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-          <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
-          <q-icon v-if="individual.cellphone" name="phone" color="primary"></q-icon> {{individual.cellphone}}<br>
-          <q-icon v-if="individual.email" name="email" color="primary"></q-icon> {{individual.email}}<br>
-          <q-icon v-if="individual.memberstatus" name="account_box" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
-          <div v-if="individual.tags">
-            <q-chip class="q-ma-xs" small color="secondary" v-for="tag in individual.tags" :key="tag.id">{{tag.name}}</q-chip>
-          </div>
-          <p class="caption q-mt-md">Groups</p>
-          <div class="text-justify">
-            <q-chip class="q-ma-xs" small color="primary" v-for="group in individual.groups" :key="group.id"><router-link :to="'/groups/' + group.id">{{group.groupname}}</router-link></q-chip>
-          </div>
-        </q-tab-pane>
-        <q-tab key="0" slot="title" name="tabadd" icon="add_circle"/>
-        <q-tab-pane name="tabadd">
-          <q-btn @click.native="addIndividual()">Add a new member to this household</q-btn>
-        </q-tab-pane>
-      </q-tabs>
+  <div>
+    <div v-if="household.addressee" class="text-center layout-padding">
+      <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
+      <p class="text-left q-mx-md">
+        <q-icon name="place" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
+        <q-icon name="phone" color="secondary"></q-icon> {{household.homephone}}
+      </p>
+      <div id="map" class="q-mt-md"></div>
+      <div v-if="household.individuals.length">
+        <q-tabs color="secondary" no-pane-border align="justify">
+          <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
+          <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
+            <q-icon v-if="individual.surname" name="person" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
+            <q-icon v-if="individual.cellphone" name="phone" color="primary"></q-icon> {{individual.cellphone}}<br>
+            <q-icon v-if="individual.email" name="email" color="primary"></q-icon> {{individual.email}}<br>
+            <q-icon v-if="individual.memberstatus" name="account_box" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
+            <div v-if="individual.tags">
+              <q-chip class="q-ma-xs" small color="secondary" v-for="tag in individual.tags" :key="tag.id">{{tag.name}}</q-chip>
+            </div>
+            <p class="caption q-mt-md">Groups</p>
+            <div class="text-justify">
+              <q-chip class="q-ma-xs" small color="primary" v-for="group in individual.groups" :key="group.id"><router-link :to="'/groups/' + group.id">{{group.groupname}}</router-link></q-chip>
+            </div>
+          </q-tab-pane>
+          <q-tab key="0" slot="title" name="tabadd" icon="add_circle"/>
+          <q-tab-pane name="tabadd">
+            <q-btn @click.native="addIndividual()">Add a new member to this household</q-btn>
+          </q-tab-pane>
+        </q-tabs>
+      </div>
+      <div v-else class="q-mt-md">
+        <p>No household members have been added yet</p>
+        <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
+      </div>
     </div>
-    <div v-else class="q-mt-md">
-      <p>No household members have been added yet</p>
-      <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
-    </div>
+    <p class="q-ma-lg text-center caption">{{blocked}}</p>
   </div>
 </template>
 
@@ -42,19 +45,24 @@ export default {
       household: {},
       map: null,
       marker: null,
-      perm: ''
+      perm: '',
+      blocked: ''
     }
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
       .then((response) => {
-        this.household = response.data
-        this.perm = this.$store.state.user.societies[this.household.society_id]
-        if (this.$store.state.user.level < 5) {
-          this.perm = 'edit'
+        if (response.data === 'Unauthorised') {
+          this.blocked = 'Sorry - you are not authorised to view this household'
+        } else {
+          this.household = response.data
+          this.perm = this.$store.state.user.societies[this.household.society_id]
+          if (this.$store.state.user.level < 5) {
+            this.perm = 'edit'
+          }
+          this.initMap()
         }
-        this.initMap()
       })
       .catch(function (error) {
         console.log(error)

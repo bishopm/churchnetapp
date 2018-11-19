@@ -88,7 +88,7 @@
       <q-list-header class="text-center"><q-icon name="language"></q-icon> Administration</q-list-header>
       <q-item to="/settings">
         <q-item-side icon="settings" />
-        <q-item-main label="Settings" sublabel="user settings" />
+        <q-item-main label="Settings" :sublabel="'user settings (v' + version + ')'" />
       </q-item>
       <q-item v-if="$store.state.user.level < 5" to="/users">
         <q-item-side icon="person_add" />
@@ -104,16 +104,16 @@ export default {
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
-      rightDrawerOpen: false
+      rightDrawerOpen: false,
+      version: process.env.VERSION
     }
   },
   mounted () {
     if (localStorage.getItem('CHURCHNET_Version')) {
-      if (localStorage.getItem('CHURCHNET_Version') === process.env.VERSION) {
-        console.log('Current version')
-      } else {
+      if (localStorage.getItem('CHURCHNET_Version') !== process.env.VERSION) {
+        this.$q.notify('Updating to version: ' + process.env.VERSION)
         localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
-        window.location.reload()
+        setTimeout(window.location.reload(), 2500)
       }
     } else {
       localStorage.setItem('CHURCHNET_Version', process.env.VERSION)

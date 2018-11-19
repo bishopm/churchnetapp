@@ -1,16 +1,19 @@
 <template>
-  <div v-if="group" class="text-center layout-padding">
-    <p class="caption"><b>{{group.groupname}}</b> <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="edit"></q-icon>
-      <small class="q-ml-sm" v-if="soc">{{soc.society}} society</small>
-    </p>
-    <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
-    <div class="q-ma-md" v-if="search.length > 2">
-      <q-select @input="addIndiv()" float-label="Individual" v-model="individual_id" :options="individualOptions"/>
+  <div>
+    <div v-if="group" class="text-center layout-padding">
+      <p class="caption"><b>{{group.groupname}}</b> <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="edit"></q-icon>
+        <small class="q-ml-sm" v-if="soc">{{soc.society}} society</small>
+      </p>
+      <q-search v-if="!blocked" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
+      <div class="q-ma-md" v-if="search.length > 2">
+        <q-select @input="addIndiv()" float-label="Individual" v-model="individual_id" :options="individualOptions"/>
+      </div>
+      <q-item v-for="individual in group.individuals" :key="individual.id">
+        <q-item-main>{{individual.firstname}} {{individual.surname}}</q-item-main>
+        <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
+      </q-item>
     </div>
-    <q-item v-for="individual in group.individuals" :key="individual.id">
-      <q-item-main>{{individual.firstname}} {{individual.surname}}</q-item-main>
-      <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
-    </q-item>
+    <p class="q-ma-lg text-center caption">{{blocked}}</p>
   </div>
 </template>
 
@@ -21,14 +24,19 @@ export default {
       group: {},
       individual_id: '',
       individualOptions: [],
-      search: ''
+      search: '',
+      blocked: ''
     }
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
       .then((response) => {
-        this.group = response.data
+        if (response.data === 'Unauthorised') {
+          this.blocked = 'Sorry - you are not authorised to view this group'
+        } else {
+          this.group = response.data
+        }
       })
       .catch(function (error) {
         console.log(error)
@@ -48,7 +56,7 @@ export default {
   },
   methods: {
     editGroup () {
-      this.$router.push({name: 'editgroup'})
+      this.$router.push({name: 'groupform', params: { action: 'edit', id: this.$route.params.id }})
     },
     removeIndiv (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token

@@ -12,6 +12,7 @@ const routes = [
       { name: 'feedform', path: '/feed/:action/:id?', component: () => import('components/forms/Feed'), meta: {auth: true} },
       { name: 'group', path: '/groups/:id', component: () => import('components/Group'), meta: {auth: true} },
       { name: 'groups', path: '/groups', component: () => import('components/Groups'), meta: {auth: true} },
+      { name: 'groupform', path: '/group/:action/:id?', component: () => import('components/forms/Group'), meta: {auth: true} },
       { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
       { name: 'editgroup', path: '/group/:id/edit', component: () => import('components/forms/Group'), meta: {auth: true} },
       { name: 'householdform', path: '/household/:action/:scope/:id?', component: () => import('components/forms/Household'), meta: {auth: true} },

@@ -8,7 +8,7 @@
         {{group.groupname}}
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addGroup" class="fixed" icon="add" style="right: 18px; bottom: 68px" />
+    <q-btn round color="primary" @click="addGroup" class="fixed" icon="add" style="right: 18px; top: 78px" />
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     addGroup () {
-      this.$router.push({name: 'addgroup'})
+      this.$router.push({name: 'groupform', params: { action: 'add' }})
     },
     showme () {
       return this.$store.state.user.societies.keys.length
