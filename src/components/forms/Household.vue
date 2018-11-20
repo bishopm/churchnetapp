@@ -31,7 +31,7 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
-      <q-btn class="q-ml-md" color="red">Delete</q-btn>
+      <q-btn class="q-ml-md" color="black">Delete</q-btn>
     </div>
   </div>
 </template>

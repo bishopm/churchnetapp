@@ -2,10 +2,11 @@
   <div class="layout-padding">
     <p class="caption text-center">Feeds</p>
     <q-list no-border>
-      <q-item v-for="feed in feeds" :key="feed.id" :to="'/feed/edit/' + feed.feedpost.id">
+      <q-item v-if="hasfeeds" v-for="feed in feeds" :key="feed.id" :to="'/feed/edit/' + feed.feedpost.id">
         <q-item-main>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-main>
         <q-item-side><small>{{feed.feedpost.publicationdate}}</small></q-item-side>
       </q-item>
+      <p>{{message}}</p>
     </q-list>
     <q-btn round color="primary" @click="addFeed" class="fixed" icon="add" style="right: 18px; top: 88px" />
   </div>
@@ -15,7 +16,9 @@
 export default {
   data () {
     return {
-      feeds: []
+      feeds: [],
+      message: '',
+      hasfeeds: false
     }
   },
   mounted () {
@@ -27,6 +30,11 @@ export default {
       })
       .then(response => {
         this.feeds = response.data
+        if (this.feeds.length) {
+          this.hasfeeds = true
+        } else {
+          this.message = 'No content yet'
+        }
       })
       .catch(function (error) {
         console.log(error)

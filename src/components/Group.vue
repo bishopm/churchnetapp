@@ -10,7 +10,7 @@
       </div>
       <q-item v-for="individual in group.individuals" :key="individual.id">
         <q-item-main>{{individual.firstname}} {{individual.surname}}</q-item-main>
-        <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
+        <q-item-side color="black" icon="delete" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
       </q-item>
     </div>
     <p class="q-ma-lg text-center caption">{{blocked}}</p>

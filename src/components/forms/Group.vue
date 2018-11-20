@@ -15,10 +15,10 @@
         <q-select float-label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]"/>
       </q-field>
     </div>
-    <div class="q-ma-md">
-      <q-btn color="primary" @click="submit">Submit</q-btn>
+    <div class="q-ma-md text-center">
+      <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.back()" color="secondary">Cancel</q-btn>
-      <q-btn class="q-ml-md" color="red">Delete</q-btn>
+      <q-btn v-if="admin" class="q-ml-md" @click="deletegroup" color="black">Delete</q-btn>
     </div>
   </div>
 </template>
@@ -33,8 +33,10 @@ export default {
         groupname: '',
         description: '',
         grouptype: '',
-        blocked: ''
-      }
+        blocked: '',
+        society_id: 0
+      },
+      admin: false
     }
   },
   components: {
@@ -86,6 +88,18 @@ export default {
             })
         }
       }
+    },
+    deletegroup () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.delete(process.env.API + '/groups/' + this.$route.params.id)
+        .then(response => {
+          this.$q.notify('Group deleted')
+          this.$router.push({ name: 'groups' })
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
     }
   },
   mounted () {
@@ -94,6 +108,9 @@ export default {
       this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
         .then((response) => {
           this.form = response.data
+          if (this.$store.state.user.societies[this.form.society_id] === 'admin') {
+            this.admin = true
+          }
         })
         .catch(function (error) {
           console.log(error)

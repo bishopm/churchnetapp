@@ -88,7 +88,6 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
       this.$axios.delete(process.env.API + '/meetings/' + this.$route.params.id)
         .then(response => {
-          console.log(response.data)
           this.$router.go(-1)
         })
         .catch(function (error) {

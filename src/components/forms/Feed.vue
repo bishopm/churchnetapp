@@ -19,9 +19,11 @@
       ['custom_btn','custom_btn1','custom_btn2'],
     ],
     ]"/>
-    <q-btn slot="custom_btn" dense color="secondary" icon="code" label="show HTML" @click="showHtml = !showHtml" />
-    <q-btn class="q-ml-md" slot="custom_btn1" dense color="red" icon="cancel" label="cancel" @click="showHtml = !showHtml" />
-    <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="submit" @click="submit" />
+    <div class="q-mt-sm text-center">
+      <q-btn slot="custom_btn" dense color="secondary" icon="code" label="show HTML" @click="showHtml = !showHtml" />
+      <q-btn class="q-ml-md" slot="custom_btn1" dense color="black" icon="cancel" label="cancel" @click="$router.go(-1)" />
+      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="submit" @click="submit" />
+    </div>
     <q-input v-if="showHtml" class="q-mt-md" v-model="post.body" type="textarea" float-label="HTML" :max-height="100" rows="7"/>
   </div>
 </template>
@@ -72,8 +74,6 @@ export default {
           this.$store.commit('setSFilter', response.data.societies)
           this.$store.commit('setCFilter', response.data.circuits)
           this.post = response.data
-          console.log(this.$store.state.societyfilter)
-          console.log(this.$store.state.circuitfilter)
         })
         .catch(function (error) {
           console.log(error)

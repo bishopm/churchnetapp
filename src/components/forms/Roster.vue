@@ -20,7 +20,7 @@
           {{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})
           <span v-if="rostergroup.extrainfo === 'yes'">*</span>
         </q-item-main>
-        <q-item-side color="red" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
+        <q-item-side color="black" icon="delete" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
       </q-item>
     </div>
     <div class="q-ma-lg text-center">
