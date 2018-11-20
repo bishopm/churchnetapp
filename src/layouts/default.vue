@@ -104,7 +104,7 @@ export default {
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
-      rightDrawerOpen: false,
+      rightDrawerOpen: this.$q.platform.is.desktop,
       version: process.env.VERSION
     }
   },
