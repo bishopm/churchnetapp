@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-layout-header>
       <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
@@ -13,7 +13,7 @@
         </q-btn>
       </q-toolbar>
     </q-layout-header>
-    <q-layout-drawer v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
+    <q-layout-drawer side="left" v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
         <div v-if="$store.getters.hasEntity('societies')">
           <q-list-header class="text-center"><q-icon name="person"></q-icon> Members</q-list-header>
@@ -50,9 +50,7 @@
       </q-list>
     </q-layout-drawer>
     <q-page-container>
-      <q-pull-to-refresh :handler="refresher">
-        <router-view :key="$route.fullPath"></router-view>
-      </q-pull-to-refresh>
+      <router-view :key="$route.fullPath"></router-view>
     </q-page-container>
     <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
@@ -136,9 +134,6 @@ export default {
     logout () {
       localStorage.removeItem('CHURCHNET_Token')
       this.$router.push({ name: 'login' })
-    },
-    refresher () {
-      this.$router.push({ name: 'home' })
     }
   }
 }
