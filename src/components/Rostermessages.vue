@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    <q-list v-if="messages">
+    <q-list v-if="messages.length">
       <p class="caption text-center">{{roster.name}} <small>{{roster.date}}</small></p>
       <q-item v-for="message in messages" :key="message.cellphone">
         <q-item-main>
@@ -55,6 +55,10 @@ export default {
           }
           if (this.extras.length) {
             this.modalopen = true
+          }
+          if (!this.messages) {
+            this.$q.notify('No messages to preview')
+            this.$router.go(-1)
           }
         })
         .catch(function (error) {
