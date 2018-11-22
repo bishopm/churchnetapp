@@ -16,7 +16,7 @@
           <b>{{extra.name}}:</b> {{extra.txt}}
         </p>
       </div>
-      <div class="text-center"><q-btn>Go!</q-btn></div>
+      <div class="text-center"><q-btn @click="sendmessages">Send messages</q-btn></div>
     </q-list>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <h4>Extra information needed</h4>
@@ -67,6 +67,29 @@ export default {
     }
   },
   methods: {
+    sendmessages () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/rostermessages/' + this.form.id,
+        {
+          addressee: this.form.addressee,
+          addr1: this.form.addr1,
+          addr2: this.form.addr2,
+          addr3: this.form.addr3,
+          homephone: this.form.homephone,
+          householdcell: this.form.householdcell,
+          latitude: this.form.latitude,
+          longitude: this.form.longitude
+        })
+        .then(response => {
+          this.$q.loading.hide()
+          this.$q.notify('Household updated')
+          this.$router.push({ name: 'household', params: { id: response.data.id } })
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    }
   }
 }
 </script>
