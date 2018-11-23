@@ -10,6 +10,11 @@
         <q-input float-label="Roster title" v-model="form.title" @blur="$v.form.title.$touch()" :error="$v.form.title.$error" />
       </q-field>
     </div>
+    <div class="q-mx-md">
+      <q-field :error="$v.form.message.$error" error-label="The message field is required">
+        <q-input float-label="Message" v-model="form.message" @blur="$v.form.message.$touch()" :error="$v.form.message.$error" />
+      </q-field>
+    </div>
     <div class="q-ma-md">
       <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
@@ -60,6 +65,7 @@ export default {
       modalopen: false,
       form: {
         title: '',
+        message: '',
         dayofweek: 'Sunday',
         rostergroups: [],
         maxpeople: 1,
@@ -70,7 +76,8 @@ export default {
   },
   validations: {
     form: {
-      title: { required }
+      title: { required },
+      message: { required }
     }
   },
   components: {
@@ -82,6 +89,7 @@ export default {
       this.$axios.get(process.env.API + '/rosters/' + this.$route.params.id)
         .then((response) => {
           this.form.title = response.data.name
+          this.form.message = response.data.message
           this.form.dayofweek = response.data.dayofweek
           this.society = response.data.society.society
           this.societies.push(response.data.society.id)
@@ -124,10 +132,27 @@ export default {
             {
               name: this.form.title,
               dayofweek: this.form.dayofweek,
+              message: this.form.message,
               society_id: this.$store.state.select
             })
             .then(response => {
               this.$router.push({name: 'rosterform', params: { action: 'edit', id: response.data.id }})
+            })
+            .catch(function (error) {
+              this.error = error
+            })
+        } else {
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+          this.$axios.post(process.env.API + '/rosters/' + this.$route.params.id,
+            {
+              name: this.form.title,
+              dayofweek: this.form.dayofweek,
+              message: this.form.message,
+              society_id: this.$store.state.select
+            })
+            .then(response => {
+              this.$q.notify('Roster has been updated')
+              this.$router.push({name: 'rosters'})
             })
             .catch(function (error) {
               this.error = error

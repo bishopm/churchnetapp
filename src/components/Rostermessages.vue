@@ -68,22 +68,27 @@ export default {
   },
   methods: {
     sendmessages () {
+      this.$q.loading.show()
+      for (var mndx in this.messages) {
+        for (var [endx] in this.extras) {
+          if (this.messages[mndx].groups[this.extras[endx].id]) {
+            if (!this.messages[mndx].extras) {
+              this.messages[mndx].extras = this.extras[endx].txt
+            } else {
+              this.messages[mndx].extras = this.messages[mndx].extras + ', ' + this.extras[endx].txt
+            }
+          }
+        }
+      }
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(process.env.API + '/rostermessages/' + this.form.id,
+      this.$axios.post(process.env.API + '/rostermessages',
         {
-          addressee: this.form.addressee,
-          addr1: this.form.addr1,
-          addr2: this.form.addr2,
-          addr3: this.form.addr3,
-          homephone: this.form.homephone,
-          householdcell: this.form.householdcell,
-          latitude: this.form.latitude,
-          longitude: this.form.longitude
+          messages: this.messages,
+          society: this.$store.state.select
         })
         .then(response => {
           this.$q.loading.hide()
-          this.$q.notify('Household updated')
-          this.$router.push({ name: 'household', params: { id: response.data.id } })
+          this.$q.notify('Messages sent')
         })
         .catch(function (error) {
           console.log(error)
