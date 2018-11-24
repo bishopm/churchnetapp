@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     addPayment () {
-      this.$router.push({name: 'givingform', params: { action: 'add' }})
+      this.$router.push({name: 'givingform', params: { action: 'add', society: this.$store.state.select }})
     },
     searchdb () {
       this.$q.loading.show()
