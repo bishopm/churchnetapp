@@ -1,13 +1,8 @@
 <template>
   <div>
-    <q-list class="no-border">
-      <p class="caption text-center">All payments</p>
-      <societyselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" :showme="1" initial="all"></societyselect>
-      <q-item v-if="payments" v-for="payment in payments" :key="payment.id">
-        <q-item-main>{{payment.paymentdate}}<span class="q-ml-lg">{{payment.pgnumber}}</span></q-item-main>
-        <q-item-side>{{payment.amount}}</q-item-side>
-      </q-item>
-    </q-list>
+    <p class="caption text-center">All payments</p>
+    <societyselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" :showme="1" initial="all"></societyselect>
+    <q-table class="q-mx-md" :data="rows" :columns="columns" row-key="name"/>
     <q-btn round color="primary" @click="addPayment" class="fixed" icon="add" style="right: 18px; top: 58px" />
   </div>
 </template>
@@ -17,7 +12,12 @@ import societyselect from './Societyselect'
 export default {
   data () {
     return {
-      payments: []
+      columns: [
+        { name: 'date', required: true, label: 'Date', align: 'left', field: 'paymentdate', sortable: true },
+        { name: 'number', required: true, label: 'Number', align: 'left', field: 'pgnumber', sortable: true },
+        { name: 'amt', required: true, label: 'Amount', align: 'right', field: 'amount', sortable: true }
+      ],
+      rows: []
     }
   },
   components: {
@@ -29,10 +29,18 @@ export default {
     },
     searchdb () {
       this.$q.loading.show()
+      this.rows = []
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/payments/' + this.$store.state.select)
         .then(response => {
-          this.payments = response.data
+          for (var pndx in response.data) {
+            var newitem = {
+              paymentdate: response.data[pndx].paymentdate,
+              pgnumber: response.data[pndx].pgnumber,
+              amount: response.data[pndx].amount
+            }
+            this.rows.push(newitem)
+          }
           this.$q.loading.hide()
         })
         .catch(function (error) {
