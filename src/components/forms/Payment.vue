@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{$route.params.action.toUpperCase()}} PAYMENT
+      {{$route.params.action.toUpperCase()}} PAYMENT <small>{{society}}</small>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.paymentdate.$error" error-label="The date field is required">
@@ -9,8 +9,8 @@
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required and must be numeric">
-        <q-input float-label="Planned giving number" v-model="form.pgnumber" @blur="$v.form.pgnumber.$touch()" :error="$v.form.pgnumber.$error" />
+      <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
+        <q-select float-label="Planned giving number" v-model="form.pgnumber" :options="indivOptions"/>
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -31,15 +31,19 @@ export default {
   data () {
     return {
       form: {
+        paymentdate: '',
+        pgnumber: '',
+        amount: ''
       },
-      societyOptions: []
+      indivOptions: [],
+      society: ''
     }
   },
   validations: {
     form: {
       paymentdate: { required },
       amount: { numeric, required },
-      pgnumber: { numeric, required }
+      pgnumber: { required }
     }
   },
   methods: {
@@ -105,21 +109,18 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.action === 'edit') {
+    if (this.$route.params.action === 'add') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
+      this.$axios.get(process.env.API + '/givers/' + this.$route.params.society)
         .then((response) => {
-          this.form = response.data
-          for (var ikey in this.form.individuals) {
+          this.society = response.data.society
+          for (var ikey in response.data.givers) {
             var newitem = {
-              label: this.form.individuals[ikey].firstname,
-              value: this.form.individuals[ikey].id
+              label: response.data.givers[ikey],
+              value: response.data.givers[ikey]
             }
-            if (this.form.individuals[ikey].cellphone) {
-              this.housecellOptions.push(newitem)
-            }
+            this.indivOptions.push(newitem)
           }
-          this.initMap()
         })
         .catch(function (error) {
           console.log(error)

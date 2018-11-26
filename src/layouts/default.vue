@@ -29,11 +29,11 @@
             <q-item-side icon="home" />
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
+          <q-list-header class="text-center"><q-icon name="person"></q-icon> Society admin</q-list-header>
           <q-item to="/giving">
             <q-item-side icon="credit_card" />
             <q-item-main label="Giving" sublabel="view giving records" />
           </q-item>
-          <q-list-header class="text-center"><q-icon name="person"></q-icon> Society admin</q-list-header>
           <q-item to="/rosters">
             <q-item-side icon="format_list_bulleted" />
             <q-item-main label="Rosters" sublabel="society rosters" />

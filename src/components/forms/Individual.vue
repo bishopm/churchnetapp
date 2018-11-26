@@ -8,12 +8,12 @@
         <q-input float-label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
       </q-field>
     </div>
-    <div class="q-ma-md">
+    <div class="q-mx-md">
       <q-field :error="$v.form.firstname.$error" error-label="The firstname field is required">
         <q-input float-label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
       </q-field>
     </div>
-    <div class="q-ma-md">
+    <div class="q-mx-md">
       <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
     </div>
     <div class="q-ma-md">
@@ -24,14 +24,19 @@
         <q-input float-label="Date of birth" v-model="form.birthdate" />
       </q-field>
     </div>
-    <div class="q-ma-md">
+    <div class="q-mx-md">
       <q-field :error="$v.form.email.$error" error-label="Must be a valid email address">
         <q-input float-label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
       </q-field>
     </div>
-    <div class="q-ma-md">
+    <div class="q-mx-md">
       <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
         <q-input float-label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
+      </q-field>
+    </div>
+    <div class="q-mx-md">
+      <q-field :error="$v.form.giving.$error" error-label="Giving number must be numeric">
+        <q-input float-label="Giving" v-model="form.giving" @blur="$v.form.giving.$touch()" :error="$v.form.giving.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -68,6 +73,7 @@ export default {
       surname: { required },
       firstname: { required },
       email: { email },
+      giving: { numeric },
       cellphone: { numeric }
     }
   },
@@ -87,6 +93,7 @@ export default {
               title: this.form.title,
               birthdate: this.form.birthdate,
               email: this.form.email,
+              giving: this.form.giving,
               cellphone: this.form.cellphone,
               roles: this.roles
             })
@@ -110,6 +117,7 @@ export default {
               birthdate: this.form.birthdate,
               email: this.form.email,
               cellphone: this.form.cellphone,
+              giving: this.form.giving,
               roles: this.roles,
               household_id: this.form.household_id
             })

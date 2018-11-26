@@ -2,8 +2,10 @@
   <div>
     <p class="caption text-center">All payments</p>
     <societyselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" :showme="1" initial="all"></societyselect>
-    <q-table class="q-mx-md" :data="rows" :columns="columns" row-key="name"/>
-    <q-btn round color="primary" @click="addPayment" class="fixed" icon="add" style="right: 18px; top: 58px" />
+    <q-table class="q-mx-md" :pagination.sync="pagination" :data="rows" :columns="columns" row-key="name"/>
+    <q-page-sticky expand position="top-right" :offset="[32, 32]">
+      <q-btn round color="primary" @click="addPayment" class="fixed" icon="add"/>
+    </q-page-sticky>
   </div>
 </template>
 
@@ -17,7 +19,10 @@ export default {
         { name: 'number', required: true, label: 'Number', align: 'left', field: 'pgnumber', sortable: true },
         { name: 'amt', required: true, label: 'Amount', align: 'right', field: 'amount', sortable: true }
       ],
-      rows: []
+      rows: [],
+      pagination: {
+        rowsPerPage: 10
+      }
     }
   },
   components: {
