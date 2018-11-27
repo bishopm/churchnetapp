@@ -10,7 +10,7 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
-        <q-select float-label="Planned giving number" v-model="form.pgnumber" :options="indivOptions"/>
+        <q-select filter filter-placeholder="Type to find number" float-label="Planned giving number" v-model="form.pgnumber" :options="indivOptions"/>
       </q-field>
     </div>
     <div class="q-ma-md">

@@ -16,7 +16,7 @@ export default {
     return {
       columns: [
         { name: 'date', required: true, label: 'Date', align: 'left', field: 'paymentdate', sortable: true },
-        { name: 'number', required: true, label: 'Number', align: 'left', field: 'pgnumber', sortable: true },
+        { name: 'number', required: true, label: 'Giver number', align: 'left', field: 'pgnumber', sortable: true },
         { name: 'amt', required: true, label: 'Amount', align: 'right', field: 'amount', sortable: true }
       ],
       rows: [],
