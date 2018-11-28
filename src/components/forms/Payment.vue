@@ -10,7 +10,9 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
-        <q-select filter filter-placeholder="Type to find number" float-label="Planned giving number" v-model="form.pgnumber" :options="indivOptions"/>
+        <q-input float-label="Giving number" v-model="form.pgnumber" @blur="$v.form.pgnumber.$touch()" :error="$v.form.pgnumber.$error">
+          <q-autocomplete :static-data="{field: 'value', list: indivOptions}" :min-characters="1" @selected="selected"/>
+        </q-input>
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -27,6 +29,7 @@
 
 <script>
 import { required, numeric } from 'vuelidate/lib/validators'
+
 export default {
   data () {
     return {
@@ -47,6 +50,9 @@ export default {
     }
   },
   methods: {
+    checkpg () {
+      console.log(this.form.pgnumber)
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
