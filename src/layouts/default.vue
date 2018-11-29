@@ -121,11 +121,18 @@ export default {
       localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
     }
     if (localStorage.getItem('CHURCHNET_Token')) {
+      this.$q.loading.show({
+        message: 'Welcome! Logging you in...',
+        messageColor: 'white',
+        spinnerSize: 250, // in pixels
+        spinnerColor: 'white'
+      })
       this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
           this.$store.commit('setUser', response.data)
+          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)

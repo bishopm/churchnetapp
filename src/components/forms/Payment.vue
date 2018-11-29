@@ -10,8 +10,8 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
-        <q-input float-label="Giving number" v-model="form.pgnumber" @blur="$v.form.pgnumber.$touch()" :error="$v.form.pgnumber.$error">
-          <q-autocomplete :static-data="{field: 'value', list: indivOptions}" :min-characters="1" @selected="selected"/>
+        <q-input float-label="Giving number" v-model="form.pgnumber" @blur="checkpg" :error="$v.form.pgnumber.$error">
+          <q-autocomplete :static-data="{field: 'value', list: indivOptions}" :min-characters="1"/>
         </q-input>
       </q-field>
     </div>
@@ -29,7 +29,7 @@
 
 <script>
 import { required, numeric } from 'vuelidate/lib/validators'
-
+const existing = true
 export default {
   data () {
     return {
@@ -39,6 +39,7 @@ export default {
         amount: ''
       },
       indivOptions: [],
+      allnums: [],
       society: ''
     }
   },
@@ -46,12 +47,15 @@ export default {
     form: {
       paymentdate: { required },
       amount: { numeric, required },
-      pgnumber: { required }
+      pgnumber: { required, existing }
     }
   },
   methods: {
     checkpg () {
-      console.log(this.form.pgnumber)
+      if (!this.allnums.includes(this.form.pgnumber)) {
+        this.form.pgnumber = ''
+        this.$q.notify('This number does not exist - please re-enter!')
+      }
     },
     submit () {
       this.$v.form.$touch()
@@ -126,6 +130,7 @@ export default {
               value: response.data.givers[ikey]
             }
             this.indivOptions.push(newitem)
+            this.allnums.push(response.data.givers[ikey])
           }
         })
         .catch(function (error) {
