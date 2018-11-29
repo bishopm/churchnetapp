@@ -10,7 +10,9 @@
         </q-item-side>
       </q-item>
     </q-list>
-    <q-btn round color="primary" @click="addMeeting" class="fixed" icon="add" style="right: 4px; top: 72px" />
+    <q-page-sticky expand position="top-right" :offset="[32, 32]">
+      <q-btn round color="primary" @click="addMeeting" class="fixed" icon="add"/>
+    </q-page-sticky>
   </div>
 </template>
 

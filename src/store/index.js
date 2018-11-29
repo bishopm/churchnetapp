@@ -15,7 +15,8 @@ export default function (/* { ssrContext } */) {
       user: {},
       circuitfilter: [],
       societyfilter: [],
-      select: ''
+      select: '',
+      loaded: false
     },
     getters: {
       hasEntity: (state) => (entity) => {
@@ -36,6 +37,9 @@ export default function (/* { ssrContext } */) {
     mutations: {
       setUser (state, newuser) {
         state.user = newuser
+      },
+      setLoaded (state, newloaded) {
+        state.loaded = newloaded
       },
       setToken (state, newtoken) {
         state.token = newtoken

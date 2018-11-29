@@ -11,7 +11,9 @@
       </q-item>
     </q-list>
     <div class="text-center">{{emptymessage}}</div>
-    <q-btn round color="primary" @click="addRoster" class="fixed" icon="add" style="right: 18px; top: 88px" />
+    <q-page-sticky expand position="top-right" :offset="[32, 32]">
+      <q-btn round color="primary" @click="addRoster" class="fixed" icon="add"/>
+    </q-page-sticky>
   </div>
 </template>
 

@@ -19,7 +19,7 @@
         {{society.society}} [{{society.pivot.permission}}]
       </p>
     </div>
-    <div class="q-ma-md" v-if="!$store.getters.hasEntity('societies') && !$store.getters.hasEntity('circuits') && !$store.getters.hasEntity('disricts')">
+    <div class="q-ma-md" v-if="!$store.getters.hasEntity('societies') && !$store.getters.hasEntity('circuits') && !$store.getters.hasEntity('disricts') && !$store.state.loaded">
       You still need to be given permission to access specific societies, circuits or districts
     </div>
   </div>

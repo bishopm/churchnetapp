@@ -132,6 +132,7 @@ export default {
       this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
           this.$store.commit('setUser', response.data)
+          this.$store.commit('setLoaded', true)
           this.$q.loading.hide()
         })
         .catch(function (error) {

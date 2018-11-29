@@ -8,7 +8,9 @@
         {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
       </q-item>
     </q-list>
-    <q-btn round color="positive" @click="addPerson" class="fixed" icon="add" style="right: 4px; top: 72px" />
+    <q-page-sticky expand position="top-right" :offset="[32, 32]">
+      <q-btn round color="primary" @click="addPerson" class="fixed" icon="add"/>
+    </q-page-sticky>
   </div>
 </template>
 

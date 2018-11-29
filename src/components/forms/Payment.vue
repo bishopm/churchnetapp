@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     checkpg () {
-      if (!this.allnums.includes(this.form.pgnumber)) {
+      if ((this.form.pgnumber) && (!this.allnums.includes(this.form.pgnumber))) {
         this.form.pgnumber = ''
         this.$q.notify('This number does not exist - please re-enter!')
       }
