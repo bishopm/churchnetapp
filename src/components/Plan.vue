@@ -5,11 +5,11 @@
       <div slot="top" slot-scope="props" class="row flex-center fit">
         <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-secondary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan">View</q-btn>
       </div>
-      <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
+      <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
         <div v-if="props.col.field === 'society'">
           <b>{{JSON.parse(props.row[props.col.field]).society}}</b>&nbsp;<small>{{JSON.parse(props.row[props.col.field]).servicetime}}</small>
         </div>
-        <div v-else v-html="fixup(props.row[props.col.field])"></div>
+        <div v-else :class="'c' + props.col.field" v-html="fixup(props.row[props.col.field])"></div>
       </q-td>
     </q-table>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
@@ -261,5 +261,8 @@ a {
 .q-item {
   padding-top: 3px;
   padding-bottom: 3px;
+}
+td.c0, td.c2, td.c4 {
+  background-color: #e3ffe3;
 }
 </style>
