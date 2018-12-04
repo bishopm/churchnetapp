@@ -20,9 +20,9 @@
     ],
     ]"/>
     <div class="q-mt-sm text-center">
-      <q-btn slot="custom_btn" dense color="secondary" icon="code" label="show HTML" @click="showHtml = !showHtml" />
-      <q-btn class="q-ml-md" slot="custom_btn1" dense color="black" icon="cancel" label="cancel" @click="$router.go(-1)" />
-      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="submit" @click="submit" />
+      <q-btn slot="custom_btn" dense color="secondary" icon="fas fa-code" label="show HTML" @click="showHtml = !showHtml" />
+      <q-btn class="q-ml-md" slot="custom_btn1" dense color="black" icon="fas fa-times" label="cancel" @click="$router.go(-1)" />
+      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="submit" @click="submit" />
     </div>
     <q-input v-if="showHtml" class="q-mt-md" v-model="post.body" type="textarea" float-label="HTML" :max-height="100" rows="7"/>
   </div>

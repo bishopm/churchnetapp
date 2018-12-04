@@ -16,10 +16,7 @@ module.exports = function (ctx) {
     ],
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons' // optional, you are not bound to it
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
+      'fontawesome'
     ],
     supportIE: false,
     build: {
@@ -96,6 +93,7 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
+        'Dialog',
         'Notify',
         'Loading'
       ],
@@ -104,7 +102,7 @@ module.exports = function (ctx) {
           color: 'black'
         }
       },
-      // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
+      iconSet: 'fontawesome'
       // i18n: 'de' // Quasar language
     },
     // animations: 'all' --- includes all animations

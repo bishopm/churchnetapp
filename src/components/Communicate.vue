@@ -39,7 +39,7 @@
       ],
       ]"/>
       <q-input class="q-ma-md" type="textarea" rows="6" v-else v-model="message.textmessage" float-label="Message" />
-      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="check" label="send" @click="submit" />
+      <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="send" @click="submit" />
     </div>
   </div>
 </template>

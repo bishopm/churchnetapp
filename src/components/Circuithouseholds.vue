@@ -10,7 +10,7 @@
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addHousehold" class="fixed" icon="add"/>
+      <q-btn round color="primary" @click="addHousehold" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

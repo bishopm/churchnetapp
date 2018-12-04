@@ -10,7 +10,7 @@
       </q-item>
       <div class="text-center">{{emptymessage}}</div>
     </q-list>
-    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 68px" />
+    <q-btn round color="primary" @click="addUser" class="fixed" icon="fas fa-plus" style="right: 18px; top: 68px" />
   </div>
 </template>
 
