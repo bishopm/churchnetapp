@@ -139,18 +139,6 @@ export default {
       openURL('https://church.net.za/plan/' + this.circuit + '/' + this.planyear + '/' + this.planmonth)
     },
     savechanges () {
-      for (var lll in this.preacherOptions) {
-        if (this.preacherOptions[lll].value === this.form.plan.person.id) {
-          if (this.rows[this.form.rowndx][this.form.rowfld]) {
-            this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
-            this.rows[this.form.rowndx][this.form.rowfld].person.name = this.preacherOptions[lll].abbr
-          } else {
-            this.form.plan.person.name = this.preacherOptions[lll].abbr
-            this.rows[this.form.rowndx][this.form.rowfld] = this.form.plan
-            this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
-          }
-        }
-      }
       this.$axios.post(process.env.API + '/circuits/' + this.circuit + '/updateplan',
         {
           society_id: this.form.plan.society_id,
@@ -165,7 +153,25 @@ export default {
           id: this.form.plan.id
         })
         .then(response => {
-          console.log(response.data)
+          this.form.plan.id = response.data.id
+          for (var lll in this.preacherOptions) {
+            if (this.preacherOptions[lll].value === this.form.plan.person.id) {
+              if (this.rows[this.form.rowndx][this.form.rowfld]) {
+                this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
+                this.rows[this.form.rowndx][this.form.rowfld].person.name = this.preacherOptions[lll].abbr
+                this.rows[this.form.rowndx][this.form.rowfld].id = this.form.plan.id
+              } else {
+                this.form.plan.person.name = this.preacherOptions[lll].abbr
+                this.rows[this.form.rowndx][this.form.rowfld] = this.form.plan
+                this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
+                this.rows[this.form.rowndx][this.form.rowfld].id = this.form.plan.id
+              }
+            } else if (this.form.plan.person.id === '') {
+              this.rows[this.form.rowndx][this.form.rowfld] = this.form.plan
+              this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
+              this.rows[this.form.rowndx][this.form.rowfld].id = this.form.plan.id
+            }
+          }
         })
         .catch(function (error) {
           this.error = error
@@ -204,7 +210,7 @@ export default {
               }
               this.headers.push(newh)
             }
-            this.preacherOptions = []
+            this.preacherOptions = [{label: '', abbr: '', value: ''}]
             for (var ikey in response.data.preachers) {
               var newp = {
                 label: response.data.preachers[ikey].surname + ', ' + response.data.preachers[ikey].title + ' ' + (response.data.preachers[ikey].firstname).substring(0, 1),

@@ -11,7 +11,7 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.servicedate.$error" error-label="The date field is required">
-        <q-datetime float-label="Service date" clearable format="YYYY-MM-DD" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.servicedate.$touch()" :error="$v.form.servicedate.$error" />
+        <q-datetime type="date" float-label="Service date" format="YYYY-MM-DD" format24h format-model="string" v-model="form.servicedate" @blur="$v.form.servicedate.$touch()" :error="$v.form.servicedate.$error" />
       </q-field>
     </div>
     <div class="q-ma-lg text-center">
@@ -48,41 +48,22 @@ export default {
   },
   mounted () {
     this.circuits.push(this.circuit)
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.post(process.env.API + '/societies/search',
-      {
-        search: '',
-        circuits: this.circuits
-      })
-      .then((response) => {
-        for (var skey in response.data) {
-          var newitem = {
-            label: response.data[skey].society,
-            value: response.data[skey].id
-          }
-          this.societyOptions.push(newitem)
-        }
-        if (this.$route.params.action === 'edit') {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.get(process.env.API + '/meetings/' + this.$route.params.id)
-            .then((response) => {
-              this.form.description = response.data.description
-              this.form.society_id = response.data.society_id
-              this.form.meetingdatetime = response.data.datestr
-            })
-            .catch(function (error) {
-              console.log(error)
-            })
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+    if (this.$route.params.action === 'edit') {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(process.env.API + '/weekdays/' + this.$route.params.id)
+        .then((response) => {
+          this.form.description = response.data.description
+          this.form.servicedate = response.data.datestr
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
   },
   methods: {
     deleteme () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-      this.$axios.delete(process.env.API + '/meetings/' + this.$route.params.id)
+      this.$axios.delete(process.env.API + '/weekdays/' + this.$route.params.id)
         .then(response => {
           this.$router.go(-1)
         })
@@ -97,12 +78,11 @@ export default {
       } else {
         if (this.$route.params.action === 'add') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-          this.$axios.post(process.env.API + '/meetings',
+          this.$axios.post(process.env.API + '/weekdays',
             {
-              society_id: this.form.society_id,
               circuit_id: this.circuit,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime
+              servicedate: this.form.servicedate
             })
             .then(response => {
               console.log(response.data)
@@ -113,12 +93,12 @@ export default {
             })
         } else {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-          this.$axios.post(process.env.API + '/meetings/' + this.$route.params.id + '/update',
+          this.$axios.post(process.env.API + '/weekdays/' + this.$route.params.id + '/update',
             {
               society_id: this.form.society_id,
               circuit_id: this.circuit,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime
+              servicedate: this.form.servicedate
             })
             .then(response => {
               console.log(response.data)

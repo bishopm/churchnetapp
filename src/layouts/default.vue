@@ -29,7 +29,7 @@
             <q-item-side icon="fas fa-fw fa-user-friends" />
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
-          <q-list-header class="text-center"><q-icon name="person"></q-icon> Society admin</q-list-header>
+          <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Society admin</q-list-header>
           <q-item to="/giving">
             <q-item-side icon="fas fa-fw fa-coins" />
             <q-item-main label="Giving" sublabel="view giving records" />
@@ -44,7 +44,7 @@
           </q-item>
         </div>
         <q-item v-if="$store.state.user.level < 5" to="/feeds">
-          <q-item-side icon="fas fa-fw fa-share-square" />
+          <q-item-side icon="fas fa-fw fa-book-open" />
           <q-item-main label="Published content" sublabel="current & historic feed content" />
         </q-item>
         <q-item @click.native="logout()">
@@ -62,6 +62,10 @@
         <q-item to="/meetings">
           <q-item-side icon="fas fa-fw fa-calendar-alt" />
           <q-item-main label="Meetings" sublabel="circuit meetings" />
+        </q-item>
+        <q-item to="/midweek">
+          <q-item-side icon="fas fa-fw fa-church" />
+          <q-item-main label="Midweek services" sublabel="Non-Sunday worship services" />
         </q-item>
         <q-item to="/preachers">
           <q-item-side icon="fas fa-fw fa-bible" />
