@@ -1,7 +1,7 @@
 <template>
   <div v-if="preacher.individual" class="text-center layout-padding">
     <p class="caption">{{preacher.individual.title}} {{preacher.individual.firstname}} {{preacher.individual.surname}}
-      <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editPreacher()" name="edit"></q-icon>
+      <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editPreacher()" name="fas fa-edit"></q-icon>
     </p>
     <p v-if="preacher.status !== 'minister'">{{preacher.individual.household.society.society}} Society</p>
     {{preacher.individual.cellphone}}

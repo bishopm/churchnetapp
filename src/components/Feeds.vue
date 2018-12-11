@@ -2,7 +2,7 @@
   <div class="layout-padding">
     <p class="caption text-center">Feeds</p>
     <q-list no-border>
-      <q-item v-if="hasfeeds" v-for="feed in feeds" :key="feed.id" :to="'/feed/edit/' + feed.feedpost.id">
+      <q-item v-if="hasfeeds" v-for="feed in feeds" :key="feed.feedpost.id" :to="'/feed/edit/' + feed.feedpost.id">
         <q-item-main>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-main>
         <q-item-side><small>{{feed.feedpost.publicationdate}}</small></q-item-side>
       </q-item>
@@ -31,7 +31,11 @@ export default {
         circuits: this.$store.state.user.circuits.keys
       })
       .then(response => {
-        this.feeds = response.data
+        for (var dkey in response.data) {
+          for (var fkey in response.data[dkey]) {
+            this.feeds.push(response.data[dkey][fkey])
+          }
+        }
         if (this.feeds.length) {
           this.hasfeeds = true
         } else {

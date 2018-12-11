@@ -5,7 +5,7 @@
     <h4><b>Societies</b></h4>
     <div v-if="user.societies">
       <p v-for="society in user.societies.full" :key="society.id">{{society.society}} ({{society.pivot.permission}})
-        <q-icon class="cursor-pointer" @click.native="deleteperm(society.pivot)" color="secondary" name="delete"></q-icon>
+        <q-icon class="cursor-pointer" @click.native="deleteperm(society.pivot)" color="secondary" name="fas fa-times"></q-icon>
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 5">
@@ -15,7 +15,7 @@
     <h4><b>Circuits</b></h4>
     <div v-if="user.circuits">
       <p v-for="circuit in user.circuits.full" :key="circuit.id">{{circuit.circuit}} ({{circuit.pivot.permission}})
-        <q-icon class="cursor-pointer" @click.native="deleteperm(circuit.pivot)" color="secondary" name="delete"></q-icon>
+        <q-icon class="cursor-pointer" @click.native="deleteperm(circuit.pivot)" color="secondary" name="fas fa-times"></q-icon>
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 4">
@@ -25,7 +25,7 @@
     <h4><b>Districts</b></h4>
     <div v-if="user.districts">
       <p v-for="district in user.districts.full" :key="district.id">{{district.district}} ({{district.pivot.permission}})
-        <q-icon class="cursor-pointer" @click.native="deleteperm(district.pivot)" color="secondary" name="delete"></q-icon>
+        <q-icon class="cursor-pointer" @click.native="deleteperm(district.pivot)" color="secondary" name="fas fa-times"></q-icon>
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 3">

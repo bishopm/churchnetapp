@@ -1,10 +1,10 @@
 <template>
   <div v-if="society" class="text-center layout-padding">
     <h3>
-      {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="edit"></q-icon>
+      {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="fas fa-edit"></q-icon>
     </h3>
     <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
-      <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="edit"></q-icon>
+      <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="fas fa-edit"></q-icon>
     </p>
     <p v-if="noservices">No services have been added yet</p>
     <q-btn v-if="perm === 'edit'" @click="addService()" color="primary">Add a service</q-btn>

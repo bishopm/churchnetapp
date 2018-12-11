@@ -104,8 +104,8 @@ export default {
             circuits: this.$store.state.circuitfilter
           })
           .then(response => {
-            this.$q.notify('Your content has been published!')
-            this.$router.push({name: 'home'})
+            this.$q.notify('Your content has been updated!')
+            this.$router.push({name: 'feeds'})
           })
           .catch(function (error) {
             console.log(error)
@@ -118,8 +118,8 @@ export default {
             circuits: this.$store.state.circuitfilter
           })
           .then(response => {
-            this.$q.notify('Your content has been updated!')
-            this.$router.push({name: 'home'})
+            this.$q.notify('Your content has been published')
+            this.$router.push({name: 'feeds'})
           })
           .catch(function (error) {
             console.log(error)

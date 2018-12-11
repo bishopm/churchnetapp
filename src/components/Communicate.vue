@@ -8,8 +8,8 @@
             <b>{{result.name}}</b> <small class="q-ml-sm">{{result.address}}</small>
           </q-item-main>
           <q-item-side>
-            <q-icon v-if="checkresult(result)" name="check" />
-            <q-icon v-else name="cross" />
+            <q-icon v-if="checkresult(result)" name="fas fa-check" />
+            <q-icon v-else name="fas fa-times" />
           </q-item-side>
         </q-item>
       </q-list>

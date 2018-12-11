@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="household.addressee" class="text-center layout-padding">
-      <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="edit"></q-icon></p>
+      <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="fas fa-edit"></q-icon></p>
       <p class="text-left q-mx-md">
         <q-icon name="fas fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
         <q-icon name="fas fa-phone" color="secondary"></q-icon> {{household.homephone}}

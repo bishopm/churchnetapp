@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-if="group" class="text-center layout-padding">
-      <p class="caption"><b>{{group.groupname}}</b> <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="edit"></q-icon>
-        <small class="q-ml-sm" v-if="soc">{{soc.society}} society</small>
+      <p class="caption"><b>{{group.groupname}}</b>&nbsp;<q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="fas fa-edit"></q-icon>
+        <small class="q-ml-sm" v-if="soc">{{soc.society}}</small>
       </p>
       <q-search v-if="!blocked" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
       <div class="q-ma-md" v-if="search.length > 2">
@@ -10,7 +10,7 @@
       </div>
       <q-item v-for="individual in group.individuals" :key="individual.id">
         <q-item-main>{{individual.firstname}} {{individual.surname}}</q-item-main>
-        <q-item-side color="black" icon="delete" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
+        <q-item-side color="black" icon="fas fa-times" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
       </q-item>
     </div>
     <p class="q-ma-lg text-center caption">{{blocked}}</p>

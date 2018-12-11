@@ -6,7 +6,7 @@
       <q-item v-if="rosters" v-for="roster in rosters" :key="roster.id" @click.native.prevent="showRoster(roster.id)" class="cursor-pointer">
         <q-item-main>{{roster.name}}</q-item-main>
         <q-item-side right>
-          <q-btn @click.capture.stop="editRoster(roster.id)" icon="edit"></q-btn>
+          <q-btn @click.capture.stop="editRoster(roster.id)" icon="fas fa-edit"></q-btn>
         </q-item-side>
       </q-item>
     </q-list>
