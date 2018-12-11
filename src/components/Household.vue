@@ -11,7 +11,7 @@
         <q-tabs color="secondary" no-pane-border align="justify">
           <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
           <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-            <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editIndividual(individual)" name="edit"></q-icon><br>
+            <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editIndividual(individual)" name="fas fa-edit"></q-icon><br>
             <q-icon v-if="individual.cellphone" name="fas fa-phone" color="primary"></q-icon> {{individual.cellphone}}<br>
             <q-icon v-if="individual.email" name="fas fa-envelope" color="primary"></q-icon> {{individual.email}}<br>
             <q-icon v-if="individual.memberstatus" name="fas fa-user-check" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
