@@ -1,12 +1,17 @@
 <template>
   <div class="layout-padding">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{$route.params.action.toUpperCase()}} PREACHER
+      {{$route.params.action.toUpperCase()}} PREACHER / MINISTER
     </div>
     <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></circuitselect>
-    <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name" />
-    <div class="q-ma-md" v-if="individualOptions.length">
-      <q-select float-label="Individual" v-model="form.individual_id" :options="individualOptions"/>
+    <div class="card q-ma-xs bg-lightgrey">
+      <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
+      <div class="q-ma-md" v-if="individualOptions.length">
+        <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+      </div>
+      <div class="text-center" v-if="search.length > 2">
+        <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
+      </div>
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
       <q-field :error="$v.form.fullplan.$error" error-label="This field must be a valid year">
@@ -24,6 +29,19 @@
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn class="q-ml-md" color="black">Delete</q-btn>
     </div>
+    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+      <div class="caption text-center">Add a new individual</div>
+      <q-input float-label="First name" v-model="person.firstname"/>
+      <q-input float-label="Surname" v-model="person.surname"/>
+      <q-input float-label="Cellphone" v-model="person.cellphone"/>
+      <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+      <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+      <q-select float-label="Society" v-model="person.society_id" :options="societyOptions"/>
+      <div class="text-center">
+        <q-btn class="q-mt-md" color="primary" @click="addperson()" label="Save" />
+        <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+      </div>
+    </q-modal>
   </div>
 </template>
 
@@ -34,14 +52,21 @@ export default {
   data () {
     return {
       search: '',
+      circuits: [],
       showdropdown: false,
       individualOptions: [],
+      societyOptions: [],
       roleOptions: [],
+      modalopen: false,
       form: {
         fullplan: '',
         individual_id: '',
         circuit_id: '',
         roles: []
+      },
+      person: {
+        firstname: '',
+        society_id: ''
       }
     }
   },
@@ -148,7 +173,40 @@ export default {
       }
     }
   },
+  addperson () {
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+    this.$axios.post(process.env.API + '/combined',
+      {
+        search: '',
+        circuits: this.circuits
+      })
+      .then(response => {
+        console.log(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  },
   mounted () {
+    this.circuits.push(this.$store.state.select)
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+    this.$axios.post(process.env.API + '/societies/search',
+      {
+        search: '',
+        circuits: this.circuits
+      })
+      .then(response => {
+        for (var sndx in response.data) {
+          var newitem = {
+            label: response.data[sndx].society,
+            value: response.data[sndx].id
+          }
+          this.societyOptions.push(newitem)
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     if (this.$route.params.action === 'edit') {
       this.form = JSON.parse(this.$route.params.preacher)
       var newitem = {
@@ -175,5 +233,10 @@ export default {
   a {
     text-decoration: none;
     color:white;
+  }
+  .bg-lightgrey {
+    background-color: #eee;
+    padding-top:10px;
+    padding-bottom:10px;
   }
 </style>

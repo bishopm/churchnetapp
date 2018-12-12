@@ -59,29 +59,13 @@
     <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
         <q-list-header class="text-center"><q-icon name="fas fa-users"></q-icon> Circuit</q-list-header>
-        <q-item to="/meetings">
-          <q-item-side icon="fas fa-fw fa-calendar-alt" />
-          <q-item-main label="Meetings" sublabel="circuit meetings" />
-        </q-item>
-        <q-item to="/midweek">
-          <q-item-side icon="fas fa-fw fa-church" />
-          <q-item-main label="Midweek services" sublabel="Non-Sunday worship services" />
-        </q-item>
-        <q-item to="/preachers">
-          <q-item-side icon="fas fa-fw fa-bible" />
-          <q-item-main label="Preachers" sublabel="circuit preachers and ministers" />
-        </q-item>
         <q-item to="/plan">
           <q-item-side icon="fas fa-fw fa-microphone" />
-          <q-item-main label="Plan" sublabel="preaching plan" />
+          <q-item-main label="Preaching plan" sublabel="set up preachers and plan" />
         </q-item>
         <q-item to="/societies">
           <q-item-side icon="fas fa-fw fa-map-marker-alt" />
           <q-item-main label="Societies" sublabel="view all societies" />
-        </q-item>
-        <q-item to="/circuithouseholds">
-          <q-item-side icon="fas fa-fw fa-home" />
-          <q-item-main label="Households" sublabel="view all circuit households" />
         </q-item>
       </div>
       <div v-if="$store.getters.hasEntity('districts')">

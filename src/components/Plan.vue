@@ -1,29 +1,43 @@
 <template>
-  <div class="layout-padding">
-    <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
-    <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
-      <div slot="top" slot-scope="props" class="row flex-center fit">
-        <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-secondary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan">View</q-btn>
-      </div>
-      <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
-        <div v-if="props.col.field === 'society'">
-          <b>{{JSON.parse(props.row[props.col.field]).society}}</b>&nbsp;<small>{{JSON.parse(props.row[props.col.field]).servicetime}}</small>
+  <div>
+    <q-tabs position="top" color="secondary">
+      <q-tab default slot="title" name="tab-1" icon="fas fa-calendar-alt" label="Plan"/>
+      <q-tab slot="title" name="tab-2" icon="fas fa-cogs" label="Settings"/>
+      <q-tab-pane class="no-border" name="tab-1">
+        <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
+        <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
+          <div slot="top" slot-scope="props" class="row flex-center fit">
+            <q-btn class="q-mr-md bg-tertiary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-tertiary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan" label="View"></q-btn>
+          </div>
+          <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
+            <div v-if="props.col.field === 'society'">
+              <b>{{JSON.parse(props.row[props.col.field]).society}}</b>&nbsp;<small>{{JSON.parse(props.row[props.col.field]).servicetime}}</small>
+            </div>
+            <div v-else :class="'c' + props.col.field" v-html="fixup(props.row[props.col.field])"></div>
+          </q-td>
+        </q-table>
+        <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+          <h4>{{form.societyname}}</h4>
+          <q-input readonly float-label="Service date" v-model="form.servicedate"/>
+          <div class="q-my-md">
+            <q-select float-label="Preacher" v-model="form.plan.person.id" :options="preacherOptions"/>
+          </div>
+          <div class="q-my-md">
+            <q-select float-label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
+          </div>
+          <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
+          <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+        </q-modal>
+      </q-tab-pane>
+      <q-tab-pane class="no-border" name="tab-2">
+        <div class="text-center">
+          Click any of the buttons below to add or edit circuit preachers, meetings or midweek services
+          <q-btn class="q-my-md" color="primary" icon="fas fa-user" label="Preachers & Ministers" to="preachers"></q-btn><br>
+          <q-btn class="q-my-md" color="primary" icon="fas fa-calendar" label="Circuit meetings" to="meetings"></q-btn><br>
+          <q-btn class="q-my-md" color="primary" icon="fas fa-church" label="Midweek services" to="midweek"></q-btn>
         </div>
-        <div v-else :class="'c' + props.col.field" v-html="fixup(props.row[props.col.field])"></div>
-      </q-td>
-    </q-table>
-    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
-      <h4>{{form.societyname}}</h4>
-      <q-input readonly float-label="Service date" v-model="form.servicedate"/>
-      <div class="q-my-md">
-        <q-select float-label="Preacher" v-model="form.plan.person.id" :options="preacherOptions"/>
-      </div>
-      <div class="q-my-md">
-        <q-select float-label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
-      </div>
-      <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
-      <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
-    </q-modal>
+      </q-tab-pane>
+    </q-tabs>
   </div>
 </template>
 
@@ -270,5 +284,9 @@ a {
 }
 td.c0, td.c2, td.c4 {
   background-color: #e3ffe3;
+}
+.q-tabs {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 </style>
