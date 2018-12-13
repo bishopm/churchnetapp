@@ -20,6 +20,7 @@ const routes = [
       { name: 'household', path: '/households/:id', component: () => import('components/Household'), meta: {auth: true} },
       { name: 'households', path: '/households', component: () => import('components/Households'), meta: {auth: true} },
       { name: 'individualform', path: '/individual/:action/:id?', component: () => import('components/forms/Individual'), meta: {auth: true} },
+      { name: 'leaders', path: '/leaders/:id', component: () => import('components/Leaders'), meta: {auth: true} },
       { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: false} },
       { name: 'meetingform', path: '/meeting/:circuit/:action/:id?', component: () => import('components/forms/Meeting'), meta: {auth: true} },
       { name: 'meetings', path: '/meetings', component: () => import('components/Meetings'), meta: {auth: true} },

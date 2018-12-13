@@ -33,6 +33,7 @@
         <div class="text-center">
           Click any of the buttons below to add or edit circuit preachers, meetings or midweek services
           <q-btn class="q-my-md" color="primary" icon="fas fa-user" label="Preachers & Ministers" to="preachers"></q-btn><br>
+          <q-btn class="q-my-md" color="primary" icon="fas fa-users" label="Circuit leadership" :to="'leaders/' + circuit"></q-btn><br>
           <q-btn class="q-my-md" color="primary" icon="fas fa-calendar" label="Circuit meetings" to="meetings"></q-btn><br>
           <q-btn class="q-my-md" color="primary" icon="fas fa-church" label="Midweek services" to="midweek"></q-btn>
         </div>

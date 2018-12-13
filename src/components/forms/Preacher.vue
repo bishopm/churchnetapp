@@ -31,12 +31,20 @@
     </div>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <div class="caption text-center">Add a new individual</div>
-      <q-input float-label="First name" v-model="person.firstname"/>
-      <q-input float-label="Surname" v-model="person.surname"/>
-      <q-input float-label="Cellphone" v-model="person.cellphone"/>
+      <q-field v-if="modalopen" :error="$v.person.firstname.$error" error-label="This field is required">
+        <q-input float-label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
+      </q-field>
+      <q-field v-if="modalopen" :error="$v.person.surname.$error" error-label="This field is required">
+        <q-input float-label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
+      </q-field>
+      <q-field v-if="modalopen" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
+        <q-input float-label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
+      </q-field>
       <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
       <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
-      <q-select float-label="Society" v-model="person.society_id" :options="societyOptions"/>
+      <q-field v-if="modalopen" :error="$v.person.society_id.$error" error-label="This field is required">
+        <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
+      </q-field>
       <div class="text-center">
         <q-btn class="q-mt-md" color="primary" @click="addperson()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
@@ -66,7 +74,11 @@ export default {
       },
       person: {
         firstname: '',
-        society_id: ''
+        surname: '',
+        title: 'Ms',
+        society_id: '',
+        cellphone: '',
+        sex: 'female'
       }
     }
   },
@@ -76,17 +88,11 @@ export default {
       individual_id: { required },
       roles: { required }
     },
-    if (modalopen) {
-      return {
-        person: {
-          firstname: { required },
-          surname: { required },
-          cellphone: { numeric },
-          society_id: { required },
-          sex: { required },
-          title: { required }
-        }
-      }
+    person: {
+      firstname: { required },
+      surname: { required },
+      cellphone: { numeric },
+      society_id: { required }
     }
   },
   components: {
@@ -166,11 +172,19 @@ export default {
           .then(response => {
             this.individualOptions = []
             for (var ikey in response.data) {
-              var newitem = {
-                label: response.data[ikey].surname + ', ' + response.data[ikey].title + ' ' + response.data[ikey].firstname + ' (' + response.data[ikey].household.society.society + ')',
-                value: response.data[ikey].id
+              if (response.data[ikey.title]) {
+                var newitem1 = {
+                  label: response.data[ikey].surname + ', ' + response.data[ikey].title + ' ' + response.data[ikey].firstname + ' (' + response.data[ikey].household.society.society + ')',
+                  value: response.data[ikey].id
+                }
+                this.individualOptions.push(newitem1)
+              } else {
+                var newitem2 = {
+                  label: response.data[ikey].surname + ', ' + response.data[ikey].firstname + ' (' + response.data[ikey].household.society.society + ')',
+                  value: response.data[ikey].id
+                }
+                this.individualOptions.push(newitem2)
               }
-              this.individualOptions.push(newitem)
             }
             if (this.individualOptions.length) {
               this.form.individual_id = this.individualOptions[0].value
@@ -185,21 +199,39 @@ export default {
         this.individualOptions = []
         this.form.individual_id = ''
       }
+    },
+    addperson () {
+      this.$v.person.$touch()
+      if (this.$v.person.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/combined',
+          {
+            firstname: this.person.firstname,
+            surname: this.person.surname,
+            phone: this.person.cellphone,
+            society_id: this.person.society_id,
+            sex: this.person.sex,
+            title: this.person.title,
+            adduser: 'no'
+          })
+          .then(response => {
+            this.search = ''
+            this.modalopen = false
+            this.$q.notify('New individual has been added')
+            var newp = {
+              label: response.data.surname + ', ' + response.data.firstname + ' (' + response.data.society + ')',
+              value: response.data.id
+            }
+            this.individualOptions.push(newp)
+            this.form.individual_id = response.data.id
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
     }
-  },
-  addperson () {
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.post(process.env.API + '/combined',
-      {
-        search: '',
-        circuits: this.circuits
-      })
-      .then(response => {
-        console.log(response.data)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
   },
   mounted () {
     this.circuits.push(this.$store.state.select)

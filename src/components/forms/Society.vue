@@ -157,7 +157,6 @@ export default {
                 lng: this.society.longitude
               })
           }
-          console.log(latlng)
           localStorage.setItem('CHURCHNET_newLat', latlng.lat())
           localStorage.setItem('CHURCHNET_newLng', latlng.lng())
           this.map = new window.google.maps.Map(document.getElementById('map'), {
