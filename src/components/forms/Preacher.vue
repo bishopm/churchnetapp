@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { between } from 'vuelidate/lib/validators'
+import { between, required, numeric } from 'vuelidate/lib/validators'
 import circuitselect from './../Circuitselect'
 export default {
   data () {
@@ -72,7 +72,21 @@ export default {
   },
   validations: {
     form: {
-      fullplan: { between: between(1900, 2050) }
+      fullplan: { between: between(1900, 2050) },
+      individual_id: { required },
+      roles: { required }
+    },
+    if (modalopen) {
+      return {
+        person: {
+          firstname: { required },
+          surname: { required },
+          cellphone: { numeric },
+          society_id: { required },
+          sex: { required },
+          title: { required }
+        }
+      }
     }
   },
   components: {
