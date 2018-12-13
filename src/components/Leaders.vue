@@ -12,29 +12,50 @@
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
       <q-btn round color="primary" @click="addLeader" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
-    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
-      <h4 class="text-center">{{form.action}} circuit leader</h4>
+    <q-modal minimized v-model="modalopen" content-css="padding: 35px">
+      <h4 class="text-center"><b>{{form.action}} circuit leader</b></h4>
       <p v-if="form.action === 'Edit'" class="caption text-center">{{leadername}}</p>
-      <div v-if="form.action === 'Add'" class="card q-ma-xs bg-lightgrey">
-        <q-select multiple v-model="form.tags" float-label="Role" :options="tagOptions" />
+      <q-select class="q-mb-md" multiple v-model="form.tags" float-label="Role" :options="tagOptions" />
+      <div v-if="form.action === 'Add' && !addnew" class="card bg-lightgrey">
         <q-search ref="search" @input="searchdb" v-model="search" placeholder="search by name" />
-        <div class="q-ma-md" v-if="individualOptions.length">
+        <div v-if="individualOptions.length">
           <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
         </div>
-        <div class="text-center" v-if="search.length > 2">
-          <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
+        <div class="q-my-md text-center" v-if="search.length > 2">
+          <q-btn color="secondary" @click="addnew=true" label="Or add a new person"></q-btn>
         </div>
       </div>
-      <q-btn class="q-mt-md q-ml-md" color="primary" @click="modalopen = false" label="OK" />
-      <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+      <div v-if="addnew">
+        <q-field :error="$v.person.firstname.$error" error-label="This field is required">
+          <q-input float-label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
+        </q-field>
+        <q-field :error="$v.person.surname.$error" error-label="This field is required">
+          <q-input float-label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
+        </q-field>
+        <q-field :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
+          <q-input float-label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
+        </q-field>
+        <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+        <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+        <q-field :error="$v.person.society_id.$error" error-label="This field is required">
+          <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
+        </q-field>
+      </div>
+      <div class="text-center">
+        <q-btn class="q-mt-md q-ml-md" color="primary" @click="saveChanges" label="OK" />
+        <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+      </div>
     </q-modal>
   </div>
 </template>
 
 <script>
+import { required, numeric } from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
+      addnew: false,
+      circuits: [],
       leaders: [],
       search: '',
       tagOptions: [],
@@ -46,7 +67,27 @@ export default {
         action: '',
         tags: []
       },
+      person: {
+        firstname: '',
+        surname: '',
+        title: 'Ms',
+        society_id: '',
+        cellphone: '',
+        sex: 'female'
+      },
       modalopen: false
+    }
+  },
+  validations: {
+    form: {
+      individual_id: { required },
+      tags: { required }
+    },
+    person: {
+      firstname: { required },
+      surname: { required },
+      cellphone: { numeric },
+      society_id: { required }
     }
   },
   mounted () {
@@ -61,6 +102,25 @@ export default {
           }
           this.tagOptions.push(newitem)
         }
+        this.circuits.push(this.$route.params.id)
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/societies/search',
+          {
+            search: '',
+            circuits: this.circuits
+          })
+          .then(response => {
+            for (var sndx in response.data) {
+              var newitem = {
+                label: response.data[sndx].society,
+                value: response.data[sndx].id
+              }
+              this.societyOptions.push(newitem)
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
       })
       .catch(function (error) {
         console.log(error)
@@ -72,9 +132,12 @@ export default {
       this.form.tags = []
       this.leadername = ''
       this.form.action = 'Add'
+      this.addnew = false
+      this.search = ''
       this.modalopen = true
     },
     editLeader (leader) {
+      this.addnew = false
       this.form.individual_id = leader.id
       this.leadername = leader.title + ' ' + leader.firstname + ' ' + leader.surname
       this.form.tags = []
@@ -84,6 +147,17 @@ export default {
       this.form.action = 'Edit'
       this.modalopen = true
     },
+    saveChanges () {
+      if (this.form.action === 'Add') {
+        if (this.addnew) {
+          console.log('Add new indiv with appropriate tag')
+        } else {
+          console.log('Update existing indiv with new tag')
+        }
+      } else {
+        console.log('Change existing indiv and sync tags')
+      }
+    },
     searchdb () {
       if (this.search.length > 2) {
         this.$q.loading.show()
@@ -91,7 +165,7 @@ export default {
         this.$axios.post(process.env.API + '/individuals/searchnp',
           {
             search: this.search,
-            circuit: this.$store.state.select
+            circuit: this.$route.params.id
           })
           .then(response => {
             this.individualOptions = []
@@ -130,4 +204,16 @@ export default {
 </script>
 
 <style>
+.bg-lightgrey {
+  background-color: #eee;
+  padding-top:10px;
+  padding-bottom:10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+h4 {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
 </style>
