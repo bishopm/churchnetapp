@@ -15,7 +15,9 @@
     <q-modal minimized v-model="modalopen" content-css="padding: 35px">
       <h4 class="text-center"><b>{{form.action}} circuit leader</b></h4>
       <p v-if="form.action === 'Edit'" class="caption text-center">{{leadername}}</p>
-      <q-select class="q-mb-md" multiple v-model="form.tags" float-label="Role" :options="tagOptions" />
+      <div class="bg-white">
+        <q-select class="q-mb-md" multiple v-model="form.tags" float-label="Role" :options="tagOptions" />
+      </div>
       <div v-if="form.action === 'Add' && !addnew" class="card bg-lightgrey">
         <q-search ref="search" @input="searchdb" v-model="search" placeholder="search by name" />
         <div v-if="individualOptions.length">
@@ -26,24 +28,28 @@
         </div>
       </div>
       <div v-if="addnew">
-        <q-field :error="$v.person.firstname.$error" error-label="This field is required">
+        <q-field class="bg-white" :error="$v.person.firstname.$error" error-label="This field is required">
           <q-input float-label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
         </q-field>
-        <q-field :error="$v.person.surname.$error" error-label="This field is required">
+        <q-field class="bg-white" :error="$v.person.surname.$error" error-label="This field is required">
           <q-input float-label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
         </q-field>
-        <q-field :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
+        <q-field class="bg-white" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
           <q-input float-label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
         </q-field>
-        <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
-        <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
-        <q-field :error="$v.person.society_id.$error" error-label="This field is required">
+        <div class="bg-white">
+          <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+        </div>
+        <div class="bg-white">
+          <q-select class="bg-white" float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+        </div>
+        <q-field class="bg-white" :error="$v.person.society_id.$error" error-label="This field is required">
           <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
         </q-field>
       </div>
       <div class="text-center">
-        <q-btn class="q-mt-md q-ml-md" color="primary" @click="saveChanges" label="OK" />
-        <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+        <q-btn class="q-ml-md" color="primary" @click="saveChanges" label="OK" />
+        <q-btn class="q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
       </div>
     </q-modal>
   </div>
@@ -148,14 +154,44 @@ export default {
       this.modalopen = true
     },
     saveChanges () {
-      if (this.form.action === 'Add') {
-        if (this.addnew) {
-          console.log('Add new indiv with appropriate tag')
-        } else {
-          console.log('Update existing indiv with new tag')
-        }
+      this.$v.form.$touch()
+      if (this.$v.form.$error) {
+        this.$q.notify('Please check for errors!')
       } else {
-        console.log('Change existing indiv and sync tags')
+        if (this.form.action === 'Add') {
+          this.$v.person.$touch()
+          if (this.$v.person.$error) {
+            this.$q.notify('Please check for errors!')
+          } else {
+            console.log('Add new indiv with appropriate tag')
+            this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+            this.$axios.post(process.env.API + '/leaders',
+              {
+                leader: this.form,
+                individual: this.person,
+                addnew: this.addnew
+              })
+              .then(response => {
+                console.log(response.data)
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+          }
+        } else {
+          console.log('Change existing indiv and sync tags')
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(process.env.API + '/leaders',
+            {
+              leader: this.form
+            })
+            .then(response => {
+              console.log(response.data)
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
       }
     },
     searchdb () {
@@ -206,8 +242,14 @@ export default {
 <style>
 .bg-lightgrey {
   background-color: #eee;
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top: 0px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+.bg-white {
+  background-color: #fff;
   padding-left: 10px;
   padding-right: 10px;
 }
