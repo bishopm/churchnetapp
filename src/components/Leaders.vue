@@ -41,7 +41,7 @@
           <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
         </div>
         <div class="bg-white">
-          <q-select class="bg-white" float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+          <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
         </div>
         <q-field class="bg-white" :error="$v.person.society_id.$error" error-label="This field is required">
           <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { required, numeric } from 'vuelidate/lib/validators'
+import { required, requiredIf, numeric } from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
@@ -86,8 +86,9 @@ export default {
   },
   validations: {
     form: {
-      individual_id: { required },
-      tags: { required }
+      individual_id: { required: requiredIf(function (a) {
+        return this.addnew === false
+      })}
     },
     person: {
       firstname: { required },
@@ -97,42 +98,46 @@ export default {
     }
   },
   mounted () {
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.get(process.env.API + '/leaders/' + this.$route.params.id)
-      .then(response => {
-        this.leaders = response.data.individuals
-        for (var tkey in response.data.tags) {
-          var newitem = {
-            label: response.data.tags[tkey].name,
-            value: response.data.tags[tkey].tag_id
-          }
-          this.tagOptions.push(newitem)
-        }
-        this.circuits.push(this.$route.params.id)
-        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(process.env.API + '/societies/search',
-          {
-            search: '',
-            circuits: this.circuits
-          })
-          .then(response => {
-            for (var sndx in response.data) {
-              var newitem = {
-                label: response.data[sndx].society,
-                value: response.data[sndx].id
-              }
-              this.societyOptions.push(newitem)
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+    this.getLeaders()
   },
   methods: {
+    getLeaders () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.get(process.env.API + '/leaders/' + this.$route.params.id)
+        .then(response => {
+          this.leaders = response.data.individuals
+          this.tagOptions = []
+          for (var tkey in response.data.tags) {
+            var newitem = {
+              label: response.data.tags[tkey].name,
+              value: response.data.tags[tkey].tag_id
+            }
+            this.tagOptions.push(newitem)
+          }
+          this.circuits.push(this.$route.params.id)
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.post(process.env.API + '/societies/search',
+            {
+              search: '',
+              circuits: this.circuits
+            })
+            .then(response => {
+              for (var sndx in response.data) {
+                var newitem = {
+                  label: response.data[sndx].society,
+                  value: response.data[sndx].id
+                }
+                this.societyOptions.push(newitem)
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
     addLeader () {
       this.form.individual_id = ''
       this.form.tags = []
@@ -160,10 +165,9 @@ export default {
       } else {
         if (this.form.action === 'Add') {
           this.$v.person.$touch()
-          if (this.$v.person.$error) {
+          if (this.$v.person.$error && this.addnew) {
             this.$q.notify('Please check for errors!')
           } else {
-            console.log('Add new indiv with appropriate tag')
             this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
             this.$axios.post(process.env.API + '/leaders',
               {
@@ -172,7 +176,9 @@ export default {
                 addnew: this.addnew
               })
               .then(response => {
-                console.log(response.data)
+                this.getLeaders()
+                this.$q.notify('Leader has been added')
+                this.modalopen = false
               })
               .catch(function (error) {
                 console.log(error)
@@ -186,7 +192,9 @@ export default {
               leader: this.form
             })
             .then(response => {
-              console.log(response.data)
+              this.getLeaders()
+              this.$q.notify('Leader has been updated')
+              this.modalopen = false
             })
             .catch(function (error) {
               console.log(error)
@@ -198,7 +206,7 @@ export default {
       if (this.search.length > 2) {
         this.$q.loading.show()
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(process.env.API + '/individuals/searchnp',
+        this.$axios.post(process.env.API + '/individuals/search',
           {
             search: this.search,
             circuit: this.$route.params.id
@@ -219,9 +227,6 @@ export default {
                 }
                 this.individualOptions.push(newitem2)
               }
-            }
-            if (this.individualOptions.length) {
-              this.form.individual_id = this.individualOptions[0].value
             }
             this.$q.loading.hide()
           })

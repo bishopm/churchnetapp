@@ -1,7 +1,7 @@
 <template>
   <div>
-    <q-tabs position="top" color="secondary">
-      <q-tab default slot="title" name="tab-1" icon="fas fa-calendar-alt" label="Plan"/>
+    <q-tabs position="top" color="secondary" align="justify">
+      <q-tab default slot="title" name="tab-1" icon="fas fa-calendar-alt" label="Plan" />
       <q-tab slot="title" name="tab-2" icon="fas fa-cogs" label="Settings"/>
       <q-tab-pane class="no-border" name="tab-1">
         <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
@@ -31,7 +31,7 @@
       </q-tab-pane>
       <q-tab-pane class="no-border" name="tab-2">
         <div class="text-center">
-          Click any of the buttons below to add or edit circuit preachers, meetings or midweek services
+          <p>Click any of the buttons below to add or edit circuit preachers, meetings or midweek services</p>
           <q-btn class="q-my-md" color="primary" icon="fas fa-user" label="Preachers & Ministers" to="preachers"></q-btn><br>
           <q-btn class="q-my-md" color="primary" icon="fas fa-users" label="Circuit leadership" :to="'leaders/' + circuit"></q-btn><br>
           <q-btn class="q-my-md" color="primary" icon="fas fa-calendar" label="Circuit meetings" to="meetings"></q-btn><br>
