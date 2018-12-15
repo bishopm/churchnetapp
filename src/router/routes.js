@@ -6,6 +6,7 @@ const routes = [
     children: [
       { name: 'circuit', path: '/circuits/:id', component: () => import('components/Circuit'), meta: {auth: true} },
       { name: 'circuits', path: '/circuits', component: () => import('components/Circuits'), meta: {auth: true} },
+      { name: 'circuitsettings', path: '/circuitsettings', component: () => import('components/CircuitSettings'), meta: {auth: true} },
       { name: 'communicate', path: '/communicate', component: () => import('components/Communicate'), meta: {auth: true} },
       { name: 'feeds', path: '/feeds', component: () => import('components/Feeds'), meta: {auth: true} },
       { name: 'feedform', path: '/feed/:action/:id?', component: () => import('components/forms/Feed'), meta: {auth: true} },
@@ -39,6 +40,7 @@ const routes = [
       { name: 'society', path: '/societies/:id', component: () => import('components/Society'), meta: {auth: true} },
       { name: 'societyform', path: '/societies/:action', component: () => import('components/forms/Society'), meta: {auth: true} },
       { name: 'societies', path: '/societies', component: () => import('components/Societies'), meta: {auth: true} },
+      { name: 'societysettings', path: '/societysettings', component: () => import('components/SocietySettings'), meta: {auth: true} },
       { name: 'statistics', path: '/statistics', component: () => import('components/Statistics'), meta: {auth: true} },
       { name: 'statistic', path: '/statistics/:society/:yr', component: () => import('components/Statistic'), meta: {auth: true} },
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: {auth: true} },

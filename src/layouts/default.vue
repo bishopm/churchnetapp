@@ -47,6 +47,11 @@
           <q-item-side icon="fas fa-fw fa-book-open" />
           <q-item-main label="Published content" sublabel="current & historic feed content" />
         </q-item>
+        <q-list-header class="text-center"><q-icon name="fas fa-cogs"></q-icon> Settings</q-list-header>
+        <q-item v-if="$store.state.user.level < 5" to="/societysettings">
+          <q-item-side icon="fas fa-fw fa-church" />
+          <q-item-main label="Society settings" sublabel="admin settings for societies" />
+        </q-item>
         <q-item @click.native="logout()">
           <q-item-side icon="fas fa-fw fa-sign-out-alt" />
           <q-item-main label="Log out" sublabel="log out of ChurchNet" />
@@ -66,6 +71,10 @@
         <q-item to="/societies">
           <q-item-side icon="fas fa-fw fa-map-marker-alt" />
           <q-item-main label="Societies" sublabel="view all societies" />
+        </q-item>
+        <q-item to="/circuitsettings">
+          <q-item-side icon="fas fa-fw fa-users-cog" />
+          <q-item-main label="Circuit settings" sublabel="view circuit settings" />
         </q-item>
       </div>
       <div v-if="$store.getters.hasEntity('districts')">

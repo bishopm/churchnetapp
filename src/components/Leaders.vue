@@ -88,6 +88,9 @@ export default {
     form: {
       individual_id: { required: requiredIf(function (a) {
         return this.addnew === false
+      })},
+      tags: { required: requiredIf(function (b) {
+        return this.addnew === true
       })}
     },
     person: {
