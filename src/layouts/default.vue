@@ -30,6 +30,10 @@
             <q-item-main label="Households" sublabel="view all households" />
           </q-item>
           <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Society admin</q-list-header>
+          <q-item to="/diary/society">
+            <q-item-side icon="fas fa-fw fa-calendar" />
+            <q-item-main label="Society diary" sublabel="add or edit diary entries" />
+          </q-item>
           <q-item to="/giving">
             <q-item-side icon="fas fa-fw fa-coins" />
             <q-item-main label="Giving" sublabel="view giving records" />
@@ -64,6 +68,10 @@
     <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
         <q-list-header class="text-center"><q-icon name="fas fa-users"></q-icon> Circuit</q-list-header>
+        <q-item to="/diary/circuit">
+          <q-item-side icon="fas fa-fw fa-calendar" />
+          <q-item-main label="Circuit diary" sublabel="add or edit diary entries" />
+        </q-item>
         <q-item to="/plan">
           <q-item-side icon="fas fa-fw fa-microphone" />
           <q-item-main label="Preaching plan" sublabel="set up preachers and plan" />
@@ -82,6 +90,10 @@
         <q-item to="/circuits">
           <q-item-side icon="fas fa-fw fa-sitemap" />
           <q-item-main label="Circuits" sublabel="view all circuits" />
+        </q-item>
+        <q-item to="/diary/district">
+          <q-item-side icon="fas fa-fw fa-calendar" />
+          <q-item-main label="District diary" sublabel="add or edit diary entries" />
         </q-item>
       </div>
       <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Administration</q-list-header>

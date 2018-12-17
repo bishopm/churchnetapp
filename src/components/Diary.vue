@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-list class="no-border">
-      <p class="q-mt-md caption text-center">Circuit meetings</p>
+      <p class="q-mt-md caption text-center">{{$route.params.scope.charAt(0).toUpperCase() + $route.params.scope.slice(1)}} Diary</p>
       <circuitselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></circuitselect>
       <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + meeting.circuit_id + '/edit/' + meeting.id">
         <q-item-main>{{meeting.description}}&nbsp;<small>({{meeting.society.society}})</small></q-item-main>
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     addMeeting () {
-      this.$router.push({name: 'meetingform', params: { action: 'add', circuit: this.$store.state.select }})
+      this.$router.push({name: 'diaryform', params: { action: 'add', entity: this.$store.state.select }})
     },
     showme () {
       return this.$store.state.user.circuits.keys.length

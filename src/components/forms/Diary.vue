@@ -2,7 +2,7 @@
   <div class="layout-padding">
     <p class="caption text-center" v-if="circuit">{{circuit.circuit}}</p>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{title}} a meeting
+      {{title}} a diary entry
     </div>
     <div class="q-mx-md">
       <q-field :error="$v.form.description.$error" error-label="Enter a description of the meeting">
