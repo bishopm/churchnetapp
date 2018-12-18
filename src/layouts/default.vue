@@ -34,7 +34,7 @@
             <q-item-side icon="fas fa-fw fa-calendar" />
             <q-item-main label="Society diary" sublabel="add or edit diary entries" />
           </q-item>
-          <q-item to="/giving">
+          <q-item v-if="givingadmin" to="/giving">
             <q-item-side icon="fas fa-fw fa-coins" />
             <q-item-main label="Giving" sublabel="view giving records" />
           </q-item>
@@ -47,12 +47,12 @@
             <q-item-main label="Statistics" sublabel="view worship service statistics" />
           </q-item>
         </div>
-        <q-item v-if="$store.state.user.level < 5" to="/feeds">
+        <q-item to="/feeds">
           <q-item-side icon="fas fa-fw fa-book-open" />
           <q-item-main label="Published content" sublabel="current & historic feed content" />
         </q-item>
         <q-list-header class="text-center"><q-icon name="fas fa-cogs"></q-icon> Settings</q-list-header>
-        <q-item v-if="$store.state.user.level < 5" to="/societysettings">
+        <q-item v-if="societyadmin" to="/societysettings">
           <q-item-side icon="fas fa-fw fa-church" />
           <q-item-main label="Society settings" sublabel="admin settings for societies" />
         </q-item>
@@ -80,7 +80,7 @@
           <q-item-side icon="fas fa-fw fa-map-marker-alt" />
           <q-item-main label="Societies" sublabel="view all societies" />
         </q-item>
-        <q-item to="/circuitsettings">
+        <q-item v-if="circuitadmin" to="/circuitsettings">
           <q-item-side icon="fas fa-fw fa-users-cog" />
           <q-item-main label="Circuit settings" sublabel="view circuit settings" />
         </q-item>
@@ -117,6 +117,32 @@ export default {
       leftDrawerOpen: this.$q.platform.is.desktop,
       rightDrawerOpen: this.$q.platform.is.desktop,
       version: process.env.VERSION
+    }
+  },
+  computed: {
+    societyadmin () {
+      for (var sa in this.$store.state.user.societies) {
+        if (this.$store.state.user.societies[sa] === 'admin') {
+          return true
+        }
+      }
+      return false
+    },
+    circuitadmin () {
+      for (var ca in this.$store.state.user.circuits) {
+        if (this.$store.state.user.circuits[ca] === 'admin') {
+          return true
+        }
+      }
+      return false
+    },
+    givingadmin () {
+      for (var ga in this.$store.state.user.societies.full) {
+        if (this.$store.state.user.societies.full[ga].giving_user === this.$store.state.user.id) {
+          return true
+        }
+      }
+      return false
     }
   },
   mounted () {

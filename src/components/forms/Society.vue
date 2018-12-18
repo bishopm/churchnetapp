@@ -1,7 +1,7 @@
 <template>
   <div class="text-center layout-padding">
     <p class="caption" v-if="title">{{title}} a society</p>
-    <circuitselect :perms="['edit','admin']"></circuitselect>
+    <circuitselect :perms="['editor','admin']"></circuitselect>
     <div id="map" class="q-mt-md"></div>
     <p>Drag the marker to the correct position</p>
     <form>

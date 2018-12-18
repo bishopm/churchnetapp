@@ -3,7 +3,7 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} USER
     </div>
-    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></circuitselect>
+    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
     <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name for an existing circuit member" />
     <div class="q-ma-md" v-if="individualOptions.length">
       <q-select @input="populateIndiv()" float-label="Individual" v-model="form.indiv" :options="individualOptions"/>

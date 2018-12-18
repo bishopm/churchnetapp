@@ -2,7 +2,7 @@
   <div>
     <q-list class="no-border">
       <p class="q-mt-md caption text-center">Midweek services</p>
-      <circuitselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></circuitselect>
+      <circuitselect class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></circuitselect>
       <q-item v-if="services" v-for="service in services" :key="service.id" :to="'/midweek/' + service.circuit_id + '/edit/' + service.id">
         <q-item-main>{{service.description}}</q-item-main>
         <q-item-side>

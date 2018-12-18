@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="caption text-center">All payments</p>
-    <societyselect class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" :showme="1" initial="all"></societyselect>
+    <societyselect class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" :showme="1" initial="all"></societyselect>
     <q-table class="q-mx-md" :pagination.sync="pagination" :data="rows" :columns="columns" row-key="name"/>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
       <q-btn round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>

@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    <q-tabs position="top" color="primary">
+    <q-tabs align="justify" position="top" color="primary">
       <q-tab default slot="title" name="tab-1" icon="fas fa-unlock" label="Login"/>
       <q-tab slot="title" name="tab-2" icon="fas fa-hand-point-up" label="Register"/>
       <q-tab-pane class="no-border" name="tab-1">

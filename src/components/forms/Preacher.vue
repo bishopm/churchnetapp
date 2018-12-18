@@ -3,7 +3,7 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} PREACHER / MINISTER
     </div>
-    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></circuitselect>
+    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
     <div class="card q-ma-xs bg-lightgrey">
       <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
       <div class="q-ma-md" v-if="individualOptions.length">

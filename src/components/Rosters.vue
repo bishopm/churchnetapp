@@ -2,7 +2,7 @@
   <div class="layout-padding">
     <q-list class="no-border">
       <p class="caption text-center">Rosters</p>
-      <societyselect @altered="displayrosters" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+      <societyselect @altered="displayrosters" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
       <q-item v-if="rosters" v-for="roster in rosters" :key="roster.id" @click.native.prevent="showRoster(roster.id)" class="cursor-pointer">
         <q-item-main>{{roster.name}}</q-item-main>
         <q-item-side right>

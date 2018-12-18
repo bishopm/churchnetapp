@@ -3,7 +3,7 @@
     <div class="q-mx-md text-center caption">
       {{$route.params.action.charAt(0).toUpperCase() + $route.params.action.slice(1)}} group
     </div>
-    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
     <div class="q-ma-md">
       <q-field :error="$v.form.groupname.$error" error-label="The group name is required">
         <q-input float-label="Group name" v-model="form.groupname" @blur="$v.form.groupname.$touch()" :error="$v.form.groupname.$error" />

@@ -16,7 +16,7 @@
     </div>
     <div v-else>
       <p class="caption text-center">Send a message</p>
-      <societyselect altered="searchdb" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+      <societyselect altered="searchdb" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
       <q-select class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
       <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
       <q-field class="q-ma-md" :error="$v.message.title.$error" error-label="Please set an email title">

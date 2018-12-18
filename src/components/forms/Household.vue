@@ -3,9 +3,9 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
-    <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
     <div class="q-ma-md" v-if="$route.params.action === 'add' && $route.params.scope === 'circuit'">
-      <circuitselect @altered="setsocieties" :perms="['edit','admin']" showme="1"></circuitselect>
+      <circuitselect @altered="setsocieties" :perms="['editor','admin']" showme="1"></circuitselect>
       <q-select float-label="Society" v-model="society" :options="csocietyOptions" @input="setMap()">
       </q-select>
     </div>

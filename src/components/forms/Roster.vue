@@ -4,7 +4,7 @@
       {{title}} a roster <small>{{society}}</small>
       <q-btn v-if="this.$route.params.action === 'edit'" class="q-ml-md" @click="showRoster($route.params.id)">View roster</q-btn>
     </div>
-    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['edit','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
     <div class="q-mx-md">
       <q-field :error="$v.form.title.$error" error-label="The roster title field is required">
         <q-input float-label="Roster title" v-model="form.title" @blur="$v.form.title.$touch()" :error="$v.form.title.$error" />

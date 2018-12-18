@@ -4,9 +4,9 @@
       <p class="q-mt-md caption text-center">
         {{$route.params.scope.charAt(0).toUpperCase() + $route.params.scope.slice(1)}} Diary
       </p>
-      <societyselect v-if="$route.params.scope==='society'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></societyselect>
-      <circuitselect v-if="$route.params.scope==='circuit'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></circuitselect>
-      <districtselect v-if="$route.params.scope==='district'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></districtselect>
+      <societyselect v-if="$route.params.scope==='society'" class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></societyselect>
+      <circuitselect v-if="$route.params.scope==='circuit'" class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></circuitselect>
+      <districtselect v-if="$route.params.scope==='district'" class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></districtselect>
       <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + $route.params.scope + '/edit/' + entity.id + '/' + meeting.id">
         <q-item-main>{{meeting.description}}&nbsp;<small>({{meeting.society.society}})</small></q-item-main>
         <q-item-side>

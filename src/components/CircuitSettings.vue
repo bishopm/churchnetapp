@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
     <p class="caption text-center">Circuit settings</p>
-    <circuitselect class="q-ma-md" @altered="setcircuit" :perms="['edit','admin']" showme="1"></circuitselect>
+    <circuitselect class="q-ma-md" @altered="setcircuit" :perms="['editor','admin']" showme="1"></circuitselect>
     <div class="q-mx-md">
       <q-field :error="$v.form.circuit.$error" error-label="The circuit field is required">
         <q-input float-label="Circuit name" v-model="form.circuit" @blur="$v.form.circuit.$touch()" :error="$v.form.circuit.$error" />
