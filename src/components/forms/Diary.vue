@@ -22,7 +22,7 @@
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
-      <q-btn class="q-ml-md" @click="deleteme" color="tertiary">Delete</q-btn>
+      <q-btn class="q-ml-md" @click="deleteme" color="black">Delete</q-btn>
     </div>
   </div>
 </template>
@@ -35,7 +35,6 @@ export default {
   data () {
     return {
       title: capitalize(this.$route.params.action),
-      scope: this.$route.params.scope,
       entity: {},
       societyOptions: [],
       id: '',
@@ -54,11 +53,17 @@ export default {
   },
   mounted () {
     this.entity = JSON.parse(this.$route.params.entity)
+    if (this.entity.id) {
+      this.entityid = this.entity.id
+    } else {
+      this.entityid = this.entity
+    }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.post(process.env.API + '/societies/search',
       {
         search: '',
-        circuits: this.circuits
+        scope: this.$route.params.scope,
+        entity: this.entityid
       })
       .then((response) => {
         for (var skey in response.data) {
@@ -90,6 +95,7 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
       this.$axios.delete(process.env.API + '/meetings/' + this.$route.params.id)
         .then(response => {
+          this.$q.notify('Diary entry has been deleted')
           this.$router.go(-1)
         })
         .catch(function (error) {
@@ -106,12 +112,13 @@ export default {
           this.$axios.post(process.env.API + '/meetings',
             {
               society_id: this.form.society_id,
-              circuit_id: this.circuit,
+              meetable_id: this.entity.id,
+              meetable_type: this.$route.params.scope,
               description: this.form.description,
               meetingdatetime: this.form.meetingdatetime
             })
             .then(response => {
-              console.log(response.data)
+              this.$q.notify('Diary entry has been added')
               this.$router.go(-1)
             })
             .catch(function (error) {
@@ -122,12 +129,13 @@ export default {
           this.$axios.post(process.env.API + '/meetings/' + this.$route.params.id + '/update',
             {
               society_id: this.form.society_id,
-              circuit_id: this.circuit,
+              meetable_id: this.entity.id,
+              meetable_type: this.$route.params.scope,
               description: this.form.description,
               meetingdatetime: this.form.meetingdatetime
             })
             .then(response => {
-              console.log(response.data)
+              this.$q.notify('Diary entry has been updated')
               this.$router.go(-1)
             })
             .catch(function (error) {

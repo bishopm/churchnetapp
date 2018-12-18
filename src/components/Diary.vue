@@ -7,7 +7,7 @@
       <societyselect v-if="$route.params.scope==='society'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></societyselect>
       <circuitselect v-if="$route.params.scope==='circuit'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></circuitselect>
       <districtselect v-if="$route.params.scope==='district'" class="q-mx-md" @altered="searchdb" :perms="['edit','admin']" showme="1"></districtselect>
-      <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + meeting.circuit_id + '/edit/' + meeting.id">
+      <q-item v-if="meetings" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + $route.params.scope + '/edit/' + entity.id + '/' + meeting.id">
         <q-item-main>{{meeting.description}}&nbsp;<small>({{meeting.society.society}})</small></q-item-main>
         <q-item-side>
           <small>{{formatme(meeting.meetingdatetime)}}</small>
@@ -27,7 +27,7 @@ import societyselect from './Societyselect'
 export default {
   data () {
     return {
-      entity: '',
+      entity: {},
       meetings: [],
       search: ''
     }
@@ -55,11 +55,9 @@ export default {
         .then(response => {
           this.meetings = response.data.meetings
           this.entity = response.data.entity
-          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
         })
     }
   },
