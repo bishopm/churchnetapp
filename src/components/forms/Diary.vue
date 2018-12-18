@@ -1,12 +1,14 @@
 <template>
   <div class="layout-padding">
-    <p class="caption text-center" v-if="circuit">{{circuit.circuit}}</p>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a diary entry
+      <small v-if="entity.circuit">{{entity.circuit}}</small>
+      <small v-if="entity.society">{{entity.society}}</small>
+      <small v-if="entity.district">{{entity.district}}</small>
     </div>
     <div class="q-mx-md">
       <q-field :error="$v.form.description.$error" error-label="Enter a description of the meeting">
-        <q-input float-label="Meeting" v-model="form.description" @blur="$v.form.description.$touch()" :error="$v.form.description.$error" />
+        <q-input float-label="Description" v-model="form.description" @blur="$v.form.description.$touch()" :error="$v.form.description.$error" />
       </q-field>
     </div>
     <div class="q-mx-md">
@@ -14,7 +16,7 @@
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.meetingdatetime.$error" error-label="The date field is required">
-        <q-datetime float-label="Meeting date" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
+        <q-datetime float-label="Date" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
       </q-field>
     </div>
     <div class="q-ma-lg text-center">
@@ -33,8 +35,8 @@ export default {
   data () {
     return {
       title: capitalize(this.$route.params.action),
-      circuit: this.$route.params.circuit,
-      circuits: [],
+      scope: this.$route.params.scope,
+      entity: {},
       societyOptions: [],
       id: '',
       form: {
@@ -51,7 +53,7 @@ export default {
     }
   },
   mounted () {
-    this.circuits.push(this.circuit)
+    this.entity = JSON.parse(this.$route.params.entity)
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.post(process.env.API + '/societies/search',
       {
