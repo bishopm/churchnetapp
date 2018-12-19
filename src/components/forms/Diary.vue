@@ -19,6 +19,12 @@
         <q-datetime float-label="Date" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
       </q-field>
     </div>
+    <div class="q-ma-md">
+      <p class="caption">Display on preaching plan
+        <q-radio class="q-mx-md" v-model="form.preachingplan" val="no" label="No"/>
+        <q-radio v-model="form.preachingplan" val="yes" label="Yes"/>
+      </p>
+    </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
@@ -41,7 +47,8 @@ export default {
       form: {
         description: '',
         society_id: '',
-        meetingdatetime: ''
+        meetingdatetime: '',
+        preachingplan: 'no'
       }
     }
   },
@@ -80,6 +87,7 @@ export default {
               this.form.description = response.data.description
               this.form.society_id = response.data.society_id
               this.form.meetingdatetime = response.data.datestr
+              this.form.preachingplan = response.data.preachingplan
             })
             .catch(function (error) {
               console.log(error)
@@ -115,7 +123,8 @@ export default {
               meetable_id: this.entity.id,
               meetable_type: this.$route.params.scope,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime
+              meetingdatetime: this.form.meetingdatetime,
+              preachingplan: this.form.preachingplan
             })
             .then(response => {
               this.$q.notify('Diary entry has been added')
@@ -132,7 +141,8 @@ export default {
               meetable_id: this.entity.id,
               meetable_type: this.$route.params.scope,
               description: this.form.description,
-              meetingdatetime: this.form.meetingdatetime
+              meetingdatetime: this.form.meetingdatetime,
+              preachingplan: this.form.preachingplan
             })
             .then(response => {
               this.$q.notify('Diary entry has been updated')

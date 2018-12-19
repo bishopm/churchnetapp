@@ -28,7 +28,8 @@ export default {
     this.$axios.post(process.env.API + '/myfeeditems',
       {
         societies: this.$store.state.user.societies.keys,
-        circuits: this.$store.state.user.circuits.keys
+        circuits: this.$store.state.user.circuits.keys,
+        districts: this.$store.state.user.districts.keys
       })
       .then(response => {
         for (var dkey in response.data) {

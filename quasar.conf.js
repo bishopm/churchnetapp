@@ -74,6 +74,7 @@ module.exports = function (ctx) {
         'QPage',
         'QPopupEdit',
         'QPullToRefresh',
+        'QRadio',
         'QSearch',
         'QSelect',
         'QTable',

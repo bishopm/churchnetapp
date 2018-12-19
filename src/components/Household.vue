@@ -1,7 +1,10 @@
 <template>
   <div>
     <div v-if="household.addressee" class="text-center layout-padding">
-      <p class="caption q-mt-md">{{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="fas fa-edit"></q-icon></p>
+      <p class="caption q-ma-md text-left">
+        {{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="fas fa-edit"></q-icon>
+        <q-chip @click.native="modalopen=true" class="q-ml-md text-right" round icon="fas fa-sticky-note" color="primary">{{household.pastorals.length}}</q-chip>
+      </p>
       <p class="text-left q-mx-md">
         <q-icon name="fas fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
         <q-icon name="fas fa-phone" color="secondary"></q-icon> {{household.homephone}}
@@ -33,6 +36,15 @@
         <p>No household members have been added yet</p>
         <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
       </div>
+      <q-modal minimized v-model="modalopen" content-css="padding: 10px">
+        <h4 class="text-center">Pastoral notes</h4>
+        <q-list class="no-border">
+          <q-item v-if="household.pastorals" v-for="pastoral in household.pastorals" :key="pastoral.id">
+            <q-item-side><small>{{pastoral.pastoraldate}}<br>{{pastoral.individual.firstname}}</small></q-item-side><q-item-main><small>{{pastoral.details}}</small></q-item-main>
+          </q-item>
+          <p v-if="!household.pastorals.length"><small>No pastoral notes have been added to this household</small></p>
+        </q-list>
+      </q-modal>
     </div>
     <p class="q-ma-lg text-center caption">{{blocked}}</p>
   </div>
@@ -42,6 +54,7 @@
 export default {
   data () {
     return {
+      modalopen: false,
       household: {},
       map: null,
       marker: null,
@@ -100,5 +113,12 @@ export default {
     text-align:center;
     height: 300px;
     width: 100%;
+  }
+  h4 {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  .q-chip .q-icon {
+    font-size: 16px;
   }
 </style>
