@@ -66,6 +66,11 @@
               <q-input float-label="Journey App feed" v-model="form.journey" />
             </q-field>
           </div>
+          <div class="q-mt-sm">
+            <q-field>
+              <q-select float-label="Pastoral group" v-model="form.pastoral_group" :options="groupOptions"/>
+            </q-field>
+          </div>
         </q-tab-pane>
         <q-tab-pane name="messageDetails" class="no-border">
           <div class="card bg-lightgrey">

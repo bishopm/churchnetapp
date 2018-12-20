@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-if="household.addressee" class="text-center layout-padding">
-      <p class="caption q-ma-md text-left">
-        {{household.addressee}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editHousehold" name="fas fa-edit"></q-icon>
-        <q-chip @click.native="modalopen=true" class="q-ml-md text-right" round icon="fas fa-sticky-note" color="primary">{{household.pastorals.length}}</q-chip>
+      <p class="caption q-ma-md">
+        <b>{{household.addressee}}</b>&nbsp;<q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editHousehold">edit</q-btn><br>
+        <small>Pastoral notes: {{household.pastorals.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="modalopen = true;newopen=false"></q-icon></small>
       </p>
       <p class="text-left q-mx-md">
         <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
@@ -14,7 +14,7 @@
         <q-tabs color="secondary" no-pane-border align="justify">
           <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
           <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-            <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-icon v-if="perm === 'edit' || perm === 'admin'" class="cursor-pointer" @click.native="editIndividual(individual)" name="fas fa-edit"></q-icon><br>
+            <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editIndividual(individual)">edit</q-btn><br>
             <q-icon v-if="individual.cellphone" name="fas fa-phone" color="primary"></q-icon> {{individual.cellphone}}<br>
             <q-icon v-if="individual.email" name="fas fa-envelope" color="primary"></q-icon> {{individual.email}}<br>
             <q-icon v-if="individual.memberstatus" name="fas fa-user-check" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
@@ -36,11 +36,35 @@
         <p>No household members have been added yet</p>
         <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
       </div>
-      <q-modal minimized v-model="modalopen" content-css="padding: 10px">
+      <q-modal minimized v-model="modalopen">
         <h4 class="text-center">Pastoral notes</h4>
+        <div class="text-center q-mb-md">
+          <q-btn v-if="!newopen" color="primary" icon="fas fa-plus" @click="newopen=true">&nbsp;add</q-btn>
+          <q-btn v-if="newopen" color="primary" icon="fas fa-plus" @click="saveNote">&nbsp;save</q-btn>
+          <q-btn color="black" class="q-mx-sm" icon="fas fa-times" @click="modalopen=false">&nbsp;close</q-btn>
+          <q-btn v-if="newopen" color="red" icon="fas fa-trash" @click="modalopen=false"></q-btn>
+        </div>
+        <div v-if="newopen" class="q-mx-md">
+          <q-field :error="$v.form.pastoraldate.$error" error-label="The date field is required">
+            <q-datetime float-label="Date" format="YYYY-MM-DD" format-model="string" v-model="form.pastoraldate" type="date" @blur="$v.form.pastoraldate.$touch()" :error="$v.form.pastoraldate.$error" />
+          </q-field>
+          <q-field :error="$v.form.details.$error" error-label="The details field is required">
+            <q-input float-label="Details" v-model="form.details" @blur="$v.form.details.$touch()" :error="$v.form.details.$error" />
+          </q-field>
+          <q-field>
+            <q-select float-label="Pastor" v-model="form.individual_id" :options="groupOptions"/>
+          </q-field>
+        </div>
         <q-list class="no-border">
           <q-item v-if="household.pastorals" v-for="pastoral in household.pastorals" :key="pastoral.id">
-            <q-item-side><small>{{pastoral.pastoraldate}}<br>{{pastoral.individual.firstname}}</small></q-item-side><q-item-main><small>{{pastoral.details}}</small></q-item-main>
+            <q-item-side>
+              <small>
+                <q-icon class="q-mr-xs cursor-pointer" color="black" name="fas fa-edit" @click="modalopen=false"></q-icon>
+                {{pastoral.individual.firstname}}<br>
+                {{pastoral.pastoraldate}}
+              </small>
+            </q-item-side>
+            <q-item-main><small>{{pastoral.details}}</small></q-item-main>
           </q-item>
           <p v-if="!household.pastorals.length"><small>No pastoral notes have been added to this household</small></p>
         </q-list>
@@ -51,15 +75,29 @@
 </template>
 
 <script>
+import { required } from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
       modalopen: false,
+      newopen: false,
+      groupOptions: [],
+      form: {
+        pastoraldate: '',
+        details: '',
+        individual_id: ''
+      },
       household: {},
       map: null,
       marker: null,
       perm: '',
       blocked: ''
+    }
+  },
+  validations: {
+    form: {
+      details: { required },
+      pastoraldate: { required }
     }
   },
   mounted () {
@@ -74,6 +112,17 @@ export default {
           if (this.$store.state.user.level < 5) {
             this.perm = 'edit'
           }
+          this.$axios.get(process.env.API + '/groups/' + this.household.society.pastoral_group)
+            .then((response) => {
+              this.groupOptions = []
+              for (var gkey in response.data.individuals) {
+                var newitem = {
+                  label: response.data.individuals[gkey].firstname + ' ' + response.data.individuals[gkey].surname,
+                  value: response.data.individuals[gkey].id
+                }
+                this.groupOptions.push(newitem)
+              }
+            })
           this.initMap()
         }
       })
@@ -105,6 +154,9 @@ export default {
 </script>
 
 <style>
+  .q-if-standard.q-if-has-label {
+    padding-top: 15px;
+  }
   a {
     text-decoration: none;
     color:white;
