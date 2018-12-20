@@ -6,8 +6,8 @@
         <q-chip @click.native="modalopen=true" class="q-ml-md text-right" round icon="fas fa-sticky-note" color="primary">{{household.pastorals.length}}</q-chip>
       </p>
       <p class="text-left q-mx-md">
-        <q-icon name="fas fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
-        <q-icon name="fas fa-phone" color="secondary"></q-icon> {{household.homephone}}
+        <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
+        <q-icon name="fas fa-fw fa-phone" color="secondary"></q-icon> {{household.homephone}}
       </p>
       <div id="map" class="q-mt-md"></div>
       <div v-if="household.individuals.length">
