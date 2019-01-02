@@ -1,6 +1,17 @@
 <template>
   <div class="layout-padding">
-    <q-list v-if="messages.length">
+    <q-list v-if="results.length">
+      <q-list-header class="text-center">Messages sent</q-list-header>
+      <q-item v-for="result in results" :key="result">
+        <q-item-main>
+          <small>
+            [{{result.to}}] {{result.body}}
+          </small>
+        </q-item-main>
+        <q-item-side class="text-right"><small>{{result.result}}</small></q-item-side>
+      </q-item>
+    </q-list>
+    <q-list v-else-if="messages.length">
       <p class="caption text-center">{{roster.name}} <small>{{roster.date}}</small></p>
       <q-item v-for="message in messages" :key="message.cellphone">
         <q-item-main>
@@ -33,6 +44,7 @@ export default {
   data () {
     return {
       messages: [],
+      results: [],
       roster: {},
       extras: [],
       modalopen: false
@@ -88,6 +100,7 @@ export default {
         })
         .then(response => {
           this.$q.loading.hide()
+          this.results = response.data
           this.$q.notify('Messages sent')
         })
         .catch(function (error) {

@@ -16,7 +16,7 @@
     </div>
     <div v-else>
       <p class="caption text-center">Send a message</p>
-      <societyselect altered="searchdb" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
+      <societyselect @altered="searchdb" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
       <q-select @input="getcredits" class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
       <div class="q-ma-md" v-if="this.message.messagetype === 'sms'"><small>Credit balance: {{credits}}</small></div>
       <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
@@ -108,6 +108,7 @@ export default {
       }
     },
     searchdb () {
+      this.societies = []
       this.societies.push(this.$store.state.select)
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.post(process.env.API + '/groups/search',
@@ -156,6 +157,7 @@ export default {
           })
           .then(response => {
             this.results = response.data
+            this.$q.notify('Messages sent')
           })
           .catch(function (error) {
             console.log(error)
