@@ -102,13 +102,16 @@
           <div class="card bg-lightgrey">
             <div class="text-left caption"><b>SMS settings</b></div>
             <div class="q-mt-sm">
+              <q-select float-label="SMS service" v-model="form.sms_service" :options="[{ label: 'BulkSMS', value: 'bulksms' }, { label: 'SMS Portal', value: 'smsportal' }]"/>
+            </div>
+            <div class="q-mt-sm">
               <q-field>
-                <q-input float-label="BulkSMS user" v-model="form.bulksms_user" />
+                <q-input float-label="Username / client ID" v-model="form.sms_user" />
               </q-field>
             </div>
             <div class="q-mt-sm">
               <q-field>
-                <q-input type="password" float-label="BulkSMS password" v-model="form.bulksms_pw" />
+                <q-input type="password" float-label="Password / API secret" v-model="form.sms_pw" />
               </q-field>
             </div>
           </div>

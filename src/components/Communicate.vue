@@ -17,7 +17,8 @@
     <div v-else>
       <p class="caption text-center">Send a message</p>
       <societyselect altered="searchdb" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
-      <q-select class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
+      <q-select @input="getcredits" class="q-ma-md" v-model="message.messagetype" float-label="Type" radio :options="categoryOptions" />
+      <div class="q-ma-md" v-if="this.message.messagetype === 'sms'"><small>Credit balance: {{credits}}</small></div>
       <q-input v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" float-label="Reply to" v-model="message.sender" />
       <q-field class="q-ma-md" :error="$v.message.title.$error" error-label="Please set an email title">
         <q-input v-if="this.message.messagetype === 'email'" ref="title" float-label="Title" v-model="message.title" @blur="$v.message.title.$touch()" :error="$v.message.title.$error" />
@@ -53,6 +54,7 @@ export default {
       results: [],
       societies: [],
       groupOptions: [],
+      credits: 'checking...',
       message: {
         groups: [],
         individuals: [],
@@ -125,6 +127,21 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    getcredits () {
+      if (this.message.messagetype === 'sms') {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/messages/smscredits',
+          {
+            society: this.$store.state.select
+          })
+          .then(response => {
+            this.credits = response.data
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
     },
     submit () {
       this.$v.message.$touch()

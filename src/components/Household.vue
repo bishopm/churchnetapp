@@ -39,10 +39,10 @@
       <q-modal minimized v-model="modalopen">
         <h4 class="text-center">Pastoral notes</h4>
         <div class="text-center q-mb-md">
-          <q-btn v-if="!newopen" color="primary" icon="fas fa-plus" @click="newopen=true">&nbsp;add</q-btn>
+          <q-btn v-if="!newopen" color="primary" icon="fas fa-plus" @click="addNote()">&nbsp;add</q-btn>
           <q-btn v-if="newopen" color="primary" icon="fas fa-plus" @click="saveNote">&nbsp;save</q-btn>
           <q-btn color="black" class="q-mx-sm" icon="fas fa-times" @click="modalopen=false">&nbsp;close</q-btn>
-          <q-btn v-if="newopen" color="red" icon="fas fa-trash" @click="modalopen=false"></q-btn>
+          <q-btn v-if="newopen" color="red" icon="fas fa-trash" @click="deleteNote()"></q-btn>
         </div>
         <div v-if="newopen" class="q-mx-md">
           <q-field :error="$v.form.pastoraldate.$error" error-label="The date field is required">
@@ -59,7 +59,7 @@
           <q-item v-if="household.pastorals" v-for="pastoral in household.pastorals" :key="pastoral.id">
             <q-item-side>
               <small>
-                <q-icon class="q-mr-xs cursor-pointer" color="black" name="fas fa-edit" @click="modalopen=false"></q-icon>
+                <q-icon class="q-mr-xs cursor-pointer" color="black" name="fas fa-edit" @click.native="editNote(pastoral)"></q-icon>
                 {{pastoral.individual.firstname}}<br>
                 {{pastoral.pastoraldate}}
               </small>
@@ -83,7 +83,9 @@ export default {
       newopen: false,
       groupOptions: [],
       form: {
-        pastoraldate: '',
+        household_id: '',
+        id: '',
+        pastoraldate: new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00',
         details: '',
         individual_id: ''
       },
@@ -108,6 +110,7 @@ export default {
           this.blocked = 'Sorry - you are not authorised to view this household'
         } else {
           this.household = response.data
+          this.form.household_id = this.household.id
           this.perm = this.$store.state.user.societies[this.household.society_id]
           if (this.$store.state.user.level < 5) {
             this.perm = 'edit'
@@ -140,6 +143,57 @@ export default {
     },
     addIndividual () {
       this.$router.push({name: 'individualform', params: { individual: {household_id: this.household.id, surname: this.household.sortsurname, sex: 'female', alltags: this.household.alltags}, action: 'add' }})
+    },
+    addNote () {
+      this.form.id = ''
+      this.form.details = ''
+      this.form.pastoraldate = new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00'
+      this.form.individual_id = ''
+      this.newopen = true
+    },
+    deleteNote () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/pastorals/' + this.form.id)
+        .then(response => {
+          for (var pndx in this.household.pastorals) {
+            if (this.household.pastorals[pndx].id === this.form.id) {
+              this.household.pastorals.splice(pndx, 1)
+            }
+          }
+          this.$q.notify(response.data)
+          this.modalopen = false
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    },
+    saveNote () {
+      this.$v.form.$touch()
+      if (this.$v.form.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/pastorals',
+          {
+            pastoral: this.form
+          })
+          .then(response => {
+            if (response.data.message === 'Pastoral note has been created') {
+              this.household.pastorals.unshift(response.data.pastoral)
+            }
+            this.$q.notify(response.data.message)
+            this.modalopen = false
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
+      }
+    },
+    editNote (note) {
+      this.form = note
+      this.newopen = true
     },
     async initMap () {
       await this.$google()
