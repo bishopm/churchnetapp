@@ -23,12 +23,13 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
+      <q-btn v-if="$route.params.action === 'edit'" class="q-ml-md" color="black" @click="deletePayment">Delete</q-btn>
     </div>
   </div>
 </template>
 
 <script>
-import { required, numeric } from 'vuelidate/lib/validators'
+import { required, decimal } from 'vuelidate/lib/validators'
 const existing = true
 export default {
   data () {
@@ -46,11 +47,22 @@ export default {
   validations: {
     form: {
       paymentdate: { required },
-      amount: { numeric, required },
+      amount: { decimal, required },
       pgnumber: { required, existing }
     }
   },
   methods: {
+    deletePayment () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.delete(process.env.API + '/payments/' + this.form.id)
+        .then(response => {
+          this.$q.notify('Payment deleted')
+          this.$router.push({ name: 'giving' })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
     checkpg () {
       if ((this.form.pgnumber) && (!this.allnums.includes(this.form.pgnumber))) {
         this.form.pgnumber = ''
@@ -63,80 +75,67 @@ export default {
         this.$q.notify('Please check for errors!')
       } else {
         if (this.$route.params.action === 'edit') {
-          this.form.latitude = this.marker.position.lat().toString()
-          this.form.longitude = this.marker.position.lng().toString()
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(process.env.API + '/households/' + this.form.id,
+          this.$axios.post(process.env.API + '/payments/' + this.form.id + '/update',
             {
-              addressee: this.form.addressee,
-              addr1: this.form.addr1,
-              addr2: this.form.addr2,
-              addr3: this.form.addr3,
-              homephone: this.form.homephone,
-              householdcell: this.form.householdcell,
-              latitude: this.form.latitude,
-              longitude: this.form.longitude
+              amount: this.form.amount,
+              paymentdate: this.form.paymentdate,
+              pgnumber: this.form.pgnumber
             })
             .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Household updated')
-              this.$router.push({ name: 'household', params: { id: response.data.id } })
+              this.$q.notify('Payment updated')
+              this.$router.push({ name: 'giving' })
             })
             .catch(function (error) {
               console.log(error)
-              this.$q.loading.hide()
             })
         } else {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          if (this.$route.params.scope === 'circuit') {
-            this.soc = this.society.id
-          } else {
-            this.soc = this.$store.state.select
-          }
-          this.$axios.post(process.env.API + '/households',
+          this.$axios.post(process.env.API + '/payments',
             {
-              addressee: this.form.addressee,
-              addr1: this.form.addr1,
-              addr2: this.form.addr2,
-              addr3: this.form.addr3,
-              homephone: this.form.homephone,
-              householdcell: this.form.householdcell,
-              society_id: this.soc,
-              latitude: this.form.latitude,
-              longitude: this.form.longitude
+              society_id: this.$store.state.select,
+              amount: this.form.amount,
+              paymentdate: this.form.paymentdate,
+              pgnumber: this.form.pgnumber
             })
             .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Household added')
-              this.$router.push({ name: 'household', params: { id: response.data.id } })
+              this.$q.notify('Payment added')
+              this.$router.push({ name: 'giving' })
             })
             .catch(function (error) {
               console.log(error)
-              this.$q.loading.hide()
             })
         }
       }
     }
   },
   mounted () {
-    if (this.$route.params.action === 'add') {
+    if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/givers/' + this.$route.params.society)
+      this.$axios.post(process.env.API + '/payments/' + this.$route.params.id)
         .then((response) => {
-          this.society = response.data.society
-          for (var ikey in response.data.givers) {
-            var newitem = {
-              label: response.data.givers[ikey],
-              value: response.data.givers[ikey]
-            }
-            this.indivOptions.push(newitem)
-            this.allnums.push(response.data.givers[ikey])
-          }
+          this.form = response.data
         })
         .catch(function (error) {
           console.log(error)
         })
     }
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+    this.$axios.get(process.env.API + '/givers/' + this.$route.params.society)
+      .then((response) => {
+        this.society = response.data.society
+        for (var ikey in response.data.givers) {
+          var newitem = {
+            label: response.data.givers[ikey],
+            value: response.data.givers[ikey]
+          }
+          this.indivOptions.push(newitem)
+          this.allnums.push(response.data.givers[ikey])
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   }
 }
 </script>

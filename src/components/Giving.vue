@@ -2,7 +2,11 @@
   <div>
     <p class="caption text-center">All payments</p>
     <societyselect class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" :showme="1" initial="all"></societyselect>
-    <q-table class="q-mx-md" :pagination.sync="pagination" :data="rows" :columns="columns" row-key="name"/>
+    <q-table :data="rows" :columns="columns" :pagination.sync="pagination">
+      <q-td slot='body-cell' slot-scope='props' :props='props' @click.native="editPayment(props.row)">
+        <div v-html="props.row[props.col.field]"></div>
+      </q-td>
+    </q-table>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
       <q-btn round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
@@ -32,6 +36,9 @@ export default {
     addPayment () {
       this.$router.push({name: 'givingform', params: { action: 'add', society: this.$store.state.select }})
     },
+    editPayment (row) {
+      this.$router.push({name: 'givingform', params: { action: 'edit', society: this.$store.state.select, id: row['id'] }})
+    },
     searchdb () {
       this.$q.loading.show()
       this.rows = []
@@ -40,6 +47,7 @@ export default {
         .then(response => {
           for (var pndx in response.data) {
             var newitem = {
+              id: response.data[pndx].id,
               paymentdate: response.data[pndx].paymentdate,
               pgnumber: response.data[pndx].pgnumber,
               amount: response.data[pndx].amount
