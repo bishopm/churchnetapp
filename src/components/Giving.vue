@@ -7,6 +7,9 @@
         <div v-html="props.row[props.col.field]"></div>
       </q-td>
     </q-table>
+    <q-page-sticky expand position="top-right" :offset="[92, 32]">
+      <q-btn color="primary" @click="givingStats" class="fixed" icon="fas fa-chart-bar"/>
+    </q-page-sticky>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
       <q-btn round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
@@ -38,6 +41,9 @@ export default {
     },
     editPayment (row) {
       this.$router.push({name: 'givingform', params: { action: 'edit', society: this.$store.state.select, id: row['id'] }})
+    },
+    givingStats () {
+      this.$router.push({name: 'givingstats', params: { society: this.$store.state.select }})
     },
     searchdb () {
       this.$q.loading.show()
