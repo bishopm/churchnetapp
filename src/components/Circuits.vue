@@ -1,10 +1,10 @@
 <template>
   <div class="layout-padding">
-    <q-list class="no-border">
+    <q-list v-if="circuits" class="no-border">
       <p class="caption text-center">All circuits</p>
       <districtfilter @altered="searchdb" :showme="showme()"></districtfilter>
       <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by circuit name" />
-      <q-item v-if="circuits" v-for="circuit in circuits" :key="circuit.id" :to="'/circuits/' + circuit.id">
+      <q-item v-for="circuit in circuits" :key="circuit.id" :to="'/circuits/' + circuit.id">
         {{circuit.circuitnumber}} {{circuit.circuit}}
       </q-item>
     </q-list>
