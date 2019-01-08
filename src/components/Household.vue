@@ -55,8 +55,8 @@
             <q-select float-label="Pastor" v-model="form.individual_id" :options="groupOptions"/>
           </q-field>
         </div>
-        <q-list class="no-border">
-          <q-item v-if="household.pastorals" v-for="pastoral in household.pastorals" :key="pastoral.id">
+        <q-list v-if="household.pastorals" class="no-border">
+          <q-item v-for="pastoral in household.pastorals" :key="pastoral.id">
             <q-item-side>
               <small>
                 <q-icon class="q-mr-xs cursor-pointer" color="black" name="fas fa-edit" @click.native="editNote(pastoral)"></q-icon>
@@ -113,7 +113,7 @@ export default {
           this.form.household_id = this.household.id
           this.perm = this.$store.state.user.societies[this.household.society_id]
           if (this.$store.state.user.level < 5) {
-            this.perm = 'edit'
+            this.perm = 'editor'
           }
           this.$axios.get(process.env.API + '/groups/' + this.household.society.pastoral_group)
             .then((response) => {
