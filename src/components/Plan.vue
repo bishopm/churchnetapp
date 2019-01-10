@@ -6,7 +6,7 @@
       <q-tab-pane class="no-border" name="tab-1">
         <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
         <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
-          <div slot="top" slot-scope="props" class="row flex-center fit">
+          <div slot="top" class="row flex-center fit">
             <q-btn class="q-mr-md bg-tertiary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-tertiary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan" label="View"></q-btn>
           </div>
           <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
@@ -20,7 +20,7 @@
           <h4>{{form.societyname}}</h4>
           <q-input readonly float-label="Service date" v-model="form.servicedate"/>
           <div class="q-my-md">
-            <q-select float-label="Preacher" v-model="form.plan.person.id" :options="preacherOptions"/>
+            <q-select float-label="Preacher" filter v-model="form.plan.person.id" :options="preacherOptions"/>
           </div>
           <div class="q-my-md">
             <q-select float-label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
