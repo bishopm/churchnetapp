@@ -1,10 +1,6 @@
 <template>
   <div>
-<<<<<<< HEAD
     <q-list v-if="groups" class="no-border">
-=======
-    <q-list class="no-border" v-if="groups">
->>>>>>> 25ef9db745e80eec76024dde8b82862197abdbd2
       <p class="caption text-center">All groups</p>
       <societyfilter class="q-mx-md" @altered="searchdb" :showme="showme()" initial="all"></societyfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
