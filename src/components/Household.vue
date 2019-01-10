@@ -198,10 +198,10 @@ export default {
     async initMap () {
       await this.$google()
       this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.household.latitude), lng: parseFloat(this.household.longitude)},
+        center: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)},
         zoom: 15
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.latitude), lng: parseFloat(this.household.longitude)}, map: this.map})
+      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)}, map: this.map})
     }
   }
 }

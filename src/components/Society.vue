@@ -27,10 +27,10 @@ export default {
   methods: {
     initMap () {
       this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.society.latitude), lng: parseFloat(this.society.longitude)},
+        center: {lat: parseFloat(this.society.location.latitude), lng: parseFloat(this.society.location.longitude)},
         zoom: 14
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.society.latitude), lng: parseFloat(this.society.longitude)}, map: this.map})
+      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.society.location.latitude), lng: parseFloat(this.society.location.longitude)}, map: this.map})
     },
     editSociety () {
       this.$router.push({name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' }})
