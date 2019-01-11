@@ -1,8 +1,8 @@
 <template>
   <div class="layout-padding">
     <p class="caption text-center">Feeds</p>
-    <q-list no-border>
-      <q-item v-if="hasfeeds" v-for="feed in feeds" :key="feed.feedpost.id" :to="'/feed/edit/' + feed.feedpost.id">
+    <q-list v-if="hasfeeds" no-border>
+      <q-item v-for="feed in feeds" :key="feed.feedpost.id" :to="'/feed/edit/' + feed.feedpost.id">
         <q-item-main>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-main>
         <q-item-side><small>{{feed.feedpost.publicationdate}}</small></q-item-side>
       </q-item>
