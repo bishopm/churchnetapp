@@ -87,7 +87,8 @@ module.exports = function (ctx) {
         'QTabPane',
         'QRouteTab',
         'QToolbar',
-        'QToolbarTitle'
+        'QToolbarTitle',
+        'QUploader'
       ],
       directives: [
         'Ripple'

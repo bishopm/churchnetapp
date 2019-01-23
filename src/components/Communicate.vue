@@ -40,6 +40,7 @@
       ],
       ]"/>
       <q-input class="q-ma-md" type="textarea" rows="6" v-else v-model="message.textmessage" float-label="Message" />
+      <q-uploader ref="uploader" @add="$refs.uploader.upload()" float-label="Attachment" hide-upload-button :multiple=false @uploaded="addfile" v-model="message.attachment" url="" class="q-ma-md" clearable :upload-factory="uploadFile" send-raw :headers="{ 'content-type': 'application/x-www-form-urlencoded' }" :no-content-type="true"/>
       <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="send" @click="submit" />
     </div>
   </div>
@@ -52,6 +53,8 @@ export default {
   data () {
     return {
       results: [],
+      reader: '',
+      blob: '',
       societies: [],
       groupOptions: [],
       credits: 'checking...',
@@ -61,6 +64,7 @@ export default {
         sender: '',
         title: '',
         body: '',
+        attachment: {},
         messagetype: 'email'
       },
       categoryOptions: [
@@ -106,6 +110,26 @@ export default {
           return false
         }
       }
+    },
+    uploadFile (file, updateProgress) {
+      return new Promise((resolve, reject) => {
+        resolve(file)
+      })
+    },
+    addfile (file, xhr) {
+      return new Promise((resolve, reject) => {
+        var reader = new FileReader()
+        reader.onloadend = () => {
+          resolve(reader.result)
+        }
+        reader.readAsText(file.slice(0))
+        this.message.attachment.type = file.type
+        this.message.attachment.name = file.name
+      }).then((data) => {
+        this.message.attachment.dataurl = data
+      }, (err) => {
+        console.log(err)
+      })
     },
     searchdb () {
       this.societies = []
