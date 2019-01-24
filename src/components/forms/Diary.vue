@@ -20,10 +20,7 @@
       </q-field>
     </div>
     <div class="q-ma-md">
-      <p class="caption">Display on preaching plan
-        <q-radio class="q-mx-md" v-model="form.preachingplan" val="no" label="No"/>
-        <q-radio v-model="form.preachingplan" val="yes" label="Yes"/>
-      </p>
+      <q-select float-label="Display on preaching plan?" v-model="form.preachingplan" :options="pplanOptions"></q-select>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
@@ -43,6 +40,12 @@ export default {
       title: capitalize(this.$route.params.action),
       entity: {},
       societyOptions: [],
+      pplanOptions: [
+        { label: 'No', 'value': 'no' },
+        { label: 'Yes', 'value': 'yes' },
+        { label: 'Yes (Previous quarter)', 'value': 'previous' },
+        { label: 'Yes (Next quarter)', 'value': 'next' }
+      ],
       id: '',
       form: {
         description: '',
