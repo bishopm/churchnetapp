@@ -1,8 +1,8 @@
 <template>
   <div>
     <h4 class="text-center">Worship attendance statistics</h4>
-    <q-list class="no-border">
-      <q-item v-if="$store.state.user" v-for="society in $store.state.user.societies.full" :key="society.id" :to="'/statistics/' + society.id + '/' + (new Date()).getFullYear()">
+    <q-list v-if="$store.state.user" class="no-border">
+      <q-item v-for="society in $store.state.user.societies.full" :key="society.id" :to="'/statistics/' + society.id + '/' + (new Date()).getFullYear()">
         {{society.society}}
       </q-item>
     </q-list>
