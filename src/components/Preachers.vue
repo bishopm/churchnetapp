@@ -6,6 +6,7 @@
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
       <q-item v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/edit/' + JSON.stringify(preacher)">
         {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
+        <q-chip class="q-ml-md" v-if="preacher.person.active === 'no'" color="grey">inactive</q-chip>
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">

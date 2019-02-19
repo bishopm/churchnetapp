@@ -4,7 +4,9 @@
       <q-tab default slot="title" name="tab-1" icon="fas fa-calendar-alt" label="Plan" />
       <q-tab slot="title" name="tab-2" icon="fas fa-cogs" label="Settings"/>
       <q-tab-pane class="no-border" name="tab-1">
-        <q-btn class="q-mr-md bg-tertiary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-tertiary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan" label="View"></q-btn>
+        <div class="flex flex-center">
+          <q-btn class="q-mr-md bg-tertiary text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-tertiary text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan" label="View"></q-btn>
+        </div>
         <q-select @input="showplan(planyear,planmonth)" float-label="Circuit" v-model="circuit" :options="circuitOptions"/>
         <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
           <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">

@@ -45,7 +45,19 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
+      <q-btn class="q-ml-md" color="black" @click="modalopen = true">Delete</q-btn>
     </div>
+    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+      <h4>Confirm removal reason</h4>
+      <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="form.deletereason" :options="[
+        { label: 'Individual has left the church', value: 'archive' },
+        { label: 'Individual was added in error', value: 'delete' },
+        { label: 'Individual has died', value: 'death' }
+      ]"/>
+      <q-datetime float-label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="form.deathdate" type="date" />
+      <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
+      <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+    </q-modal>
   </div>
 </template>
 
@@ -62,8 +74,12 @@ export default {
         title: '',
         email: '',
         sex: '',
-        cellphone: ''
+        cellphone: '',
+        deletereason: 'archive',
+        deathdate: ''
       },
+      modalopen: false,
+      showdate: false,
       roleOptions: [],
       roles: []
     }
@@ -78,6 +94,32 @@ export default {
     }
   },
   methods: {
+    checkDeath () {
+      if (this.form.deletereason === 'death') {
+        this.showdate = true
+      } else {
+        this.showdate = false
+      }
+    },
+    deleteMe () {
+      this.modalopen = false
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/individuals/delete/' + this.form.id,
+        {
+          id: this.form.id,
+          reason: this.form.deletereason,
+          deathdate: this.form.deathdate
+        })
+        .then(response => {
+          this.$q.loading.hide()
+          this.$q.notify(response.data)
+          this.$router.push({ name: 'household', params: { id: this.form.household_id } })
+        })
+        .catch(function (error) {
+          console.log(error)
+          this.$q.loading.hide()
+        })
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {

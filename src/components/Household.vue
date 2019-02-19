@@ -3,7 +3,8 @@
     <div v-if="household.addressee" class="text-center layout-padding">
       <p class="caption q-ma-md">
         <b>{{household.addressee}}</b>&nbsp;<q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editHousehold">edit</q-btn><br>
-        <small>Pastoral notes: {{household.pastorals.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="modalopen = true;newopen=false"></q-icon></small>
+        <small>Pastoral notes: {{household.pastorals.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="modalopen = true;newopen=false"></q-icon></small>&nbsp;
+        <small>Anniversaries: {{household.specialdays.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="amodalopen = true;anewopen=false"></q-icon></small>
       </p>
       <p class="text-left q-mx-md">
         <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
@@ -69,6 +70,43 @@
           <p v-if="!household.pastorals.length"><small>No pastoral notes have been added to this household</small></p>
         </q-list>
       </q-modal>
+      <q-modal minimized v-model="amodalopen">
+        <h4 class="text-center">Anniversaries</h4>
+        <div class="text-center q-mb-md">
+          <q-btn v-if="!anewopen" color="primary" icon="fas fa-plus" @click="addaNote()">&nbsp;add</q-btn>
+          <q-btn v-if="anewopen" color="primary" icon="fas fa-plus" @click="saveaNote">&nbsp;save</q-btn>
+          <q-btn color="black" class="q-mx-sm" icon="fas fa-times" @click="amodalopen=false">&nbsp;close</q-btn>
+          <q-btn v-if="anewopen" color="red" icon="fas fa-trash" @click="deleteaNote()"></q-btn>
+        </div>
+        <div v-if="anewopen" class="q-mx-md">
+          <q-field :error="$v.form.anniversarydate.$error" error-label="The date field is required">
+            <q-datetime float-label="Date" format="YYYY-MM-DD" format-model="string" v-model="form.anniversarydate" type="date" @blur="$v.form.anniversarydate.$touch()" :error="$v.form.anniversarydate.$error" />
+          </q-field>
+          <q-field :error="$v.form.adetails.$error" error-label="The details field is required">
+            <q-input float-label="Details" v-model="form.adetails" @blur="$v.form.adetails.$touch()" :error="$v.form.adetails.$error" />
+          </q-field>
+          <q-field>
+            <q-select float-label="Type" v-model="form.anniversarytype" :options="[
+              { label: 'Baptism', value: 'baptism' },
+              { label: 'Death', value: 'death' },
+              { label: 'Wedding', value: 'wedding' }
+            ]"/>
+          </q-field>
+        </div>
+        <q-list v-if="household.specialdays" class="no-border">
+          <q-item v-for="sday in household.specialdays" :key="sday.id">
+            <q-item-side>
+              <small>
+                <q-icon class="q-mr-xs cursor-pointer" color="black" name="fas fa-edit" @click.native="editaNote(sday)"></q-icon>
+                {{sday.anniversarytype}}<br>
+                {{sday.anniversarydate}}
+              </small>
+            </q-item-side>
+            <q-item-main><small>{{sday.details}}</small></q-item-main>
+          </q-item>
+          <p v-if="!household.specialdays.length"><small>No anniversaries have been added to this household</small></p>
+        </q-list>
+      </q-modal>
     </div>
     <p class="q-ma-lg text-center caption">{{blocked}}</p>
   </div>
@@ -81,13 +119,18 @@ export default {
     return {
       modalopen: false,
       newopen: false,
+      amodalopen: false,
+      anewopen: false,
       groupOptions: [],
       form: {
         household_id: '',
         id: '',
         pastoraldate: new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00',
         details: '',
-        individual_id: ''
+        individual_id: '',
+        anniversarydate: new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00',
+        anniversarytype: '',
+        adetails: ''
       },
       household: {},
       map: null,
@@ -99,7 +142,9 @@ export default {
   validations: {
     form: {
       details: { required },
-      pastoraldate: { required }
+      adetails: { required },
+      pastoraldate: { required },
+      anniversarydate: { required }
     }
   },
   mounted () {
@@ -151,6 +196,13 @@ export default {
       this.form.individual_id = ''
       this.newopen = true
     },
+    addaNote () {
+      this.form.id = ''
+      this.form.adetails = ''
+      this.form.anniversarydate = new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00'
+      this.form.anniversarytype = ''
+      this.anewopen = true
+    },
     deleteNote () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.post(process.env.API + '/pastorals/' + this.form.id)
@@ -191,9 +243,36 @@ export default {
           })
       }
     },
+    saveaNote () {
+      this.$v.form.$touch()
+      if (this.$v.form.$error) {
+        this.$q.notify('Please check for errors!')
+      } else {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/specialdays',
+          {
+            specialday: this.form
+          })
+          .then(response => {
+            if (response.data.message === 'Pastoral note has been created') {
+              this.household.specialdays.unshift(response.data.specialday)
+            }
+            this.$q.notify(response.data.message)
+            this.amodalopen = false
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
+      }
+    },
     editNote (note) {
       this.form = note
       this.newopen = true
+    },
+    editaNote (note) {
+      this.form = note
+      this.anewopen = true
     },
     async initMap () {
       await this.$google()
