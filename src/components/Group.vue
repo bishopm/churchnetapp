@@ -1,8 +1,9 @@
 <template>
   <div>
     <div v-if="group" class="text-center layout-padding">
-      <p class="caption"><b>{{group.groupname}}</b>&nbsp;<q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="fas fa-edit"></q-icon>
-        <small class="q-ml-sm" v-if="soc">{{soc.society}}</small>
+      <p class="caption"><b>{{group.groupname}}</b><small class="q-mx-sm" v-if="soc">{{soc.society}}</small>
+        <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="fas fa-edit"></q-icon>
+        <q-icon class="cursor-pointer q-ml-sm" @click.native="showReport" name="fas fa-file-pdf"></q-icon>
       </p>
       <q-search v-if="!blocked" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
       <div class="q-ma-md" v-if="search.length > 2">
@@ -18,6 +19,7 @@
 </template>
 
 <script>
+import { openURL } from 'quasar'
 export default {
   data () {
     return {
@@ -57,6 +59,9 @@ export default {
   methods: {
     editGroup () {
       this.$router.push({name: 'groupform', params: { action: 'edit', id: this.$route.params.id }})
+    },
+    showReport () {
+      openURL(process.env.WEB + '/groupreport/' + JSON.stringify(this.group))
     },
     removeIndiv (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token

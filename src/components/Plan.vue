@@ -148,7 +148,7 @@ export default {
       }
     },
     viewplan () {
-      openURL('https://church.net.za/plan/' + this.circuit + '/' + this.planyear + '/' + this.planmonth)
+      openURL(process.env.WEB + '/plan/' + this.circuit + '/' + this.planyear + '/' + this.planmonth)
     },
     savechanges () {
       this.$axios.post(process.env.API + '/circuits/' + this.circuit + '/updateplan',

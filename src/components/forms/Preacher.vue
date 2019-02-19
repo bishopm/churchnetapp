@@ -3,15 +3,20 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} PREACHER / MINISTER
     </div>
-    <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
-    <div class="card q-ma-xs bg-lightgrey">
-      <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
-      <div class="q-ma-md" v-if="individualOptions.length">
-        <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+    <div v-if="$route.params.action === 'add'">
+      <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
+      <div class="card q-ma-xs bg-lightgrey">
+        <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
+        <div class="q-ma-md" v-if="individualOptions.length">
+          <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+        </div>
+        <div class="text-center" v-if="search.length > 2">
+          <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
+        </div>
       </div>
-      <div class="text-center" v-if="search.length > 2">
-        <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
-      </div>
+    </div>
+    <div v-else class="text-center q-my-md caption">
+      {{person.title}} {{person.firstname}} {{person.surname}}
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
       <q-field :error="$v.form.fullplan.$error" error-label="This field must be a valid year">
@@ -24,10 +29,12 @@
     <div class="q-ma-md">
       <q-select multiple chips float-label="Roles" v-model="form.roles" :options="roleOptions"/>
     </div>
+    <div class="q-ma-md">
+      <q-select float-label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]"/>
+    </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
-      <q-btn class="q-ml-md" color="black">Delete</q-btn>
     </div>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <div class="caption text-center">Add a new individual</div>
@@ -78,7 +85,8 @@ export default {
         title: 'Ms',
         society_id: '',
         cellphone: '',
-        sex: 'female'
+        sex: 'female',
+        active: 'yes'
       }
     }
   },
@@ -111,6 +119,7 @@ export default {
             {
               circuit_id: this.$store.state.select,
               fullplan: this.form.fullplan,
+              active: this.form.active,
               individual_id: this.form.individual_id,
               roles: this.form.roles,
               status: this.form.status
@@ -132,6 +141,7 @@ export default {
               fullplan: this.form.fullplan,
               individual_id: this.form.individual_id,
               roles: this.form.roles,
+              active: this.form.active,
               status: this.form.status
             })
             .then(response => {
@@ -235,37 +245,33 @@ export default {
   },
   mounted () {
     this.circuits.push(this.$store.state.select)
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    this.$axios.post(process.env.API + '/societies/search',
-      {
-        search: '',
-        circuits: this.circuits
-      })
-      .then(response => {
-        for (var sndx in response.data) {
-          var newitem = {
-            label: response.data[sndx].society,
-            value: response.data[sndx].id
-          }
-          this.societyOptions.push(newitem)
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
     if (this.$route.params.action === 'edit') {
-      this.form = JSON.parse(this.$route.params.preacher)
-      var newitem = {
-        label: this.form.individual.surname + ', ' + this.form.individual.title + ' ' + this.form.individual.firstname + ' (' + this.form.individual.household.society.society + ')',
-        value: this.form.individual.id
-      }
-      this.individualOptions.push(newitem)
-      this.populateTags(this.form.status)
-    } else {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/tags')
         .then((response) => {
+          this.person = JSON.parse(this.$route.params.preacher)
+          this.form = JSON.parse(this.$route.params.preacher).person
           this.form.alltags = response.data
+          this.populateTags(this.form.status)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    } else {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/societies/search',
+        {
+          search: '',
+          circuits: this.circuits
+        })
+        .then(response => {
+          for (var sndx in response.data) {
+            var newitem = {
+              label: response.data[sndx].society,
+              value: response.data[sndx].id
+            }
+            this.societyOptions.push(newitem)
+          }
         })
         .catch(function (error) {
           console.log(error)

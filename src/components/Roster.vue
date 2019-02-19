@@ -114,7 +114,7 @@ export default {
       this.modalopen = false
     },
     viewroster () {
-      openURL('https://church.net.za/admin/rosters/' + this.$route.params.id + '/report/' + this.$route.params.year + '/' + this.$route.params.month)
+      openURL(process.env.WEB + '/admin/rosters/' + this.$route.params.id + '/report/' + this.$route.params.year + '/' + this.$route.params.month)
     },
     preview () {
       this.$router.push({name: 'rostermessages', params: { roster: this.$route.params.id, year: this.$route.params.year, month: this.$route.params.month }})

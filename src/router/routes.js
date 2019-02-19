@@ -28,7 +28,6 @@ const routes = [
       { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: false} },
       { name: 'midweekform', path: '/midweek/:circuit/:action/:id?', component: () => import('components/forms/Midweek'), meta: {auth: true} },
       { name: 'midweek', path: '/midweek', component: () => import('components/Midweek'), meta: {auth: true} },
-      { name: 'preacher', path: '/preachers/:id', component: () => import('components/Preacher'), meta: {auth: true} },
       { name: 'preacherform', path: '/preachers/:action/:preacher?', component: () => import('components/forms/Preacher'), meta: {auth: true} },
       { name: 'preachers', path: '/preachers', component: () => import('components/Preachers'), meta: {auth: true} },
       { name: 'phoneverification', path: '/phoneverification', component: () => import('components/Phoneverification'), meta: {auth: false} },

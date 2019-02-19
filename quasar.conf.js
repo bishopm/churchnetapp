@@ -23,10 +23,12 @@ module.exports = function (ctx) {
       env: ctx.dev
         ? { // so on dev we'll have
           API: JSON.stringify('http://localhost/churchnet/public/api'),
+          WEB: JSON.stringify('http://localhost/churchnet/public'),
           VERSION: version
         }
         : { // and on build (production):
           API: JSON.stringify('https://church.net.za/api'),
+          WEB: JSON.stringify('https://church.net.za'),
           VERSION: version
         },
       scopeHoisting: true,

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <q-list class="no-border">
+    <q-list v-if="preachers" class="no-border">
       <p class="caption text-center">Circuit preachers</p>
       <circuitfilter class="q-mx-md" @altered="searchdb" :showme="showme()" initial="all"></circuitfilter>
       <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
-      <q-item v-if="preachers" v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/' + preacher.person.id">
+      <q-item v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/edit/' + JSON.stringify(preacher)">
         {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
       </q-item>
     </q-list>

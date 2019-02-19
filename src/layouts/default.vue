@@ -17,17 +17,17 @@
       <q-list no-border link inset-delimiter>
         <div v-if="$store.getters.hasEntity('societies')">
           <q-list-header class="text-center"><q-icon name="fas fa-user"></q-icon> Members</q-list-header>
-          <q-item to="/communicate">
-            <q-item-side icon="fas fa-fw fa-comments" />
-            <q-item-main label="Communication" sublabel="send emails or messages" />
+          <q-item to="/households">
+            <q-item-side icon="fas fa-fw fa-user-friends" />
+            <q-item-main label="Households" sublabel="view all households" />
           </q-item>
           <q-item to="/groups">
             <q-item-side icon="fas fa-fw fa-users" />
             <q-item-main label="Groups" sublabel="view all groups" />
           </q-item>
-          <q-item to="/households">
-            <q-item-side icon="fas fa-fw fa-user-friends" />
-            <q-item-main label="Households" sublabel="view all households" />
+          <q-item to="/communicate">
+            <q-item-side icon="fas fa-fw fa-comments" />
+            <q-item-main label="Communication" sublabel="send emails or messages" />
           </q-item>
           <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Society admin</q-list-header>
           <q-item to="/diary/society">
