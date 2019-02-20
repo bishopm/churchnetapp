@@ -3,7 +3,7 @@ let promise = null
 export default ({ app, router, Vue }) => {
   let
     id = 'google-cdn',
-    url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBQmfbfWGd1hxfR1sbnRXdCaQ5Mx5FjUhA'
+    url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyATsm2WL8gJbhRVGzYIymMbYa78XFvIEPc'
 
   Vue.prototype.$google = function () {
     if (!promise) {

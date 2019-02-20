@@ -49,11 +49,11 @@ export default {
         addr1: '',
         addr2: '',
         addr3: '',
-        homephone: '',
-        latitude: '',
-        longitude: ''
+        homephone: ''
       },
       map: '',
+      latitude: '',
+      longitude: '',
       marker: '',
       housecellOptions: [],
       csocietyOptions: [],
@@ -102,13 +102,13 @@ export default {
         })
     },
     setMap () {
-      this.form.latitude = this.society.lat
-      this.form.longitude = this.society.lng
+      this.latitude = this.society.lat
+      this.longitude = this.society.lng
       this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)},
+        center: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)},
         zoom: 15
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)}, map: this.map, draggable: true})
+      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)}, map: this.map, draggable: true})
     },
     submit () {
       this.$v.form.$touch()
@@ -116,8 +116,8 @@ export default {
         this.$q.notify('Please check for errors!')
       } else {
         if (this.$route.params.action === 'edit') {
-          this.form.latitude = this.marker.position.lat().toString()
-          this.form.longitude = this.marker.position.lng().toString()
+          this.latitude = this.marker.position.lat().toString()
+          this.longitude = this.marker.position.lng().toString()
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
           this.$axios.post(process.env.API + '/households/' + this.form.id,
             {
@@ -127,8 +127,8 @@ export default {
               addr3: this.form.addr3,
               homephone: this.form.homephone,
               householdcell: this.form.householdcell,
-              latitude: this.form.latitude,
-              longitude: this.form.longitude
+              latitude: this.latitude,
+              longitude: this.longitude
             })
             .then(response => {
               this.$q.loading.hide()
@@ -155,8 +155,8 @@ export default {
               homephone: this.form.homephone,
               householdcell: this.form.householdcell,
               society_id: this.soc,
-              latitude: this.form.latitude,
-              longitude: this.form.longitude
+              latitude: this.latitude,
+              longitude: this.longitude
             })
             .then(response => {
               this.$q.loading.hide()
@@ -172,13 +172,13 @@ export default {
     },
     async initMap () {
       await this.$google()
-      this.form.latitude = this.$store.state.user.societies.full[this.$store.state.select].latitude
-      this.form.longitude = this.$store.state.user.societies.full[this.$store.state.select].longitude
+      this.latitude = this.$store.state.user.societies.full[this.form.society_id].location.latitude
+      this.longitude = this.$store.state.user.societies.full[this.form.society_id].location.longitude
       this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)},
+        center: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)},
         zoom: 15
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.form.latitude), lng: parseFloat(this.form.longitude)}, map: this.map, draggable: true})
+      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)}, map: this.map, draggable: true})
     }
   },
   mounted () {

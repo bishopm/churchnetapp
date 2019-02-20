@@ -1,5 +1,5 @@
 // Configuration for your app
-var version = JSON.stringify('0.2.9')
+var version = JSON.stringify('0.3')
 
 module.exports = function (ctx) {
   return {
@@ -117,7 +117,10 @@ module.exports = function (ctx) {
     },
     pwa: {
       // workboxPluginMode: 'InjectManifest',
-      // workboxOptions: {},
+      workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true
+      },
       manifest: {
         // name: 'Quasar App',
         // short_name: 'Quasar-PWA',

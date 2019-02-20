@@ -49,12 +49,12 @@
     </div>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <h4>Confirm removal reason</h4>
-      <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="form.deletereason" :options="[
+      <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="subform.deletereason" :options="[
         { label: 'Individual has left the church', value: 'archive' },
         { label: 'Individual was added in error', value: 'delete' },
         { label: 'Individual has died', value: 'death' }
       ]"/>
-      <q-datetime float-label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="form.deathdate" type="date" />
+      <q-datetime float-label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
       <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
       <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
     </q-modal>
@@ -74,7 +74,9 @@ export default {
         title: '',
         email: '',
         sex: '',
-        cellphone: '',
+        cellphone: ''
+      },
+      subform: {
         deletereason: 'archive',
         deathdate: ''
       },
@@ -95,7 +97,7 @@ export default {
   },
   methods: {
     checkDeath () {
-      if (this.form.deletereason === 'death') {
+      if (this.subform.deletereason === 'death') {
         this.showdate = true
       } else {
         this.showdate = false
@@ -107,8 +109,8 @@ export default {
       this.$axios.post(process.env.API + '/individuals/delete/' + this.form.id,
         {
           id: this.form.id,
-          reason: this.form.deletereason,
-          deathdate: this.form.deathdate
+          reason: this.subform.deletereason,
+          deathdate: this.subform.deathdate.slice(0, 10).replace(/-/g, '/')
         })
         .then(response => {
           this.$q.loading.hide()

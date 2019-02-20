@@ -10,7 +10,7 @@
         <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
         <q-icon name="fas fa-fw fa-phone" color="secondary"></q-icon> {{household.homephone}}
       </p>
-      <div id="map" class="q-mt-md"></div>
+      <div id="map" class="q-mt-md">{{mapmessage}}</div>
       <div v-if="household.individuals.length">
         <q-tabs color="secondary" no-pane-border align="justify">
           <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
@@ -79,14 +79,14 @@
           <q-btn v-if="anewopen" color="red" icon="fas fa-trash" @click="deleteaNote()"></q-btn>
         </div>
         <div v-if="anewopen" class="q-mx-md">
-          <q-field :error="$v.form.anniversarydate.$error" error-label="The date field is required">
-            <q-datetime float-label="Date" format="YYYY-MM-DD" format-model="string" v-model="form.anniversarydate" type="date" @blur="$v.form.anniversarydate.$touch()" :error="$v.form.anniversarydate.$error" />
+          <q-field :error="$v.aform.anniversarydate.$error" error-label="The date field is required">
+            <q-datetime float-label="Date" format="YYYY-MM-DD" format-model="string" v-model="aform.anniversarydate" type="date" @blur="$v.aform.anniversarydate.$touch()" :error="$v.aform.anniversarydate.$error" />
           </q-field>
-          <q-field :error="$v.form.adetails.$error" error-label="The details field is required">
-            <q-input float-label="Details" v-model="form.adetails" @blur="$v.form.adetails.$touch()" :error="$v.form.adetails.$error" />
+          <q-field :error="$v.aform.details.$error" error-label="The details field is required">
+            <q-input float-label="Details" v-model="aform.details" @blur="$v.aform.details.$touch()" :error="$v.aform.details.$error" />
           </q-field>
           <q-field>
-            <q-select float-label="Type" v-model="form.anniversarytype" :options="[
+            <q-select float-label="Type" v-model="aform.anniversarytype" :options="[
               { label: 'Baptism', value: 'baptism' },
               { label: 'Death', value: 'death' },
               { label: 'Wedding', value: 'wedding' }
@@ -127,23 +127,29 @@ export default {
         id: '',
         pastoraldate: new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00',
         details: '',
-        individual_id: '',
+        individual_id: ''
+      },
+      aform: {
+        household_id: '',
         anniversarydate: new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00',
         anniversarytype: '',
-        adetails: ''
+        details: ''
       },
       household: {},
       map: null,
       marker: null,
       perm: '',
-      blocked: ''
+      blocked: '',
+      mapmessage: ''
     }
   },
   validations: {
     form: {
       details: { required },
-      adetails: { required },
-      pastoraldate: { required },
+      pastoraldate: { required }
+    },
+    aform: {
+      details: { required },
       anniversarydate: { required }
     }
   },
@@ -156,6 +162,7 @@ export default {
         } else {
           this.household = response.data
           this.form.household_id = this.household.id
+          this.aform.household_id = this.household.id
           this.perm = this.$store.state.user.societies[this.household.society_id]
           if (this.$store.state.user.level < 5) {
             this.perm = 'editor'
@@ -180,7 +187,7 @@ export default {
   },
   methods: {
     editHousehold () {
-      this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit' }})
+      this.$router.push({name: 'householdform', params: { id: this.$route.params.id, action: 'edit', scope: 'society' }})
     },
     editIndividual (individual) {
       individual.alltags = this.household.alltags
@@ -197,10 +204,10 @@ export default {
       this.newopen = true
     },
     addaNote () {
-      this.form.id = ''
-      this.form.adetails = ''
-      this.form.anniversarydate = new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00'
-      this.form.anniversarytype = ''
+      this.aform.id = ''
+      this.aform.details = ''
+      this.aform.anniversarydate = new Date().toJSON().slice(0, 10).replace(/-/g, '/') + ' 00:00:00'
+      this.aform.anniversarytype = ''
       this.anewopen = true
     },
     deleteNote () {
@@ -217,7 +224,22 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
+        })
+    },
+    deleteaNote () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/specialdays/' + this.aform.id)
+        .then(response => {
+          for (var andx in this.household.specialdays) {
+            if (this.household.specialdays[andx].id === this.aform.id) {
+              this.household.specialdays.splice(andx, 1)
+            }
+          }
+          this.$q.notify(response.data)
+          this.amodalopen = false
+        })
+        .catch(function (error) {
+          console.log(error)
         })
     },
     saveNote () {
@@ -244,14 +266,14 @@ export default {
       }
     },
     saveaNote () {
-      this.$v.form.$touch()
-      if (this.$v.form.$error) {
+      this.$v.aform.$touch()
+      if (this.$v.aform.$error) {
         this.$q.notify('Please check for errors!')
       } else {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.post(process.env.API + '/specialdays',
           {
-            specialday: this.form
+            specialday: this.aform
           })
           .then(response => {
             if (response.data.message === 'Pastoral note has been created') {
@@ -271,16 +293,20 @@ export default {
       this.newopen = true
     },
     editaNote (note) {
-      this.form = note
+      this.aform = note
       this.anewopen = true
     },
     async initMap () {
-      await this.$google()
-      this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)},
-        zoom: 15
-      })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)}, map: this.map})
+      if (this.household.location) {
+        await this.$google()
+        this.map = new window.google.maps.Map(document.getElementById('map'), {
+          center: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)},
+          zoom: 15
+        })
+        this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)}, map: this.map})
+      } else {
+        this.mapmessage = 'Edit this household to add GPS co-ordinates'
+      }
     }
   }
 }

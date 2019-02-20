@@ -3,13 +3,17 @@
     <div v-if="group" class="text-center layout-padding">
       <p class="caption"><b>{{group.groupname}}</b><small class="q-mx-sm" v-if="soc">{{soc.society}}</small>
         <q-icon v-if="edit" class="cursor-pointer" @click.native="editGroup" name="fas fa-edit"></q-icon>
-        <q-icon class="cursor-pointer q-ml-sm" @click.native="showReport" name="fas fa-file-pdf"></q-icon>
       </p>
+      <form name="reportform" method="post" :action="url" target="_blank">
+        <q-btn v-if="members.length" color="secondary" type="submit" target="_blank">View report</q-btn>
+        <input type="hidden" name="members" :value="jmembers">
+        <input type="hidden" name="group" :value="JSON.stringify(group)">
+      </form>
       <q-search v-if="!blocked" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name to add a group member" />
       <div class="q-ma-md" v-if="search.length > 2">
         <q-select @input="addIndiv()" float-label="Individual" v-model="individual_id" :options="individualOptions"/>
       </div>
-      <q-item v-for="individual in group.individuals" :key="individual.id">
+      <q-item v-for="individual in members" :key="individual.id">
         <q-item-main>{{individual.firstname}} {{individual.surname}}</q-item-main>
         <q-item-side align="right" color="black" icon="fas fa-times" class="cursor-pointer" @click.native="removeIndiv(individual.id)"></q-item-side>
       </q-item>
@@ -19,15 +23,16 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
 export default {
   data () {
     return {
       group: {},
+      members: [],
       individual_id: '',
       individualOptions: [],
       search: '',
-      blocked: ''
+      blocked: '',
+      url: process.env.WEB + '/groupreport'
     }
   },
   mounted () {
@@ -37,7 +42,8 @@ export default {
         if (response.data === 'Unauthorised') {
           this.blocked = 'Sorry - you are not authorised to view this group'
         } else {
-          this.group = response.data
+          this.members = response.data.members
+          this.group = response.data.group
         }
       })
       .catch(function (error) {
@@ -52,6 +58,9 @@ export default {
         }
       }
     },
+    jmembers () {
+      return JSON.stringify(this.members)
+    },
     soc () {
       return this.$store.state.user.societies.full[this.group.society_id]
     }
@@ -61,7 +70,7 @@ export default {
       this.$router.push({name: 'groupform', params: { action: 'edit', id: this.$route.params.id }})
     },
     showReport () {
-      openURL(process.env.WEB + '/groupreport/' + JSON.stringify(this.group))
+      this.reportform.submit()
     },
     removeIndiv (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
@@ -70,12 +79,15 @@ export default {
           id: id
         })
         .then(response => {
-          this.group = response.data
-          this.$q.loading.hide()
+          for (var mndx in this.members) {
+            if (this.members[mndx].id === id) {
+              this.members.splice(mndx, 1)
+              break
+            }
+          }
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
         })
     },
     addIndiv () {
@@ -85,13 +97,11 @@ export default {
           id: this.individual_id
         })
         .then(response => {
-          this.group = response.data
+          this.members.push(response.data)
           this.search = ''
-          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
         })
     },
     searchdb () {
