@@ -1,6 +1,6 @@
 <template>
   <div>
-    <leafletmap v-if="latitude" :latitude="latitude" :longitude="longitude" :popuplabel="society.society + ' Methodist Church'"></leafletmap>
+    <leafletmap v-if="latitude" :latitude="latitude" :longitude="longitude" :popuplabel="society.society + ' Methodist Church'" editable="no"></leafletmap>
     <div v-if="society" class="text-center layout-padding">
       <h3>
         {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="fas fa-edit"></q-icon>

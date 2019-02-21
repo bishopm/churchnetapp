@@ -1,6 +1,6 @@
 <template>
   <div>
-    <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee"></leafletmap>
+    <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="no"></leafletmap>
     <div v-if="household.addressee" class="text-center q-mx-ma">
       <p class="caption q-ma-md">
         <b>{{household.addressee}}</b>&nbsp;<q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editHousehold">edit</q-btn><br>

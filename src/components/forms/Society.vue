@@ -2,7 +2,7 @@
   <div class="text-center layout-padding">
     <p class="caption" v-if="title">{{title}} a society</p>
     <circuitselect :perms="['editor','admin']"></circuitselect>
-    <div id="map" class="q-mt-md"></div>
+    <leafletmap :latitude="latitude" :longitude="longitude" :popuplabel="form.society" editable="yes"></leafletmap>
     <p>Drag the marker to the correct position</p>
     <form>
       <q-tabs color="primary" class="no-border" align="justify" q-tabs-two-lines>
@@ -127,6 +127,7 @@
 
 <script>
 import circuitselect from './../Circuitselect'
+import leafletmap from './../Leafletmap'
 import { required } from 'vuelidate/lib/validators'
 import { format } from 'quasar'
 const { capitalize } = format
@@ -140,7 +141,9 @@ export default {
       society: {},
       marker: {},
       map: {},
-      form: {}
+      form: {},
+      latitude: '',
+      longitude: ''
     }
   },
   validations: {
@@ -149,7 +152,8 @@ export default {
     }
   },
   components: {
-    'circuitselect': circuitselect
+    'circuitselect': circuitselect,
+    'leafletmap': leafletmap
   },
   methods: {
     submit () {
@@ -194,36 +198,18 @@ export default {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           if (this.$route.params.action === 'add') {
-            var latlng = new window.google.maps.LatLng(
-              {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-              })
+            this.latitude = position.coords.latitude
+            this.longitude = position.coords.longitude
           } else {
-            latlng = new window.google.maps.LatLng(
-              {
-                lat: this.society.latitude,
-                lng: this.society.longitude
-              })
+            this.latitude = 50
+            this.longitude = 50
           }
-          localStorage.setItem('CHURCHNET_newLat', latlng.lat())
-          localStorage.setItem('CHURCHNET_newLng', latlng.lng())
-          this.map = new window.google.maps.Map(document.getElementById('map'), {
-            zoom: 14,
-            center: latlng
-          })
-          this.marker = new window.google.maps.Marker({
-            position: latlng,
-            map: this.map,
-            draggable: true
-          })
-          this.marker.addListener('dragend', function () {
-            localStorage.setItem('CHURCHNET_newLat', this.position.lat())
-            localStorage.setItem('CHURCHNET_newLng', this.position.lng())
-          })
+          localStorage.setItem('CHURCHNET_newLat', this.latitude)
+          localStorage.setItem('CHURCHNET_newLng', this.longitude)
         })
       } else {
-        console.log('Browser cannot')
+        this.latitude = 50
+        this.longitude = 50
       }
     }
   },
@@ -236,6 +222,7 @@ export default {
     } else {
       // pass
     }
+    this.initMap()
     this.societies.push(this.society.id)
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.post(process.env.API + '/groups/search',
