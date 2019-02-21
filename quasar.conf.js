@@ -7,6 +7,7 @@ module.exports = function (ctx) {
     plugins: [
       'axios',
       'maps',
+      'mapbox',
       'vuelidate',
       'firebase',
       'frappe'

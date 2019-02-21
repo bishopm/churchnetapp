@@ -146,7 +146,23 @@ export default {
     }
   },
   mounted () {
-    localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
+    if (localStorage.getItem('CHURCHNET_Version')) {
+      if (localStorage.getItem('CHURCHNET_Version') !== process.env.VERSION) {
+        this.$q.dialog({
+          title: 'New version available',
+          message: 'Click OK to restart the app and upgrade to version ' + process.env.VERSION,
+          ok: 'OK',
+          cancel: 'LATER'
+        }).then(() => {
+          localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
+          window.location.reload()
+        }).catch(() => {
+          console.log('Delaying upgrade')
+        })
+      }
+    } else {
+      localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
+    }
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$q.loading.show({
         message: 'Welcome! Logging you in...',

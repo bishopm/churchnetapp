@@ -104,11 +104,20 @@ export default {
     setMap () {
       this.latitude = this.society.lat
       this.longitude = this.society.lng
-      this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)},
-        zoom: 15
+      this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
+      var map = new this.$mapbox.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/outdoors-v9', // stylesheet location
+        center: [this.household.location.longitude, this.household.location.latitude], // starting position
+        zoom: 13 // starting zoom
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)}, map: this.map, draggable: true})
+      map.addControl(new this.$mapbox.FullscreenControl())
+      var popup = new this.$mapbox.Popup({ offset: 25 })
+        .setText(this.household.addressee)
+      new this.$mapbox.Marker({ color: '#4d7227' })
+        .setLngLat([this.household.location.longitude, this.household.location.latitude])
+        .setPopup(popup)
+        .addTo(map)
     },
     submit () {
       this.$v.form.$touch()
@@ -170,15 +179,24 @@ export default {
         }
       }
     },
-    async initMap () {
-      await this.$google()
+    initMap () {
+      this.$google()
       this.latitude = this.$store.state.user.societies.full[this.form.society_id].location.latitude
       this.longitude = this.$store.state.user.societies.full[this.form.society_id].location.longitude
-      this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)},
-        zoom: 15
+      this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
+      this.map = new this.$mapbox.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/outdoors-v9', // stylesheet location
+        center: [this.household.location.longitude, this.household.location.latitude], // starting position
+        zoom: 13 // starting zoom
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)}, map: this.map, draggable: true})
+      this.map.addControl(new this.$mapbox.FullscreenControl())
+      var popup = new this.$mapbox.Popup({ offset: 25 })
+        .setText(this.household.addressee)
+      this.marker = new this.$mapbox.Marker({ color: '#4d7227' })
+        .setLngLat([this.household.location.longitude, this.household.location.latitude])
+        .setPopup(popup)
+        .addTo(this.map)
     }
   },
   mounted () {

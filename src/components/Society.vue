@@ -26,11 +26,20 @@ export default {
   },
   methods: {
     initMap () {
-      this.map = new window.google.maps.Map(document.getElementById('map'), {
-        center: {lat: parseFloat(this.society.location.latitude), lng: parseFloat(this.society.location.longitude)},
-        zoom: 14
+      this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
+      var map = new this.$mapbox.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/outdoors-v9', // stylesheet location
+        center: [this.society.location.longitude, this.society.location.latitude], // starting position
+        zoom: 13 // starting zoom
       })
-      this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.society.location.latitude), lng: parseFloat(this.society.location.longitude)}, map: this.map})
+      map.addControl(new this.$mapbox.FullscreenControl())
+      var popup = new this.$mapbox.Popup({ offset: 25 })
+        .setText(this.society.society + ' Methodist Church')
+      new this.$mapbox.Marker({ color: '#4d7227' })
+        .setLngLat([this.society.location.longitude, this.society.location.latitude])
+        .setPopup(popup)
+        .addTo(map)
     },
     editSociety () {
       this.$router.push({name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' }})
@@ -73,8 +82,7 @@ export default {
 
 <style>
 #map {
-  text-align:center;
+  text-align:left;
   height: 300px;
-  width: 100%;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div v-if="household.addressee" class="text-center layout-padding">
+    <div class="q-ma-sm" id="map"></div>
+    <div v-if="household.addressee" class="text-center q-mx-ma">
       <p class="caption q-ma-md">
         <b>{{household.addressee}}</b>&nbsp;<q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editHousehold">edit</q-btn><br>
         <small>Pastoral notes: {{household.pastorals.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="modalopen = true;newopen=false"></q-icon></small>&nbsp;
@@ -10,7 +11,8 @@
         <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
         <q-icon name="fas fa-fw fa-phone" color="secondary"></q-icon> {{household.homephone}}
       </p>
-      <div id="map" class="q-mt-md">{{mapmessage}}</div>
+    </div>
+    <div v-if="household.addressee" class="text-center layout-padding">
       <div v-if="household.individuals.length">
         <q-tabs color="secondary" no-pane-border align="justify">
           <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
@@ -139,8 +141,7 @@ export default {
       map: null,
       marker: null,
       perm: '',
-      blocked: '',
-      mapmessage: ''
+      blocked: ''
     }
   },
   validations: {
@@ -161,6 +162,19 @@ export default {
           this.blocked = 'Sorry - you are not authorised to view this household'
         } else {
           this.household = response.data
+          if (!this.household.location) {
+            if (this.household.society.location) {
+              this.household.location = {
+                latitude: this.household.society.location.latitude,
+                longitude: this.household.society.location.longitude
+              }
+            } else {
+              this.household.location = {
+                latitude: -26.1806194,
+                longitude: 28.1049816
+              }
+            }
+          }
           this.form.household_id = this.household.id
           this.aform.household_id = this.household.id
           this.perm = this.$store.state.user.societies[this.household.society_id]
@@ -296,17 +310,21 @@ export default {
       this.aform = note
       this.anewopen = true
     },
-    async initMap () {
-      if (this.household.location) {
-        await this.$google()
-        this.map = new window.google.maps.Map(document.getElementById('map'), {
-          center: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)},
-          zoom: 15
-        })
-        this.marker = new window.google.maps.Marker({position: {lat: parseFloat(this.household.location.latitude), lng: parseFloat(this.household.location.longitude)}, map: this.map})
-      } else {
-        this.mapmessage = 'Edit this household to add GPS co-ordinates'
-      }
+    initMap () {
+      this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
+      var map = new this.$mapbox.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/outdoors-v9', // stylesheet location
+        center: [this.household.location.longitude, this.household.location.latitude], // starting position
+        zoom: 13 // starting zoom
+      })
+      map.addControl(new this.$mapbox.FullscreenControl())
+      var popup = new this.$mapbox.Popup({ offset: 25 })
+        .setText(this.household.addressee)
+      new this.$mapbox.Marker({ color: '#4d7227' })
+        .setLngLat([this.household.location.longitude, this.household.location.latitude])
+        .setPopup(popup)
+        .addTo(map)
     }
   }
 }
@@ -320,16 +338,14 @@ export default {
     text-decoration: none;
     color:white;
   }
-  #map {
-    text-align:center;
-    height: 300px;
-    width: 100%;
-  }
   h4 {
     margin-top: 2px;
     margin-bottom: 2px;
   }
   .q-chip .q-icon {
     font-size: 16px;
+  }
+  #map {
+    height: 300px;
   }
 </style>
