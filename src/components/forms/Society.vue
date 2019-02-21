@@ -267,17 +267,17 @@ export default {
       }
       this.userOptions.push(newitem2)
     }
-    await this.$google()
-    this.initMap()
   }
 }
 </script>
 
 <style>
 #map {
-  text-align:center;
-  height: 200px;
-  width: 100%;
+    position: 'absolute';
+    top: 0;
+    bottom: 0;
+    width: 300px;
+    height: '100%';
 }
 .bg-lightgrey {
   background-color: #eeeeee;

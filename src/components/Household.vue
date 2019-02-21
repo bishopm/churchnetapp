@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="q-ma-sm" id="map"></div>
+    <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee"></leafletmap>
     <div v-if="household.addressee" class="text-center q-mx-ma">
       <p class="caption q-ma-md">
         <b>{{household.addressee}}</b>&nbsp;<q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editHousehold">edit</q-btn><br>
@@ -116,6 +116,7 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
+import leafletmap from './Leafletmap'
 export default {
   data () {
     return {
@@ -143,6 +144,9 @@ export default {
       perm: '',
       blocked: ''
     }
+  },
+  components: {
+    'leafletmap': leafletmap
   },
   validations: {
     form: {
@@ -309,22 +313,6 @@ export default {
     editaNote (note) {
       this.aform = note
       this.anewopen = true
-    },
-    initMap () {
-      this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
-      var map = new this.$mapbox.Map({
-        container: 'map', // container id
-        style: 'mapbox://styles/mapbox/outdoors-v9', // stylesheet location
-        center: [this.household.location.longitude, this.household.location.latitude], // starting position
-        zoom: 13 // starting zoom
-      })
-      map.addControl(new this.$mapbox.FullscreenControl())
-      var popup = new this.$mapbox.Popup({ offset: 25 })
-        .setText(this.household.addressee)
-      new this.$mapbox.Marker({ color: '#4d7227' })
-        .setLngLat([this.household.location.longitude, this.household.location.latitude])
-        .setPopup(popup)
-        .addTo(map)
     }
   }
 }
@@ -346,6 +334,10 @@ export default {
     font-size: 16px;
   }
   #map {
-    height: 300px;
+    position: 'absolute';
+    top: 0;
+    bottom: 0;
+    width: 300px;
+    height: '100%';
   }
 </style>

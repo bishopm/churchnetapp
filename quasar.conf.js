@@ -6,8 +6,6 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
-      'maps',
-      'mapbox',
       'vuelidate',
       'firebase',
       'frappe'
