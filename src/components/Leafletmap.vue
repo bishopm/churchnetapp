@@ -1,6 +1,7 @@
 <template>
   <div style="width:100%; height:300px;">
     <l-map ref="map" :zoom="zoom" :center="center" :maxZoom="maxZoom" style="height: 300px; width: 100%" @click="setMarkerPosition">
+      <l-control-layers />
       <l-control position="bottomright" >
         <q-btn icon="fa fa-crosshairs" round small color="black" @click="goLocation()"/>
       </l-control>
@@ -22,23 +23,22 @@ export default {
       name: 'leafletmap',
       tileProviders: [
         {
-          name: 'OpenStreetMap',
+          name: 'Standard',
           visible: true,
           attribution: '',
           url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           options: {}
+        },
+        {
+          name: 'Satellite',
+          visible: false,
+          attribution: '',
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          options: {}
         }
-        // {
-        //  name: 'MapBox',
-        //  visible: false,
-        //  url: 'https://api.mapbox.com/styles/v1/mapbox/emerald-v8/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w',
-        //  tileSize: 512,
-        //  zoomOffset: -1,
-        //  attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        // }
       ],
-      token: '',
-      zoom: 14,
+      token: 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w',
+      zoom: 13,
       maxZoom: 20,
       center: [this.latitude, this.longitude],
       bounds: null,
@@ -66,12 +66,14 @@ export default {
     },
     setMarkerPosition (event) {
       if (this.editable === 'yes') {
-        console.log(event.latlng)
+        // console.log(event.latlng)
         this.marker = L.latLng(event.latlng.lat, event.latlng.lng)
+        this.$emit('newlng', event.latlng.lng.toString())
+        this.$emit('newlat', event.latlng.lat.toString())
         // console.log(center)
         // console.log(this.$refs.map.mapObject)
         this.$refs.map.mapObject.eachLayer(layer => {
-          console.log('name', layer) // undefined
+          // console.log('name', layer) // undefined
         })
       }
     },

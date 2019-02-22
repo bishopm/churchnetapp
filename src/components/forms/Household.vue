@@ -1,6 +1,6 @@
 <template>
   <div>
-    <leafletmap v-if="longitude" :latitude="latitude" :longitude="longitude" :popuplabel="form.addressee" editable="yes"></leafletmap>
+    <leafletmap v-if="longitude" :latitude="latitude" :longitude="longitude" :popuplabel="form.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
@@ -28,7 +28,6 @@
     <div class="q-ma-md">
       <q-select float-label="Household cellphone" v-model="form.householdcell" :options="housecellOptions"/>
     </div>
-    <div id="map" class="q-mt-md"></div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
@@ -103,6 +102,12 @@ export default {
           console.log(error)
           this.$q.loading.hide()
         })
+    },
+    newlat (coord) {
+      this.latitude = coord
+    },
+    newlng (coord) {
+      this.longitude = coord
     },
     setMap () {
       this.latitude = this.society.lat
