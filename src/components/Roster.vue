@@ -127,11 +127,11 @@ export default {
         this.$axios.get(process.env.API + '/groups/' + row.groups.id)
           .then(response => {
             this.indivOptions = []
-            for (var ikey in response.data.individuals) {
+            for (var ikey in response.data.members) {
               var newitem = {
-                label: response.data.individuals[ikey].firstname + '&nbsp;<b>' + response.data.individuals[ikey].surname + '</b>',
-                display: response.data.individuals[ikey].firstname.substr(0, 1) + ' ' + response.data.individuals[ikey].surname,
-                value: parseInt(response.data.individuals[ikey].id)
+                label: response.data.members[ikey].firstname + '&nbsp;<b>' + response.data.members[ikey].surname + '</b>',
+                display: response.data.members[ikey].firstname.substr(0, 1) + ' ' + response.data.members[ikey].surname,
+                value: parseInt(response.data.members[ikey].id)
               }
               this.indivOptions.push(newitem)
             }
