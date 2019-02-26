@@ -31,7 +31,7 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
-      <q-btn class="q-ml-md" color="black">Delete</q-btn>
+      <q-btn class="q-ml-md" @click="deleteHousehold" color="black">Delete</q-btn>
     </div>
   </div>
 </template>
@@ -110,8 +110,6 @@ export default {
       this.longitude = coord
     },
     setMap () {
-      this.latitude = this.society.lat
-      this.longitude = this.society.lng
       this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
       var map = new this.$mapbox.Map({
         container: 'map', // container id
@@ -127,14 +125,35 @@ export default {
         .setPopup(popup)
         .addTo(map)
     },
+    deleteHousehold () {
+      this.$q.dialog({
+        title: 'Confirm deletion',
+        message: 'Are you sure you want to delete this household and its members?',
+        ok: 'Yes',
+        cancel: 'No'
+      }).then(() => {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/households/delete',
+          {
+            id: this.form.id
+          })
+          .then(response => {
+            this.$q.notify('Household deleted')
+            this.$router.push({ name: 'households' })
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }).catch(() => {
+        console.log('Cancelling deletion')
+      })
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
         this.$q.notify('Please check for errors!')
       } else {
         if (this.$route.params.action === 'edit') {
-          this.latitude = this.marker.position.lat().toString()
-          this.longitude = this.marker.position.lng().toString()
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
           this.$axios.post(process.env.API + '/households/' + this.form.id,
             {
