@@ -1,6 +1,6 @@
 <template>
   <div>
-    <leafletmap v-if="longitude" :latitude="latitude" :longitude="longitude" :popuplabel="form.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
+    <leafletmap v-if="household.location.longitude" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
@@ -11,22 +11,22 @@
       </q-select>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.addressee.$error" error-label="The addressee field is required">
-        <q-input float-label="Addressee" v-model="form.addressee" @blur="$v.form.addressee.$touch()" :error="$v.form.addressee.$error" />
+      <q-field :error="$v.household.addressee.$error" error-label="The addressee field is required">
+        <q-input float-label="Addressee" v-model="household.addressee" @blur="$v.household.addressee.$touch()" :error="$v.household.addressee.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-input float-label="Residential Address" v-model="form.addr1"/>
-      <q-input v-model="form.addr2"/>
-      <q-input v-model="form.addr3"/>
+      <q-input float-label="Residential Address" v-model="household.addr1"/>
+      <q-input v-model="household.addr2"/>
+      <q-input v-model="household.addr3"/>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.homephone.$error" error-label="Phone numbers must be numeric">
-        <q-input float-label="Home phone" v-model="form.homephone" @blur="$v.form.homephone.$touch()" :error="$v.form.homephone.$error" />
+      <q-field :error="$v.household.homephone.$error" error-label="Phone numbers must be numeric">
+        <q-input float-label="Home phone" v-model="household.homephone" @blur="$v.household.homephone.$touch()" :error="$v.household.homephone.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Household cellphone" v-model="form.householdcell" :options="housecellOptions"/>
+      <q-select float-label="Household cellphone" v-model="household.householdcell" :options="housecellOptions"/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -45,17 +45,13 @@ import leafletmap from './../Leafletmap'
 export default {
   data () {
     return {
-      form: {
+      household: {
         addressee: '',
         addr1: '',
         addr2: '',
         addr3: '',
         homephone: ''
       },
-      map: '',
-      latitude: '',
-      longitude: '',
-      marker: '',
       housecellOptions: [],
       csocietyOptions: [],
       society: {
@@ -66,7 +62,7 @@ export default {
     }
   },
   validations: {
-    form: {
+    household: {
       addressee: { required },
       homephone: { numeric }
     }
@@ -104,10 +100,10 @@ export default {
         })
     },
     newlat (coord) {
-      this.latitude = coord
+      this.household.location.latitude = coord
     },
     newlng (coord) {
-      this.longitude = coord
+      this.household.location.longitude = coord
     },
     setMap () {
       this.$mapbox.accessToken = 'pk.eyJ1IjoiYmlzaG9wbSIsImEiOiJjanNjenJ3MHMwcWRyM3lsbmdoaDU3ejI5In0.M1x6KVBqYxC2ro36_Ipz_w'
@@ -135,7 +131,7 @@ export default {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.post(process.env.API + '/households/delete',
           {
-            id: this.form.id
+            id: this.household.id
           })
           .then(response => {
             this.$q.notify('Household deleted')
@@ -149,22 +145,22 @@ export default {
       })
     },
     submit () {
-      this.$v.form.$touch()
-      if (this.$v.form.$error) {
+      this.$v.household.$touch()
+      if (this.$v.household.$error) {
         this.$q.notify('Please check for errors!')
       } else {
         if (this.$route.params.action === 'edit') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(process.env.API + '/households/' + this.form.id,
+          this.$axios.post(process.env.API + '/households/' + this.household.id,
             {
-              addressee: this.form.addressee,
-              addr1: this.form.addr1,
-              addr2: this.form.addr2,
-              addr3: this.form.addr3,
-              homephone: this.form.homephone,
-              householdcell: this.form.householdcell,
-              latitude: this.latitude,
-              longitude: this.longitude
+              addressee: this.household.addressee,
+              addr1: this.household.addr1,
+              addr2: this.household.addr2,
+              addr3: this.household.addr3,
+              homephone: this.household.homephone,
+              householdcell: this.household.householdcell,
+              latitude: this.household.location.latitude,
+              longitude: this.household.location.longitude
             })
             .then(response => {
               this.$q.loading.hide()
@@ -184,15 +180,15 @@ export default {
           }
           this.$axios.post(process.env.API + '/households',
             {
-              addressee: this.form.addressee,
-              addr1: this.form.addr1,
-              addr2: this.form.addr2,
-              addr3: this.form.addr3,
-              homephone: this.form.homephone,
-              householdcell: this.form.householdcell,
+              addressee: this.household.addressee,
+              addr1: this.household.addr1,
+              addr2: this.household.addr2,
+              addr3: this.household.addr3,
+              homephone: this.household.homephone,
+              householdcell: this.household.householdcell,
               society_id: this.soc,
-              latitude: this.latitude,
-              longitude: this.longitude
+              latitude: this.household.location.latitude,
+              longitude: this.household.location.longitude
             })
             .then(response => {
               this.$q.loading.hide()
@@ -213,18 +209,16 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
         .then((response) => {
-          this.form = response.data
-          for (var ikey in this.form.individuals) {
+          this.household = response.data
+          for (var ikey in this.household.individuals) {
             var newitem = {
-              label: this.form.individuals[ikey].firstname,
-              value: this.form.individuals[ikey].id
+              label: this.household.individuals[ikey].firstname,
+              value: this.household.individuals[ikey].id
             }
-            if (this.form.individuals[ikey].cellphone) {
+            if (this.household.individuals[ikey].cellphone) {
               this.housecellOptions.push(newitem)
             }
           }
-          this.longitude = this.form.location.longitude
-          this.latitude = this.form.location.latitude
         })
         .catch(function (error) {
           console.log(error)

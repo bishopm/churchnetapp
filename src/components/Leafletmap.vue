@@ -6,7 +6,7 @@
         <q-btn icon="fa fa-crosshairs" round small color="black" @click="goLocation()"/>
       </l-control>
       <l-tile-layer v-for="tileProvider in tileProviders" :key="tileProvider.name" :name="tileProvider.name" :visible="tileProvider.visible" :url="tileProvider.url" :attribution="tileProvider.attribution" :token="token" :options="tileProvider.options" layerType="base"/>
-      <l-marker :lat-lng="marker" :icon="icon">
+      <l-marker :lat-lng="marker" :icon="icon" :draggable="dragme">
         <l-popup>{{popuplabel}}</l-popup>
       </l-marker>
     </l-map>
@@ -56,6 +56,15 @@ export default {
     LControl,
     LControlAttribution,
     LMarker
+  },
+  computed: {
+    dragme () {
+      if (this.editable === 'yes') {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   methods: {
     zoomUpdated (zoom) {
