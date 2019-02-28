@@ -8,8 +8,8 @@
         <small>Anniversaries: {{household.specialdays.length}} <q-icon name="fas fa-search" class="cursor-pointer" @click.native="amodalopen = true;anewopen=false"></q-icon></small>
       </p>
       <p class="text-left q-mx-md">
-        <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.addr1}} {{household.addr2}} {{household.addr3}}<br>
-        <q-icon name="fas fa-fw fa-phone" color="secondary"></q-icon> {{household.homephone}}
+        <q-icon name="fas fa-fw fa-map-marker-alt" color="secondary"></q-icon> {{household.location.address}}<br>
+        <q-icon name="fas fa-fw fa-phone" color="secondary"></q-icon> {{household.location.phone}}
       </p>
     </div>
     <div v-if="household.addressee" class="text-center layout-padding">

@@ -53,12 +53,20 @@ export default {
           value: 'groups'
         },
         {
+          label: 'Liturgy',
+          value: 'liturgy'
+        },
+        {
           label: 'Media',
           value: 'media'
         },
         {
           label: 'Practice',
           value: 'practice'
+        },
+        {
+          label: 'Song / Hymn',
+          value: 'song'
         }
       ],
       showHtml: false

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <leafletmap v-if="household.location.longitude" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
+    <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} HOUSEHOLD
     </div>
@@ -16,13 +16,11 @@
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-input float-label="Residential Address" v-model="household.addr1"/>
-      <q-input v-model="household.addr2"/>
-      <q-input v-model="household.addr3"/>
+      <q-input float-label="Residential Address" v-model="household.location.address"/>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.household.homephone.$error" error-label="Phone numbers must be numeric">
-        <q-input float-label="Home phone" v-model="household.homephone" @blur="$v.household.homephone.$touch()" :error="$v.household.homephone.$error" />
+      <q-field :error="$v.household.location.phone.$error" error-label="Phone numbers must be numeric">
+        <q-input float-label="Home phone" v-model="household.location.phone" @blur="$v.household.location.phone.$touch()" :error="$v.household.location.phone.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -50,7 +48,12 @@ export default {
         addr1: '',
         addr2: '',
         addr3: '',
-        homephone: ''
+        location: {
+          longitude: '',
+          latitude: '',
+          address: '',
+          phone: ''
+        }
       },
       housecellOptions: [],
       csocietyOptions: [],
@@ -64,7 +67,9 @@ export default {
   validations: {
     household: {
       addressee: { required },
-      homephone: { numeric }
+      location: {
+        phone: { numeric }
+      }
     }
   },
   components: {
@@ -78,16 +83,23 @@ export default {
       this.$axios.post(process.env.API + '/societies/search',
         {
           search: '',
-          circuits: this.$store.state.circuitfilter
+          circuits: this.$store.state.user.circuits.keys
         })
         .then(response => {
           for (var skey in response.data) {
+            if (response.data[skey].location) {
+              var slat = response.data[skey].location.latitude
+              var slng = response.data[skey].location.longitude
+            } else {
+              slat = -29.8579
+              slng = 31.0292
+            }
             var newitem = {
               label: response.data[skey].society,
               value: {
                 id: response.data[skey].id,
-                lat: response.data[skey].latitude,
-                lng: response.data[skey].longitude
+                lat: slat,
+                lng: slng
               }
             }
             this.csocietyOptions.push(newitem)
@@ -157,7 +169,7 @@ export default {
               addr1: this.household.addr1,
               addr2: this.household.addr2,
               addr3: this.household.addr3,
-              homephone: this.household.homephone,
+              homephone: this.household.location.phone,
               householdcell: this.household.householdcell,
               latitude: this.household.location.latitude,
               longitude: this.household.location.longitude
@@ -204,7 +216,6 @@ export default {
     }
   },
   mounted () {
-    this.setsocieties()
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
@@ -224,6 +235,7 @@ export default {
           console.log(error)
         })
     } else {
+      this.setsocieties()
       this.initMap()
     }
   }
