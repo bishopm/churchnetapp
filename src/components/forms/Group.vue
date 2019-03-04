@@ -18,7 +18,7 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.back()" color="secondary">Cancel</q-btn>
-      <q-btn v-if="admin" class="q-ml-md" @click="deletegroup" color="black">Delete</q-btn>
+      <q-btn class="q-ml-md" @click="deletegroup" color="black">Delete</q-btn>
     </div>
   </div>
 </template>
