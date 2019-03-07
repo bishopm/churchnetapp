@@ -1,5 +1,5 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.1')
+var version = JSON.stringify('0.3.2')
 
 module.exports = function (ctx) {
   return {
