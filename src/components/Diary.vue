@@ -42,8 +42,8 @@ export default {
       this.$router.push({name: 'diaryform', params: { action: 'add', scope: this.$route.params.scope, entity: JSON.stringify(this.entity) }})
     },
     formatme (datein) {
-      var fin = new Date(datein * 1000).toISOString()
-      return fin.substring(0, 10) + ' [' + fin.substring(11, 16) + ']'
+      var fin = new Date(datein * 1000)
+      return fin.toString().substring(4, 21)
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token

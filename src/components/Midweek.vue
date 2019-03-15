@@ -36,8 +36,8 @@ export default {
       return this.$store.state.user.circuits.keys.length
     },
     formatme (datein) {
-      var fin = new Date(datein * 1000).toISOString()
-      return fin.substring(0, 10)
+      var fin = new Date(datein * 1000)
+      return fin.toString().substring(4, 21)
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
