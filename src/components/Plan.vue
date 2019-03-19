@@ -19,13 +19,8 @@
         <q-modal minimized v-model="modalopen" content-css="padding: 50px">
           <h4>{{form.societyname}}</h4>
           <q-input readonly float-label="Service date" v-model="form.servicedate"/>
-          <div class="q-my-md row">
-            <div class="col-9">
-              <q-select float-label="Preacher" filter v-model="form.plan.person.id" :options="preacherOptions"/>
-            </div>
-            <div class="col-3">
-              <q-btn class="q-ml-sm" style="margin-top:10px;" icon="fa fa-plus" @click="visitingpreachers"></q-btn>
-            </div>
+          <div class="q-my-md">
+            <q-select float-label="Preacher" filter v-model="form.plan.person.id" :options="preacherOptions"/>
           </div>
           <div class="q-my-md">
             <q-select float-label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
@@ -33,21 +28,14 @@
           <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
           <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
         </q-modal>
-        <q-modal minimized v-model="guestopen" content-css="padding: 50px">
-          <h4>Add visiting minister</h4>
-          <div class="q-my-md row">
-            <q-select float-label="Minister" filter v-model="guest_id" :options="visitorOptions"/>
-          </div>
-          <q-btn class="q-mt-md" color="primary" @click="addvisitor()" label="OK" />
-          <q-btn class="q-mt-md q-ml-md" color="secondary" @click="guestopen = false" label="Cancel" />
-        </q-modal>
       </q-tab-pane>
       <q-tab-pane class="no-border" name="tab-2">
         <div class="text-center">
           <p>Click any of the buttons below to add or edit circuit preachers, meetings or midweek services</p>
           <q-btn class="q-my-md" color="primary" icon="fas fa-user" label="Preachers & Ministers" to="preachers"></q-btn><br>
           <q-btn class="q-my-md" color="primary" icon="fas fa-users" label="Circuit leadership" :to="'leaders/' + circuit"></q-btn><br>
-          <q-btn class="q-my-md" color="primary" icon="fas fa-church" label="Midweek services" to="midweek"></q-btn>
+          <q-btn class="q-my-md" color="primary" icon="fas fa-church" label="Midweek services" to="midweek"></q-btn><br>
+          <q-btn class="q-my-md" color="primary" icon="fas fa-door-open" label="Guest preachers" to="guests"></q-btn>
         </div>
       </q-tab-pane>
     </q-tabs>
@@ -64,11 +52,8 @@ export default {
       rows: [],
       paginationControl: { rowsPerPage: 0 },
       modalopen: false,
-      guest_id: null,
-      guestopen: false,
       labelOptions: [],
       preacherOptions: [],
-      visitorOptions: [],
       circuitOptions: [],
       planyear: parseInt(date.formatDate(Date.now(), 'YYYY')),
       planmonth: parseInt(date.formatDate(Date.now(), 'M')),
@@ -208,41 +193,6 @@ export default {
         })
       this.modalopen = false
     },
-    addvisitor () {
-      for (var gkey in this.visitorOptions) {
-        if (this.visitorOptions[gkey].value === this.guest_id) {
-          this.preacherOptions.push({
-            label: this.visitorOptions[gkey].label,
-            abbr: this.visitorOptions[gkey].abbr,
-            value: this.visitorOptions[gkey].id
-          })
-          this.form.plan.person.id = this.guest_id
-          this.form.plan.person.name = this.visitorOptions[gkey].label
-        }
-        this.guestopen = false
-      }
-    },
-    visitingpreachers () {
-      this.guestopen = true
-      this.$q.loading.show()
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/circuits/' + this.circuit + '/guestpreachers/methodist')
-        .then(response => {
-          this.rows = []
-          for (var vkey in response.data) {
-            this.visitorOptions.push({
-              label: response.data[vkey].individual.surname + ', ' + response.data[vkey].individual.title + ' ' + (response.data[vkey].individual.firstname).substring(0, 1),
-              abbr: (response.data[vkey].individual.firstname).substring(0, 1) + ' ' + response.data[vkey].individual.surname,
-              value: response.data[vkey].id
-            })
-          }
-          this.$q.loading.hide()
-        })
-        .catch(function (error) {
-          console.log(error)
-          this.$q.loading.hide()
-        })
-    },
     showplan (yy, mm) {
       this.perm = this.$store.state.user.circuits[this.circuit]
       if (this.$store.state.user.societies) {
@@ -283,6 +233,14 @@ export default {
                 value: response.data.preachers[ikey].person.id
               }
               this.preacherOptions.push(newp)
+            }
+            for (var gkey in response.data.guests) {
+              var newg = {
+                label: response.data.guests[gkey].person.individual.surname + ', ' + response.data.guests[gkey].person.individual.title + ' ' + (response.data.guests[gkey].person.individual.firstname).substring(0, 1),
+                abbr: (response.data.guests[gkey].person.individual.firstname).substring(0, 1) + ' ' + response.data.guests[gkey].person.individual.surname,
+                value: response.data.guests[gkey].person.id
+              }
+              this.preacherOptions.push(newg)
             }
             this.labelOptions = [
               { label: '', value: '' }
