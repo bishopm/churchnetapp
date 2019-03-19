@@ -272,6 +272,15 @@ export default {
             }
             this.societyOptions.push(newitem)
           }
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+          this.$axios.get(process.env.API + '/tags')
+            .then((response) => {
+              this.form.alltags = response.data
+              this.populateTags(this.form.status)
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
         })
         .catch(function (error) {
           console.log(error)
