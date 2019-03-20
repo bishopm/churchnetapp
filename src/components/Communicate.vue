@@ -131,6 +131,8 @@ export default {
           societies: this.societies
         })
         .then(response => {
+          this.groupOptions = []
+          this.groupOptions.push({ label: 'All members (use with care!)', value: '0' })
           for (var gkey in response.data) {
             var newitem = {
               label: response.data[gkey].groupname,
