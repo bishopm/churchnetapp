@@ -107,7 +107,7 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
         .then((response) => {
-          this.form = response.data
+          this.form = response.data.group
           if (this.$store.state.user.societies[this.form.society_id] === 'admin') {
             this.admin = true
           }

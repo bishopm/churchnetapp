@@ -143,7 +143,9 @@ export default {
         this.form.rostergroup_id = row.groups.rostergroup_id
         this.form.maxpeople = row.groups.maxpeople
         for (var pkey in record.people) {
-          this.form.individuals.push(record.people[pkey].id)
+          if (pkey < this.form.maxpeople) {
+            this.form.individuals.push(record.people[pkey].id)
+          }
         }
         if ((this.form.maxpeople === 1) && (record.people.length)) {
           this.form.indivint = record.people[0].id
