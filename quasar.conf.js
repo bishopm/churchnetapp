@@ -1,5 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.3')
+var version = JSON.stringify('0.3.4')
+var vnotes = JSON.stringify('Fixed: roster and group issues')
 
 module.exports = function (ctx) {
   return {
@@ -23,11 +24,13 @@ module.exports = function (ctx) {
         ? { // so on dev we'll have
           API: JSON.stringify('http://localhost/churchnet/public/api'),
           WEB: JSON.stringify('http://localhost/churchnet/public'),
+          VNOTES: vnotes,
           VERSION: version
         }
         : { // and on build (production):
           API: JSON.stringify('https://church.net.za/api'),
           WEB: JSON.stringify('https://church.net.za'),
+          VNOTES: vnotes,
           VERSION: version
         },
       scopeHoisting: true,
