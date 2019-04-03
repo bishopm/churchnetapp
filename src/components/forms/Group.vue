@@ -14,6 +14,10 @@
       <q-field>
         <q-select float-label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]"/>
       </q-field>
+      <q-field v-if="form.grouptype === 'event'">
+        <q-datetime float-label="Event date and time" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.eventdatetime" type="datetime" />
+      </q-field>
+
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -31,6 +35,7 @@ export default {
     return {
       form: {
         groupname: '',
+        eventdatetime: '',
         description: '',
         grouptype: '',
         blocked: '',
@@ -58,9 +63,10 @@ export default {
           this.$axios.post(process.env.API + '/groups/' + this.$route.params.id,
             {
               groupname: this.form.groupname,
+              eventdatetime: this.form.eventdatetime,
               description: this.form.description,
               grouptype: this.form.grouptype,
-              society_id: this.$store.state.select
+              society_id: this.form.society_id
             })
             .then(response => {
               this.$q.notify('Group updated')
@@ -75,6 +81,7 @@ export default {
             {
               groupname: this.form.groupname,
               description: this.form.description,
+              eventdatetime: this.form.eventdatetime,
               grouptype: this.form.grouptype,
               society_id: this.$store.state.select
             })
@@ -107,7 +114,11 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
         .then((response) => {
-          this.form = response.data.group
+          this.form.groupname = response.data.group.groupname
+          this.form.description = response.data.group.description
+          this.form.grouptype = response.data.group.grouptype
+          this.form.eventdatetime = response.data.group.datestr
+          this.form.society_id = response.data.group.society_id
           if (this.$store.state.user.societies[this.form.society_id] === 'admin') {
             this.admin = true
           }
