@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.4')
-var vnotes = JSON.stringify('Fixed: roster and group issues')
+var version = JSON.stringify('0.3.5')
+var vnotes = JSON.stringify('New feature: events')
 
 module.exports = function (ctx) {
   return {
