@@ -17,16 +17,30 @@
         <q-tabs color="secondary" no-pane-border align="justify">
           <q-tab v-for="(individual, ndx) in household.individuals" :default="!ndx" :key="individual.id" slot="title" :name="'tab' + individual.id" :label="individual.firstname"/>
           <q-tab-pane v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
-            <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editIndividual(individual)">edit</q-btn><br>
-            <q-icon v-if="individual.cellphone" name="fas fa-phone" color="primary"></q-icon> {{individual.cellphone}}<br>
-            <q-icon v-if="individual.email" name="fas fa-envelope" color="primary"></q-icon> {{individual.email}}<br>
-            <q-icon v-if="individual.memberstatus" name="fas fa-user-check" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
-            <div v-if="individual.tags">
-              <q-chip class="q-ma-xs" small color="secondary" v-for="tag in individual.tags" :key="tag.id">{{tag.name}}</q-chip>
+            <div class="row">
+              <div class="col-4">
+                <img v-if="individual.image" style="border-radius:50%" width="100px" :src="url + 'profile/' + individual.image">
+                <img v-else class="img-rounded" width="100px" :src="url + 'journeyface.png'">
+              </div>
+              <div class="col-8 text-left">
+                <q-icon v-if="individual.surname" name="fas fa-user" color="primary"></q-icon> {{individual.title}} {{individual.firstname}} {{individual.surname}} <q-btn v-if="perm === 'editor' || perm === 'admin'" color="primary" round size="sm" @click.native="editIndividual(individual)">edit</q-btn><br>
+                <q-icon v-if="individual.cellphone" name="fas fa-phone" color="primary"></q-icon> {{individual.cellphone}}<br>
+                <q-icon v-if="individual.email" name="fas fa-envelope" color="primary"></q-icon> {{individual.email}}<br>
+                <q-icon v-if="individual.memberstatus" name="fas fa-user-check" color="memberstatus"></q-icon> {{individual.memberstatus}}<br>
+                <div v-if="individual.tags">
+                  <q-chip class="q-ma-xs" small color="secondary" v-for="tag in individual.tags" :key="tag.id">{{tag.name}}</q-chip>
+                </div>
+              </div>
             </div>
-            <p class="caption q-mt-md">Groups</p>
-            <div class="text-justify">
-              <q-chip class="q-ma-xs" small color="primary" v-for="group in individual.groups" :key="group.id"><router-link :to="'/groups/' + group.id">{{group.groupname}}</router-link></q-chip>
+            <div class="row">
+              <div class="col">
+                <p class="caption q-mt-md">Groups</p>
+                <div class="text-justify">
+                  <q-chip class="q-ma-xs" small color="primary" v-for="group in individual.groups" :key="group.id">
+                    <router-link :to="'/groups/' + group.id">{{group.groupname}}</router-link>
+                  </q-chip>
+                </div>
+              </div>
             </div>
           </q-tab-pane>
           <q-tab key="0" slot="title" name="tabadd" icon="fas fa-plus-circle"/>
@@ -142,7 +156,8 @@ export default {
       map: null,
       marker: null,
       perm: '',
-      blocked: ''
+      blocked: '',
+      url: ''
     }
   },
   components: {
@@ -159,6 +174,7 @@ export default {
     }
   },
   mounted () {
+    this.url = process.env.WEB + '/vendor/bishopm/images/'
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(process.env.API + '/households/' + this.$route.params.id)
       .then((response) => {
@@ -185,18 +201,19 @@ export default {
           if (this.$store.state.user.level < 5) {
             this.perm = 'editor'
           }
-          this.$axios.get(process.env.API + '/groups/' + this.household.society.pastoral_group)
-            .then((response) => {
-              this.groupOptions = []
-              for (var gkey in response.data.individuals) {
-                var newitem = {
-                  label: response.data.individuals[gkey].firstname + ' ' + response.data.individuals[gkey].surname,
-                  value: response.data.individuals[gkey].id
+          if (this.household.society.pastoral_group) {
+            this.$axios.get(process.env.API + '/groups/' + this.household.society.pastoral_group)
+              .then((response) => {
+                this.groupOptions = []
+                for (var gkey in response.data.individuals) {
+                  var newitem = {
+                    label: response.data.individuals[gkey].firstname + ' ' + response.data.individuals[gkey].surname,
+                    value: response.data.individuals[gkey].id
+                  }
+                  this.groupOptions.push(newitem)
                 }
-                this.groupOptions.push(newitem)
-              }
-            })
-          this.initMap()
+              })
+          }
         }
       })
       .catch(function (error) {

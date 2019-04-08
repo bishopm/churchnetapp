@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.5')
-var vnotes = JSON.stringify('New feature: events')
+var version = JSON.stringify('0.3.6')
+var vnotes = JSON.stringify('Profile pictures')
 
 module.exports = function (ctx) {
   return {
@@ -58,6 +58,7 @@ module.exports = function (ctx) {
       components: [
         'QAutocomplete',
         'QBtn',
+        'QCard',
         'QChip',
         'QDatetime',
         'QEditor',
@@ -67,6 +68,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemTile',
         'QLayout',
         'QLayoutHeader',
         'QLayoutDrawer',

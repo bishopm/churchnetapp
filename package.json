@@ -15,6 +15,7 @@
     "firebase": "^5.5.8",
     "firebaseui": "^3.4.1",
     "quasar-framework": "^0.17.19",
+    "vue-avatar-cropper": "0.0.28",
     "vue-save-state": "^1.2.0",
     "vue2-frappe": "^1.0.23",
     "vue2-leaflet": "^1.2.3",

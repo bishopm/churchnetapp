@@ -42,6 +42,17 @@
     <div class="q-ma-md">
       <q-select multiple chips float-label="Roles" v-model="roles" :options="roleOptions"/>
     </div>
+    <div class="text-center" v-if="form.id">
+      <div class="card-body">
+        <img :src="profilepic" style="border-radius:50%" width="250"/>
+        <div class="card-img-overlay">
+          <q-btn color="primary" id="pick-avatar">{{buttontext}}</q-btn>
+          <q-btn v-if="form.image" @click="removeImage" class="q-ml-md" color="negative">Delete image</q-btn>
+        </div>
+      </div>
+      <div class="card-footer text-muted" v-html="message"></div>
+      <avatar-cropper  :labels="{submit: 'OK', cancel: 'Cancel'}" @uploading="handleUploading" @uploaded="handleUploaded" @completed="handleCompleted" @error="handlerError" trigger="#pick-avatar" :upload-url="uploadurl" :upload-headers="uploadHeaders"/>
+    </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
@@ -63,7 +74,8 @@
 
 <script>
 import { required, numeric, email } from 'vuelidate/lib/validators'
-// https://github.com/monterail/vuelidate/tree/master/src/validators
+import AvatarCropper from 'vue-avatar-cropper'
+
 export default {
   data () {
     return {
@@ -74,7 +86,14 @@ export default {
         title: '',
         email: '',
         sex: '',
-        cellphone: ''
+        cellphone: '',
+        image: ''
+      },
+      uploadurl: null,
+      userAvatar: null,
+      message: null,
+      uploadHeaders: {
+        'Authorization': 'Bearer ' + this.$store.state.token
       },
       subform: {
         deletereason: 'archive',
@@ -86,6 +105,9 @@ export default {
       roles: []
     }
   },
+  components: {
+    AvatarCropper
+  },
   validations: {
     form: {
       surname: { required },
@@ -95,7 +117,40 @@ export default {
       cellphone: { numeric }
     }
   },
+  computed: {
+    profilepic () {
+      if (this.form.image) {
+        return process.env.WEB + '/vendor/bishopm/images/profile/' + this.form.image
+      }
+    },
+    buttontext () {
+      if (this.form.image) {
+        return 'Change image'
+      } else {
+        return 'Add profile image'
+      }
+    }
+  },
   methods: {
+    removeImage () {
+      this.form.image = ''
+      this.$q.notify('Press OK to make this change permanent')
+    },
+    handleUploading (form, xhr) {
+      this.message = 'uploading...'
+    },
+    handleUploaded (response) {
+      if (response.status === 'success') {
+        this.message = 'user avatar updated'
+      }
+    },
+    handleCompleted (response, form, xhr) {
+      this.message = 'upload completed'
+      this.$router.push('/households/' + this.form.household_id)
+    },
+    handlerError (message, type, xhr) {
+      this.message = 'Oops! Something went wrong...'
+    },
     checkDeath () {
       if (this.subform.deletereason === 'death') {
         this.showdate = true
@@ -192,6 +247,8 @@ export default {
         this.roles.push(this.form.tags[tkey].tag_id)
       }
     }
+    this.userAvatar = this.profilepic
+    this.uploadurl = process.env.API + '/individuals/' + this.form.id + '/image'
   }
 }
 </script>
