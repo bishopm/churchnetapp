@@ -19,8 +19,8 @@
       {{person.title}} {{person.firstname}} {{person.surname}}
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
-      <q-field :error="$v.form.fullplan.$error" error-label="This field must be a valid year">
-        <q-input float-label="Year on full plan (leave blank if not on full plan)" v-model="form.fullplan" @blur="$v.form.fullplan.$touch()" :error="$v.form.fullplan.$error" />
+      <q-field :error="$v.form.inducted.$error" error-label="This field must be a valid year">
+        <q-input float-label="Year on full plan (leave blank if not on full plan)" v-model="form.inducted" @blur="$v.form.inducted.$touch()" :error="$v.form.inducted.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
@@ -35,6 +35,7 @@
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
+      <q-btn v-if="$route.params.action === 'edit'" class="q-ml-md" color="black" @click="deletePerson">Delete</q-btn>
     </div>
     <q-modal minimized v-model="modalopen" content-css="padding: 50px">
       <div class="caption text-center">Add a new individual</div>
@@ -74,10 +75,11 @@ export default {
       roleOptions: [],
       modalopen: false,
       form: {
-        fullplan: '',
+        inducted: '',
         individual_id: '',
         circuit_id: '',
-        roles: []
+        roles: [],
+        active: 'yes'
       },
       person: {
         firstname: '',
@@ -85,14 +87,13 @@ export default {
         title: 'Ms',
         society_id: '',
         cellphone: '',
-        sex: 'female',
-        active: 'yes'
+        sex: 'female'
       }
     }
   },
   validations: {
     form: {
-      fullplan: { between: between(1900, 2050) },
+      inducted: { between: between(1900, 2050) },
       individual_id: { required },
       roles: { required }
     },
@@ -117,8 +118,9 @@ export default {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
           this.$axios.post(process.env.API + '/circuits/' + this.$store.state.select + '/people',
             {
-              circuit_id: this.$store.state.select,
-              fullplan: this.form.fullplan,
+              personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
+              personable_id: this.$store.state.select,
+              inducted: this.form.inducted,
               active: this.form.active,
               individual_id: this.form.individual_id,
               roles: this.form.roles,
@@ -137,8 +139,9 @@ export default {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
           this.$axios.post(process.env.API + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
             {
-              circuit_id: this.form.circuit_id,
-              fullplan: this.form.fullplan,
+              personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
+              personable_id: this.$store.state.select,
+              inducted: this.form.inducted,
               individual_id: this.form.individual_id,
               roles: this.form.roles,
               active: this.form.active,
@@ -155,6 +158,17 @@ export default {
             })
         }
       }
+    },
+    deletePerson () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.delete(process.env.API + '/people/' + this.form.id)
+        .then(response => {
+          this.$q.notify('Person deleted')
+          this.$router.push({ name: 'preachers' })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     populateTags (category) {
       this.roleOptions = []

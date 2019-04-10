@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.6')
-var vnotes = JSON.stringify('Profile pictures')
+var version = JSON.stringify('0.3.7')
+var vnotes = JSON.stringify('Backend minister fixes')
 
 module.exports = function (ctx) {
   return {
