@@ -4,7 +4,7 @@
       <p class="caption text-center">All societies</p>
       <circuitfilter @altered="searchdb" :showme="showme()" initial="all"></circuitfilter>
       <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by society name" />
-      <q-item v-for="society in societies" :key="society.id" :to="'/societies/' + society.circuit_id + '_' + society.id">
+      <q-item v-for="society in societies" :key="society.id" :to="'/societies/' + society.id">
         {{society.society}}
       </q-item>
     </q-list>

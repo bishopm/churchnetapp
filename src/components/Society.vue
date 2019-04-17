@@ -41,8 +41,7 @@ export default {
   },
   async mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-    var cs = this.$route.params.id.split('_')
-    this.$axios.get(process.env.API + '/circuits/' + cs[0] + '/societies/' + cs[1])
+    this.$axios.get(process.env.API + '/societies/' + this.$route.params.id)
       .then((response) => {
         this.society = response.data
         this.longitude = this.society.location.longitude

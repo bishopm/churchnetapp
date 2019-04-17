@@ -2,7 +2,7 @@
   <div class="layout-padding">
     <q-list v-if="societies" class="no-border">
       <p class="caption text-center">Society settings</p>
-      <q-item v-for="society in societies" :key="society.id" :to="'/societies/' + society.circuit_id + '_' + society.id">
+      <q-item v-for="society in societies" :key="society.id" :to="'/societies/' + society.id">
         {{society.society}}
       </q-item>
     </q-list>
