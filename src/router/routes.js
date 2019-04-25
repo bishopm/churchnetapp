@@ -4,6 +4,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/default'),
     children: [
+      { name: 'bulletin', path: '/bulletin', component: () => import('components/Bulletin'), meta: {auth: true} },
       { name: 'circuit', path: '/circuits/:id', component: () => import('components/Circuit'), meta: {auth: true} },
       { name: 'circuits', path: '/circuits', component: () => import('components/Circuits'), meta: {auth: true} },
       { name: 'circuitsettings', path: '/circuitsettings', component: () => import('components/CircuitSettings'), meta: {auth: true} },

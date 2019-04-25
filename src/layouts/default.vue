@@ -30,9 +30,13 @@
             <q-item-main label="Communication" sublabel="send emails or messages" />
           </q-item>
           <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Society admin</q-list-header>
+          <q-item to="/bulletin">
+            <q-item-side icon="fas fa-fw fa-newspaper" />
+            <q-item-main label="Bulletin" sublabel="set up Sunday Bulletins" />
+          </q-item>
           <q-item to="/diary/society">
             <q-item-side icon="fas fa-fw fa-calendar" />
-            <q-item-main label="Society diary" sublabel="add or edit diary entries" />
+            <q-item-main label="Diary" sublabel="add or edit society events" />
           </q-item>
           <q-item v-if="givingadmin" to="/giving">
             <q-item-side icon="fas fa-fw fa-coins" />
