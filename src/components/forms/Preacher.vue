@@ -1,14 +1,18 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} PREACHER / MINISTER
     </div>
     <div v-if="$route.params.action === 'add'">
       <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
       <div class="card q-ma-xs bg-lightgrey">
-        <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
+        <q-input v-if="$route.params.action === 'add'" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="find the preacher or minister's name">
+          <template v-slot:append>
+            <q-icon name="fa fa-search" />
+          </template>
+        </q-input>
         <div class="q-ma-md" v-if="individualOptions.length">
-          <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+          <q-select label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
         </div>
         <div class="text-center" v-if="search.length > 2">
           <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
@@ -20,44 +24,44 @@
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
       <q-field :error="$v.form.inducted.$error" error-label="This field must be a valid year">
-        <q-input float-label="Year on full plan (leave blank if not on full plan)" v-model="form.inducted" @blur="$v.form.inducted.$touch()" :error="$v.form.inducted.$error" />
+        <q-input label="Year on full plan (leave blank if not on full plan)" v-model="form.inducted" @blur="$v.form.inducted.$touch()" :error="$v.form.inducted.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-select @input="populateTags(form.status)" float-label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]"/>
+      <q-select @input="populateTags(form.status)" label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]"/>
     </div>
     <div class="q-ma-md">
-      <q-select multiple chips float-label="Roles" v-model="form.roles" :options="roleOptions"/>
+      <q-select multiple use-chips label="Roles" v-model="form.roles" :options="roleOptions"/>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]"/>
+      <q-select label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]"/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn v-if="$route.params.action === 'edit'" class="q-ml-md" color="black" @click="deletePerson">Delete</q-btn>
     </div>
-    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+    <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
       <div class="caption text-center">Add a new individual</div>
       <q-field v-if="modalopen" :error="$v.person.firstname.$error" error-label="This field is required">
-        <q-input float-label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
+        <q-input label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
       </q-field>
       <q-field v-if="modalopen" :error="$v.person.surname.$error" error-label="This field is required">
-        <q-input float-label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
+        <q-input label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
       </q-field>
       <q-field v-if="modalopen" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
-        <q-input float-label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
+        <q-input label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
       </q-field>
-      <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
-      <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+      <q-select label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+      <q-select label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
       <q-field v-if="modalopen" :error="$v.person.society_id.$error" error-label="This field is required">
-        <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
+        <q-select label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
       </q-field>
       <div class="text-center">
         <q-btn class="q-mt-md" color="primary" @click="addperson()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
       </div>
-    </q-modal>
+    </q-dialog>
   </div>
 </template>
 

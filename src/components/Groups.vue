@@ -1,15 +1,19 @@
 <template>
-  <div>
+  <div class="q-my-md">
     <q-list v-if="groups" class="no-border">
       <p class="caption text-center">All groups</p>
       <societyfilter class="q-mx-md" @altered="searchdb" :showme="showme()" initial="all"></societyfilter>
-      <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by group name" />
-      <q-item v-for="group in groups" :key="group.id" :to="'/groups/' + group.id">
+      <q-input class="q-ma-md" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by group name">
+        <template v-slot:append>
+          <q-icon name="fa fa-search" />
+        </template>
+      </q-input>
+      <q-item class="q-mx-md" v-for="group in groups" :key="group.id" :to="'/groups/' + group.id">
         {{group.groupname}}
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addGroup" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addGroup" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -28,7 +32,7 @@ export default {
   },
   methods: {
     addGroup () {
-      this.$router.push({name: 'groupform', params: { action: 'add' }})
+      this.$router.push({ name: 'groupform', params: { action: 'add' } })
     },
     showme () {
       return this.$store.state.user.societies.keys.length

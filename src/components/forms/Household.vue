@@ -1,45 +1,33 @@
 <template>
   <div>
-    <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
-    <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
-      {{$route.params.action.toUpperCase()}} HOUSEHOLD
-    </div>
-    <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
-    <div class="q-ma-md" v-if="$route.params.action === 'add' && $route.params.scope === 'circuit'">
-      <circuitselect @altered="setsocieties" :perms="['editor','admin']" showme="1"></circuitselect>
-      <q-select float-label="Society" v-model="society" :options="csocietyOptions" @input="setMap()">
-      </q-select>
-    </div>
-    <div class="q-ma-md">
-      <q-field :error="$v.household.addressee.$error" error-label="The addressee field is required">
-        <q-input float-label="Addressee" v-model="household.addressee" @blur="$v.household.addressee.$touch()" :error="$v.household.addressee.$error" />
-      </q-field>
-    </div>
-    <div class="q-ma-md">
-      <q-input float-label="Residential Address" v-model="household.location.address"/>
-    </div>
-    <div class="q-ma-md">
-      <q-field :error="$v.household.location.phone.$error" error-label="Phone numbers must be numeric">
-        <q-input float-label="Home phone" v-model="household.location.phone" @blur="$v.household.location.phone.$touch()" :error="$v.household.location.phone.$error" />
-      </q-field>
-    </div>
-    <div class="q-ma-md">
-      <q-select float-label="Household cellphone" v-model="household.householdcell" :options="housecellOptions"/>
-    </div>
-    <div class="q-ma-md text-center">
-      <q-btn color="primary" @click="submit">OK</q-btn>
-      <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
-      <q-btn class="q-ml-md" @click="deleteHousehold" color="black">Delete</q-btn>
-    </div>
+    <q-form>
+      <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
+      <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
+        {{$route.params.action.toUpperCase()}} HOUSEHOLD
+      </div>
+      <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
+      <div class="q-ma-md" v-if="$route.params.action === 'add' && $route.params.scope === 'circuit'">
+        <circuitselect @altered="setsocieties" :perms="['editor','admin']" showme="1"></circuitselect>
+        <q-select label="Society" v-model="society" :options="csocietyOptions" @input="setMap()">
+        </q-select>
+      </div>
+      <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Addressee" v-model="household.addressee" :rules="[ val => val.length >= 1 ]"/>
+      <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Residential Address" v-model="household.location.address"/>
+      <q-input class="q-ma-md" outlined hide-bottom-space error-message="Phone numbers must be valid and numeric" label="Home phone" v-model="household.location.phone" :rules="[ val => val > 1000000 ]"/>
+      <q-select outlined class="q-ma-md" label="Household cellphone" v-model="household.householdcell" :options="housecellOptions"  map-options emit-value/>
+      <div class="q-ma-md text-center">
+        <q-btn color="primary" @click="submit">OK</q-btn>
+        <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
+        <q-btn class="q-ml-md" @click="deleteHousehold" color="black">Delete</q-btn>
+      </div>
+    </q-form>
   </div>
 </template>
 
 <script>
-import { required, numeric } from 'vuelidate/lib/validators'
 import societyselect from './../Societyselect'
 import circuitselect from './../Circuitselect'
 import leafletmap from './../Leafletmap'
-// https://github.com/monterail/vuelidate/tree/master/src/validators
 export default {
   data () {
     return {
@@ -62,14 +50,6 @@ export default {
         label: ''
       },
       soc: ''
-    }
-  },
-  validations: {
-    household: {
-      addressee: { required },
-      location: {
-        phone: { numeric }
-      }
     }
   },
   components: {
@@ -157,61 +137,56 @@ export default {
       })
     },
     submit () {
-      this.$v.household.$touch()
-      if (this.$v.household.$error) {
-        this.$q.notify('Please check for errors!')
+      if (this.$route.params.action === 'edit') {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/households/' + this.household.id,
+          {
+            addressee: this.household.addressee,
+            addr1: this.household.addr1,
+            addr2: this.household.addr2,
+            addr3: this.household.addr3,
+            homephone: this.household.location.phone,
+            householdcell: this.household.householdcell,
+            latitude: this.household.location.latitude,
+            longitude: this.household.location.longitude
+          })
+          .then(response => {
+            this.$q.loading.hide()
+            this.$q.notify('Household updated')
+            this.$router.push({ name: 'household', params: { id: response.data.id } })
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
       } else {
-        if (this.$route.params.action === 'edit') {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(process.env.API + '/households/' + this.household.id,
-            {
-              addressee: this.household.addressee,
-              addr1: this.household.addr1,
-              addr2: this.household.addr2,
-              addr3: this.household.addr3,
-              homephone: this.household.location.phone,
-              householdcell: this.household.householdcell,
-              latitude: this.household.location.latitude,
-              longitude: this.household.location.longitude
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Household updated')
-              this.$router.push({ name: 'household', params: { id: response.data.id } })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        if (this.$route.params.scope === 'circuit') {
+          this.soc = this.society.id
         } else {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          if (this.$route.params.scope === 'circuit') {
-            this.soc = this.society.id
-          } else {
-            this.soc = this.$store.state.select
-          }
-          this.$axios.post(process.env.API + '/households',
-            {
-              addressee: this.household.addressee,
-              addr1: this.household.addr1,
-              addr2: this.household.addr2,
-              addr3: this.household.addr3,
-              homephone: this.household.homephone,
-              householdcell: this.household.householdcell,
-              society_id: this.soc,
-              latitude: this.household.location.latitude,
-              longitude: this.household.location.longitude
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Household added')
-              this.$router.push({ name: 'household', params: { id: response.data.id } })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
+          this.soc = this.$store.state.select
         }
+        this.$axios.post(process.env.API + '/households',
+          {
+            addressee: this.household.addressee,
+            addr1: this.household.addr1,
+            addr2: this.household.addr2,
+            addr3: this.household.addr3,
+            homephone: this.household.homephone,
+            householdcell: this.household.householdcell,
+            society_id: this.soc,
+            latitude: this.household.location.latitude,
+            longitude: this.household.location.longitude
+          })
+          .then(response => {
+            this.$q.loading.hide()
+            this.$q.notify('Household added')
+            this.$router.push({ name: 'household', params: { id: response.data.id } })
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
       }
     }
   },
@@ -236,20 +211,10 @@ export default {
         })
     } else {
       this.setsocieties()
-      this.initMap()
     }
   }
 }
 </script>
 
 <style>
-  a {
-    text-decoration: none;
-    color:white;
-  }
-  #map {
-    text-align:center;
-    height: 300px;
-    width: 100%;
-  }
 </style>

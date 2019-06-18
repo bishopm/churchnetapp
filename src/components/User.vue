@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="text-center layout-padding">
+  <div v-if="user" class="text-center q-ma-md">
     <h3>{{user.name}}</h3>
     <q-btn @click="update" color="primary">Update changes</q-btn>
     <h4><b>Societies</b></h4>
@@ -9,8 +9,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 5">
-      <q-select class="q-ml-md" multiple float-label="Give society access to this user" v-model="form.societies" :options="societyOptions"/>
-      <q-select class="q-mx-md" float-label="Level" v-model="form.societylevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give society access to this user" v-model="form.societies" :options="societyOptions"/>
+      <q-select class="q-mx-md" label="Level" v-model="form.societylevel" :options="levelOptions"/>
     </div>
     <h4><b>Circuits</b></h4>
     <div v-if="user.circuits">
@@ -19,8 +19,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 4">
-      <q-select class="q-ml-md" multiple float-label="Give circuit access to this user" v-model="form.circuits" :options="circuitOptions"/>
-      <q-select class="q-mx-md" float-label="Level" v-model="form.circuitlevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give circuit access to this user" v-model="form.circuits" :options="circuitOptions"/>
+      <q-select class="q-mx-md" label="Level" v-model="form.circuitlevel" :options="levelOptions"/>
     </div>
     <h4><b>Districts</b></h4>
     <div v-if="user.districts">
@@ -29,8 +29,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 3">
-      <q-select class="q-ml-md" multiple float-label="Give district access to this user" v-model="form.districts" :options="districtOptions"/>
-      <q-select class="q-mx-md" float-label="Level" v-model="form.districtlevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give district access to this user" v-model="form.districts" :options="districtOptions"/>
+      <q-select class="q-mx-md" label="Level" v-model="form.districtlevel" :options="levelOptions"/>
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
       societyOptions: [],
       circuitOptions: [],
       districtOptions: [],
-      levelOptions: [{label: 'admin', value: 'admin'}, {label: 'editor', value: 'editor'}]
+      levelOptions: [{ label: 'admin', value: 'admin' }, { label: 'editor', value: 'editor' }]
     }
   },
   methods: {

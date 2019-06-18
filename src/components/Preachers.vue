@@ -1,16 +1,20 @@
 <template>
   <div>
-    <q-list v-if="preachers" class="no-border">
+    <q-list v-if="preachers">
       <p class="caption text-center">Circuit preachers</p>
       <circuitfilter class="q-mx-md" @altered="searchdb" :showme="showme()" initial="all"></circuitfilter>
-      <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by surname" />
-      <q-item v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/edit/' + JSON.stringify(preacher)">
+      <q-input class="q-ma-md" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by surname">
+        <template v-slot:append>
+          <q-icon name="fa fa-search" />
+        </template>
+      </q-input>
+      <q-item class="q-ma-sm" v-for="preacher in preachers" :key="preacher.id" :to="'/preachers/edit/' + JSON.stringify(preacher)">
         {{preacher.surname}}, {{preacher.title}} {{preacher.firstname}}
-        <q-chip class="q-ml-md" v-if="preacher.person.active === 'no'" color="grey">inactive</q-chip>
+        <q-badge dense class="q-ml-md" v-if="preacher.person.active === 'no'" color="grey">inactive</q-badge>
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addPerson" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addPerson" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -29,7 +33,7 @@ export default {
   },
   methods: {
     addPerson () {
-      this.$router.push({name: 'preacherform', params: { action: 'add' }})
+      this.$router.push({ name: 'preacherform', params: { action: 'add' } })
     },
     showme () {
       return this.$store.state.user.circuits.keys.length

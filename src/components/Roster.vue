@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div class="text-center" v-if="roster">
       <div v-if="roster.society" class="caption">
         <q-btn class="q-mr-md bg-secondary text-white" label="<" @click="backmonth()"></q-btn>
@@ -21,16 +21,16 @@
           </div>
         </q-td>
       </q-table>
-      <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+      <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
         <h4>{{form.grouplabel}}</h4>
-        <q-input readonly float-label="Roster date" v-model="form.rosterdate"/>
+        <q-input readonly label="Roster date" v-model="form.rosterdate"/>
         <div class="q-my-md">
-          <q-select v-if="checkpeople" float-label="Individual" multiple v-model="form.individuals" :options="indivOptions"/>
-          <q-select v-else float-label="Individual" v-model="form.indivint" :options="indivOptions"/>
+          <q-select v-if="checkpeople" label="Individual" multiple v-model="form.individuals" :options="indivOptions"/>
+          <q-select v-else label="Individual" v-model="form.indivint" :options="indivOptions"/>
         </div>
         <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="secondary" @click="resetmodal" label="Cancel" />
-      </q-modal>
+      </q-dialog>
     </div>
   </div>
 </template>
@@ -95,7 +95,7 @@ export default {
         this.newmonth = this.months[11]
         this.newyear = this.$route.params.year - 1
       }
-      this.$router.push({name: 'roster', params: { year: this.newyear, month: this.newmonth }})
+      this.$router.push({ name: 'roster', params: { year: this.newyear, month: this.newmonth } })
     },
     forwardmonth () {
       var ndx = this.months.indexOf(this.$route.params.month)
@@ -106,7 +106,7 @@ export default {
         this.newmonth = this.months[0]
         this.newyear = this.$route.params.year + 1
       }
-      this.$router.push({name: 'roster', params: { year: this.newyear, month: this.newmonth }})
+      this.$router.push({ name: 'roster', params: { year: this.newyear, month: this.newmonth } })
     },
     resetmodal () {
       this.form.individuals = []
@@ -117,7 +117,7 @@ export default {
       openURL(process.env.WEB + '/admin/rosters/' + this.$route.params.id + '/report/' + this.$route.params.year + '/' + this.$route.params.month)
     },
     preview () {
-      this.$router.push({name: 'rostermessages', params: { roster: this.$route.params.id, year: this.$route.params.year, month: this.$route.params.month }})
+      this.$router.push({ name: 'rostermessages', params: { roster: this.$route.params.id, year: this.$route.params.year, month: this.$route.params.month } })
     },
     editrosteritem (record, row, col) {
       if (this.$store.state.user.societies[this.roster.society.id] === 'view') {

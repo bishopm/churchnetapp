@@ -1,12 +1,16 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} USER
     </div>
     <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
-    <q-search ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="search by name for an existing circuit member" />
+    <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search name for an existing circuit member">
+      <template v-slot:append>
+        <q-icon name="fa fa-search" />
+      </template>
+    </q-input>
     <div class="q-ma-md" v-if="individualOptions.length">
-      <q-select @input="populateIndiv()" float-label="Individual" v-model="form.indiv" :options="individualOptions"/>
+      <q-select @input="populateIndiv()" label="Individual" v-model="form.indiv" :options="individualOptions"/>
     </div>
     <div class="q-ma-md" v-html="userdetails">
     </div>
@@ -17,28 +21,28 @@
     <div v-if="!form.indiv" class="text-center">or add a new individual
       <div class="q-mx-md">
         <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
-          <q-input float-label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
+          <q-input label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
         </q-field>
       </div>
       <div class="q-mx-md">
         <q-field :error="$v.form.firstname.$error" error-label="The firstname field is required">
-          <q-input float-label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
+          <q-input label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
         </q-field>
       </div>
       <div class="q-mx-md">
-        <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
+        <q-select label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
       </div>
       <div class="q-mx-md">
-        <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+        <q-select label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
       </div>
       <div class="q-mx-md">
         <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
-          <q-input float-label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
+          <q-input label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
         </q-field>
       </div>
       <div class="q-mx-md">
         <q-field :error="$v.form.email.$error" error-label="Email address is required">
-          <q-input float-label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
+          <q-input label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
         </q-field>
       </div>
       <div class="q-mx-md text-center">

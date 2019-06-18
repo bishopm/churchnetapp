@@ -1,15 +1,15 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center">Feeds</p>
     <q-list v-if="hasfeeds" no-border>
       <q-item v-for="feed in feeds" :key="feed.feedpost.id" :to="'/feed/edit/' + feed.feedpost.id">
-        <q-item-main>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-main>
-        <q-item-side><small>{{feed.feedpost.publicationdate}}</small></q-item-side>
+        <q-item-section>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-section>
+        <q-item-section><small>{{feed.feedpost.publicationdate}}</small></q-item-section>
       </q-item>
       <p>{{message}}</p>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addFeed" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addFeed" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     addFeed () {
-      this.$router.push({name: 'feedform', params: { action: 'add' }})
+      this.$router.push({ name: 'feedform', params: { action: 'add' } })
     }
   }
 }

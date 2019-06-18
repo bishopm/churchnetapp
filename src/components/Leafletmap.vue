@@ -15,7 +15,7 @@
 
 <script>
 import L from 'leaflet'
-import { LMap, LTileLayer, LWMSTileLayer, LControlLayers, LControl, LControlAttribution, LMarker, LPopup } from 'vue2-leaflet'
+import { LMap, LTileLayer, LControlLayers, LControl, LMarker, LPopup } from 'vue2-leaflet'
 import 'leaflet/dist/leaflet.css'
 export default {
   data () {
@@ -50,11 +50,9 @@ export default {
   components: {
     'l-map': LMap,
     'l-tile-layer': LTileLayer,
-    'l-wms-tile-layer': LWMSTileLayer,
     'l-popup': LPopup,
     LControlLayers,
     LControl,
-    LControlAttribution,
     LMarker
   },
   computed: {
@@ -92,11 +90,7 @@ export default {
     displayLocationInfo (position) {
       const lng = position.coords.longitude
       const lat = position.coords.latitude
-
-      // this.marker = L.latLng(lat, lng)
       this.center = [lat, lng]
-      // console.log(lat)
-      // console.log(lng)
     },
     noGeoLocation (error) {
       alert('No funciona' + error.message)

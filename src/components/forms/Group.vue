@@ -1,24 +1,16 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div class="q-mx-md text-center caption">
       {{$route.params.action.charAt(0).toUpperCase() + $route.params.action.slice(1)}} group
     </div>
     <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
-    <div class="q-ma-md">
-      <q-field :error="$v.form.groupname.$error" error-label="The group name is required">
-        <q-input float-label="Group name" v-model="form.groupname" @blur="$v.form.groupname.$touch()" :error="$v.form.groupname.$error" />
-      </q-field>
-      <q-field>
-        <q-input float-label="Description" type="textarea" rows="3" v-model="form.description" />
-      </q-field>
-      <q-field>
-        <q-select float-label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]"/>
-      </q-field>
-      <q-field v-if="form.grouptype === 'event'">
-        <q-datetime float-label="Event date and time" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.eventdatetime" type="datetime" />
-      </q-field>
-
-    </div>
+    <q-input class="q-my-sm" label="Group name" outlined hide-bottom-space error-message="The group name field is required" v-model="form.groupname" :rules="[ val => val.length >= 1 ]"/>
+    <q-input outlined label="Description" type="textarea" rows="3" v-model="form.description" />
+    <q-select class="q-my-sm" outlined label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]" map-options emit-value/>
+    <q-select class="q-my-sm" outlined label="Leader" v-model="form.leader" :options="leaderOptions" map-options emit-value/>
+    <q-datetime v-if="form.grouptype === 'event'" label="Event date and time" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.eventdatetime" type="datetime" />
+    <q-radio v-model="form.signup" :val="1" label="Allow sign-up from Journey" />
+    <q-radio v-model="form.signup" :val="0" label="Private group" />
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.back()" color="secondary">Cancel</q-btn>
@@ -39,8 +31,11 @@ export default {
         description: '',
         grouptype: '',
         blocked: '',
-        society_id: 0
+        society_id: 0,
+        leader: '',
+        signup: 0
       },
+      leaderOptions: [],
       admin: false
     }
   },
@@ -66,7 +61,9 @@ export default {
               eventdatetime: this.form.eventdatetime,
               description: this.form.description,
               grouptype: this.form.grouptype,
-              society_id: this.form.society_id
+              society_id: this.form.society_id,
+              leader: this.form.leader,
+              signup: this.form.signup
             })
             .then(response => {
               this.$q.notify('Group updated')
@@ -119,8 +116,23 @@ export default {
           this.form.grouptype = response.data.group.grouptype
           this.form.eventdatetime = response.data.group.datestr
           this.form.society_id = response.data.group.society_id
+          this.form.leader = response.data.group.leader
+          if (response.data.group.signup === 1) {
+            this.form.signup = 1
+          } else {
+            this.form.signup = 0
+          }
           if (this.$store.state.user.societies[this.form.society_id] === 'admin') {
             this.admin = true
+          }
+          this.leaderOptions = []
+          for (var mndx in response.data.members) {
+            this.leaderOptions.push(
+              {
+                value: response.data.members[mndx].id,
+                label: response.data.members[mndx].firstname + ' ' + response.data.members[mndx].surname
+              }
+            )
           }
         })
         .catch(function (error) {

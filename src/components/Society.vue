@@ -1,7 +1,7 @@
 <template>
   <div>
     <leafletmap v-if="society.location" :latitude="society.location.latitude" :longitude="society.location.longitude" :popuplabel="society.society + ' Methodist Church'" editable="no"></leafletmap>
-    <div v-if="society" class="text-center layout-padding">
+    <div v-if="society" class="text-center q-ma-md">
       <h3>
         {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="fas fa-edit"></q-icon>
       </h3>
@@ -30,13 +30,13 @@ export default {
   },
   methods: {
     editSociety () {
-      this.$router.push({name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' }})
+      this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
     },
     addService () {
-      this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' }})
+      this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' } })
     },
     editService (id) {
-      this.$router.push({name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'edit', service: id }})
+      this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'edit', service: id } })
     }
   },
   async mounted () {

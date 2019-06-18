@@ -1,29 +1,21 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center">Circuit settings</p>
     <circuitselect class="q-ma-md" @altered="setcircuit" :perms="['admin']" showme="1"></circuitselect>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.circuit.$error" error-label="The circuit field is required">
-        <q-input float-label="Circuit name" v-model="form.circuit" @blur="$v.form.circuit.$touch()" :error="$v.form.circuit.$error" />
-      </q-field>
+    <div class="q-ma-md">
+      <q-input outlined hide-bottom-space error-message="The circuit field is required" label="Circuit name" v-model="form.circuit"  :rules="[ val => val.length >= 1 ]" />
     </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.circuitnumber.$error" error-label="Circuit number field is required and must be numeric">
-        <q-input float-label="Circuit number" v-model="form.circuitnumber" @blur="$v.form.circuitnumber.$touch()" :error="$v.form.circuitnumber.$error" />
-      </q-field>
+    <div class="q-ma-md">
+      <q-input outlined hide-bottom-space error-message="The circuit number is required" label="Circuit number" v-model="form.circuitnumber"  :rules="[ val => val.length >= 1 ]" />
     </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.slug.$error" error-label="The slug field is required">
-        <q-input float-label="Slug" v-model="form.slug" @blur="$v.form.slug.$touch()" :error="$v.form.slug.$error" />
-      </q-field>
+    <div class="q-ma-md">
+      <q-input outlined hide-bottom-space error-message="The slug is required" label="Slug" v-model="form.slug"  :rules="[ val => val.length >= 1 ]" />
     </div>
-    <div class="q-mx-md">
-      <q-field>
-        <q-input float-label="Circuit office contact details" v-model="form.office_contact" />
-      </q-field>
+    <div class="q-ma-md">
+      <q-input outlined label="Circuit office contact details" v-model="form.office_contact" />
     </div>
-    <div class="q-mx-md">
-      <q-select float-label="Preaching plan first month" v-model="form.plan_month" :options="[{ label: 'January', value: 1 }, { label: 'February', value: 2 }, { label: 'March', value: 3 }]"/>
+    <div class="q-ma-md">
+      <q-select outlined label="Preaching plan first month" v-model="form.plan_month" :options="[{ label: 'January', value: 1 }, { label: 'February', value: 2 }, { label: 'March', value: 3 }]" map-options emit-value/>
     </div>
     <div class="text-center">
       <q-btn class="q-mt-md" color="primary" @click="update()" label="Update" />

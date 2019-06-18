@@ -1,46 +1,42 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} INDIVIDUAL
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
-        <q-input float-label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
-      </q-field>
+      <q-input class="q-my-sm" label="Surname" outlined hide-bottom-space error-message="The surname name field is required" v-model="form.surname" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-mx-md">
-      <q-field :error="$v.form.firstname.$error" error-label="The firstname field is required">
-        <q-input float-label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
-      </q-field>
-    </div>
-    <div class="q-mx-md">
-      <q-select float-label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+      <q-input class="q-my-sm" label="First name" outlined hide-bottom-space error-message="The first name name field is required" v-model="form.firstname" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+      <q-select outlined label="Sex" v-model="form.sex" :options="['female', 'male']"/>
     </div>
     <div class="q-ma-md">
-      <q-field>
-        <q-input float-label="Date of birth" v-model="form.birthdate" />
-      </q-field>
-    </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.email.$error" error-label="Must be a valid email address">
-        <q-input float-label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
-      </q-field>
-    </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
-        <q-input float-label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
-      </q-field>
-    </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.giving.$error" error-label="Giving number must be numeric">
-        <q-input float-label="Giving" v-model="form.giving" @blur="$v.form.giving.$touch()" :error="$v.form.giving.$error" />
-      </q-field>
+      <q-select outlined label="Title" v-model="form.title" :options="['Dr', 'Mr', 'Mrs', 'Ms', 'Prof', 'Rev']"/>
     </div>
     <div class="q-ma-md">
-      <q-select multiple chips float-label="Roles" v-model="roles" :options="roleOptions"/>
+      <q-input outlined v-model="form.birthdate" mask="####-##-##">
+        <template v-slot:append>
+          <q-icon name="fa fa-calendar" class="cursor-pointer">
+            <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+              <q-date mask="YYYY-MM-DD" v-model="form.birthdate" @input="() => $refs.qDateProxy.hide()" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+    </div>
+    <div class="q-ma-md">
+      <q-input label="Email" outlined v-model="form.email"/>
+    </div>
+    <div class="q-ma-md">
+      <q-input outlined label="Cellphone" v-model="form.cellphone"/>
+    </div>
+    <div class="q-mx-md">
+      <q-input outlined label="Giving" v-model="form.giving" />
+    </div>
+    <div class="q-ma-md">
+      <q-select outlined multiple use-chips label="Roles" v-model="roles" :options="roleOptions" map-options emit-value/>
     </div>
     <div class="text-center" v-if="form.id">
       <div class="card-body">
@@ -58,17 +54,17 @@
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn class="q-ml-md" color="black" @click="modalopen = true">Delete</q-btn>
     </div>
-    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+    <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
       <h4>Confirm removal reason</h4>
       <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="subform.deletereason" :options="[
         { label: 'Individual has left the church', value: 'archive' },
         { label: 'Individual was added in error', value: 'delete' },
         { label: 'Individual has died', value: 'death' }
       ]"/>
-      <q-datetime float-label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
+      <q-datetime label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
       <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
       <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
-    </q-modal>
+    </q-dialog>
   </div>
 </template>
 
@@ -121,6 +117,8 @@ export default {
     profilepic () {
       if (this.form.image) {
         return process.env.WEB + '/vendor/bishopm/images/profile/' + this.form.image
+      } else {
+        return ''
       }
     },
     buttontext () {

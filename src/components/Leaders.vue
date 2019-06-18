@@ -1,57 +1,67 @@
 <template>
-  <div class="layout-padding">
-    <q-list class="no-border">
+  <div class="q-ma-md">
+    <q-list v-if="leaders" class="no-border">
       <p class="caption text-center">Circuit leaders</p>
-      <q-item class="cursor-pointer" v-if="leaders" v-for="leader in leaders" :key="leader.id" @click.native="editLeader(leader)">
-        <q-item-main><b>{{leader.surname}}</b>, {{leader.title}} {{leader.firstname}}</q-item-main>
-        <q-item-side>
+      <q-item class="cursor-pointer" v-for="leader in leaders" :key="leader.id" @click.native="editLeader(leader)">
+        <q-item-section>{{leader.surname}}, {{leader.title}} {{leader.firstname}}</q-item-section>
+        <q-item-section>
           <span v-for="tag in leader.tags" :key="tag.id">{{tag.name}} </span>
-        </q-item-side>
+        </q-item-section>
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addLeader" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addLeader" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
-    <q-modal minimized v-model="modalopen" content-css="padding: 35px">
-      <h4 class="text-center"><b>{{form.action}} circuit leader</b></h4>
-      <p v-if="form.action === 'Edit'" class="caption text-center">{{leadername}}</p>
-      <div class="bg-white">
-        <q-select class="q-mb-md" multiple v-model="form.tags" float-label="Role" :options="tagOptions" />
-      </div>
-      <div v-if="form.action === 'Add' && !addnew" class="card bg-lightgrey">
-        <q-search ref="search" @input="searchdb" v-model="search" placeholder="search by name" />
-        <div v-if="individualOptions.length">
-          <q-select float-label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
-        </div>
-        <div class="q-my-md text-center" v-if="search.length > 2">
-          <q-btn color="secondary" @click="addnew=true" label="Or add a new person"></q-btn>
-        </div>
-      </div>
-      <div v-if="addnew">
-        <q-field class="bg-white" :error="$v.person.firstname.$error" error-label="This field is required">
-          <q-input float-label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
-        </q-field>
-        <q-field class="bg-white" :error="$v.person.surname.$error" error-label="This field is required">
-          <q-input float-label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
-        </q-field>
-        <q-field class="bg-white" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
-          <q-input float-label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
-        </q-field>
+    <q-dialog persistent minimized v-model="modalopen" content-css="padding: 35px">
+      <q-card>
+        <q-card-section>
+          <p class="text-h6 text-center">{{form.action}} circuit leader</p>
+        </q-card-section>
+        <p v-if="form.action === 'Edit'" class="caption text-center">{{leadername}}</p>
         <div class="bg-white">
-          <q-select float-label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+          <q-select class="q-mb-md" multiple v-model="form.tags" label="Role" :options="tagOptions" map-options emit-value/>
         </div>
-        <div class="bg-white">
-          <q-select float-label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+        <div v-if="form.action === 'Add' && !addnew" class="bg-lightgrey">
+          <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by name">
+          <template v-slot:append>
+            <q-icon name="fa fa-search" />
+          </template>
+        </q-input>
+          <div v-if="individualOptions.length">
+            <q-select label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+          </div>
+          <div class="q-my-md text-center" v-if="search.length > 2">
+            <q-btn color="secondary" @click="addnew=true" label="Or add a new person"></q-btn>
+          </div>
         </div>
-        <q-field class="bg-white" :error="$v.person.society_id.$error" error-label="This field is required">
-          <q-select float-label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
-        </q-field>
-      </div>
-      <div class="text-center">
-        <q-btn class="q-ml-md" color="primary" @click="saveChanges" label="OK" />
-        <q-btn class="q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
-      </div>
-    </q-modal>
+        <div v-if="addnew">
+          <q-field class="bg-white" :error="$v.person.firstname.$error" error-label="This field is required">
+            <q-input label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
+          </q-field>
+          <q-field class="bg-white" :error="$v.person.surname.$error" error-label="This field is required">
+            <q-input label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
+          </q-field>
+          <q-field class="bg-white" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
+            <q-input label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
+          </q-field>
+          <div class="bg-white">
+            <q-select label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
+          </div>
+          <div class="bg-white">
+            <q-select label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+          </div>
+          <q-field class="bg-white" :error="$v.person.society_id.$error" error-label="This field is required">
+            <q-select label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
+          </q-field>
+        </div>
+        <q-card-actions>
+          <div class="text-center">
+            <q-btn class="q-ml-md" color="primary" @click="saveChanges" label="OK" />
+            <q-btn class="q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+          </div>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -88,10 +98,10 @@ export default {
     form: {
       individual_id: { required: requiredIf(function (a) {
         return this.addnew === false
-      })},
+      }) },
       tags: { required: requiredIf(function (b) {
         return this.addnew === true
-      })}
+      }) }
     },
     person: {
       firstname: { required },

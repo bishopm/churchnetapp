@@ -1,15 +1,19 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-list v-if="circuits" class="no-border">
       <p class="caption text-center">All circuits</p>
       <districtfilter @altered="searchdb" :showme="showme()"></districtfilter>
-      <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by circuit name" />
+      <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="Search by circuit name">
+        <template v-slot:append>
+          <q-icon name="fa fa-search" />
+        </template>
+      </q-input>
       <q-item v-for="circuit in circuits" :key="circuit.id" :to="'/circuits/' + circuit.id">
         {{circuit.circuitnumber}} {{circuit.circuit}}
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addSociety" class="fixed" icon="fas fa-plus"/>
+      <q-btn round color="primary" size="sm" @click="addSociety" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -28,7 +32,7 @@ export default {
   },
   methods: {
     addSociety () {
-      this.$router.push({name: 'circuitform', params: { action: 'add' }})
+      this.$router.push({ name: 'circuitform', params: { action: 'add' } })
     },
     showme () {
       return this.$store.state.user.circuits.keys.length

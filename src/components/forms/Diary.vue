@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a diary entry
       <small v-if="entity.circuit">{{entity.circuit}}</small>
@@ -7,20 +7,31 @@
       <small v-if="entity.district">{{entity.district}}</small>
     </div>
     <div class="q-mx-md">
-      <q-field :error="$v.form.description.$error" error-label="Enter a description of the meeting">
-        <q-input float-label="Description" v-model="form.description" @blur="$v.form.description.$touch()" :error="$v.form.description.$error" />
-      </q-field>
+      <q-input class="q-my-sm" label="Description" outlined hide-bottom-space error-message="The surname name field is required" v-model="form.description" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-mx-md">
-      <q-select float-label="Venue" v-model="form.society_id" :options="societyOptions"></q-select>
+      <q-select outlined label="Venue" v-model="form.society_id" :options="societyOptions" map-options emit-value></q-select>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.meetingdatetime.$error" error-label="The date field is required">
-        <q-datetime float-label="Date" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.meetingdatetime" type="datetime" @blur="$v.form.meetingdatetime.$touch()" :error="$v.form.meetingdatetime.$error" />
-      </q-field>
+      <q-input outlined v-model="form.meetingdatetime" mask="####-##-## ##:##">
+        <template v-slot:prepend>
+          <q-icon name="fa fa-calendar" class="cursor-pointer">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-date v-model="form.meetingdatetime" mask="YYYY-MM-DD HH:mm" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+        <template v-slot:append>
+          <q-icon name="fa fa-clock" class="cursor-pointer">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-time v-model="form.meetingdatetime" mask="YYYY-MM-DD HH:mm" format24h />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Display on preaching plan?" v-model="form.preachingplan" :options="pplanOptions"></q-select>
+      <q-select outlined label="Display on preaching plan?" v-model="form.preachingplan" :options="pplanOptions" map-options emit-value></q-select>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
@@ -83,6 +94,7 @@ export default {
           }
           this.societyOptions.push(newitem)
         }
+        this.form.society_id = this.societyOptions[0]
         if (this.$route.params.action === 'edit') {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
           this.$axios.get(process.env.API + '/meetings/' + this.$route.params.id)
@@ -122,7 +134,7 @@ export default {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
           this.$axios.post(process.env.API + '/meetings',
             {
-              society_id: this.form.society_id,
+              society_id: this.form.society_id.value,
               meetable_id: this.entity.id,
               meetable_type: this.$route.params.scope,
               description: this.form.description,
@@ -140,7 +152,7 @@ export default {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
           this.$axios.post(process.env.API + '/meetings/' + this.$route.params.id + '/update',
             {
-              society_id: this.form.society_id,
+              society_id: this.form.society_id.value,
               meetable_id: this.entity.id,
               meetable_type: this.$route.params.scope,
               description: this.form.description,

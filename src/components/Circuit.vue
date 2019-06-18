@@ -1,5 +1,5 @@
 <template>
-  <div v-if="circuit" class="layout-padding">
+  <div v-if="circuit" class="q-ma-md">
     <h4 class="text-center">{{circuit.circuitnumber}} {{circuit.circuit}}</h4>
     <p class="q-mx-md caption">Users
       <q-btn class="q-ma-md" @click="addUser" color="primary">Add a user</q-btn>
@@ -27,7 +27,7 @@ export default {
       console.log('editing')
     },
     addUser () {
-      this.$router.push({name: 'userform', params: { user: { sex: 'male', title: 'Mr' }, action: 'add' }})
+      this.$router.push({ name: 'userform', params: { user: { sex: 'male', title: 'Mr' }, action: 'add' } })
     }
   },
   mounted () {

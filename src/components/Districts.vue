@@ -1,14 +1,18 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-list v-if="districts" class="no-border">
       <p class="caption text-center">All districts</p>
-      <q-search ref="search" class="q-my-md" @input="searchdb" v-model="search" placeholder="search by circuit name" />
+      <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="Search by district">
+        <template v-slot:append>
+          <q-icon name="fa fa-search" />
+        </template>
+      </q-input>
       <q-item v-for="district in districts" :key="district.id" :to="'/districts/' + district.id">
         {{district.district}}
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addCircuit" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addCircuit" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

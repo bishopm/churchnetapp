@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-layout-header>
+    <q-header>
       <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
           <q-icon name="fas fa-user" />
@@ -12,104 +12,211 @@
           <q-icon name="fas fa-church" />
         </q-btn>
       </q-toolbar>
-    </q-layout-header>
-    <q-layout-drawer side="left" v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
+    </q-header>
+    <q-drawer side="left" v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
         <div v-if="$store.getters.hasEntity('societies')">
-          <q-list-header class="text-center"><q-icon name="fas fa-user"></q-icon> Members</q-list-header>
+          <q-item-label class="text-center bg-secondary text-white q-py-md">
+            <q-icon color="primary" name="fas fa-user"></q-icon> Members
+          </q-item-label>
           <q-item to="/households">
-            <q-item-side icon="fas fa-fw fa-user-friends" />
-            <q-item-main label="Households" sublabel="view all households" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-user-friends" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Households</q-item-label>
+              <q-item-label caption>view all households</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item to="/groups">
-            <q-item-side icon="fas fa-fw fa-users" />
-            <q-item-main label="Groups" sublabel="view all groups" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-users" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Groups</q-item-label>
+              <q-item-label caption>view all groups</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item to="/communicate">
-            <q-item-side icon="fas fa-fw fa-comments" />
-            <q-item-main label="Communication" sublabel="send emails or messages" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-comments" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Communication</q-item-label>
+              <q-item-label caption>send emails or messages</q-item-label>
+            </q-item-section>
           </q-item>
-          <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Society admin</q-list-header>
+          <q-item-label class="text-center bg-secondary text-white q-py-md">
+            <q-icon color="primary" name="fas fa-toolbox"></q-icon> Society admin
+          </q-item-label>
           <q-item to="/bulletin">
-            <q-item-side icon="fas fa-fw fa-newspaper" />
-            <q-item-main label="Bulletin" sublabel="set up Sunday Bulletins" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-newspaper" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Bulletin</q-item-label>
+              <q-item-label caption>set up Sunday Bulletins</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item to="/diary/society">
-            <q-item-side icon="fas fa-fw fa-calendar" />
-            <q-item-main label="Diary" sublabel="add or edit society events" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-calendar" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Diary</q-item-label>
+              <q-item-label caption>add or edit society events</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item v-if="givingadmin" to="/giving">
-            <q-item-side icon="fas fa-fw fa-coins" />
-            <q-item-main label="Giving" sublabel="view giving records" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-coins" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Giving</q-item-label>
+              <q-item-label caption>view giving records</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item to="/rosters">
-            <q-item-side icon="fas fa-fw fa-calendar-alt" />
-            <q-item-main label="Rosters" sublabel="society rosters" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-calendar-alt" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Rosters</q-item-label>
+              <q-item-label caption>society rosters</q-item-label>
+            </q-item-section>
           </q-item>
           <q-item to="/statistics">
-            <q-item-side icon="fas fa-fw fa-chart-line" />
-            <q-item-main label="Statistics" sublabel="view worship service statistics" />
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-chart-line" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Statistics</q-item-label>
+              <q-item-label caption>view worship service statistics</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item to="/feeds">
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-book-open" />
+          </q-item-section>
+          <q-item-section side>
+              <q-item-label overline>Published content</q-item-label>
+              <q-item-label caption>current & historic feed content</q-item-label>
+            </q-item-section>
           </q-item>
         </div>
-        <q-item to="/feeds">
-          <q-item-side icon="fas fa-fw fa-book-open" />
-          <q-item-main label="Published content" sublabel="current & historic feed content" />
-        </q-item>
-        <q-list-header class="text-center"><q-icon name="fas fa-cogs"></q-icon> Settings</q-list-header>
+        <q-item-label class="text-center bg-secondary text-white q-py-md">
+          <q-icon color="primary" name="fas fa-cogs"></q-icon> Settings
+        </q-item-label>
         <q-item v-if="societyadmin" to="/societysettings">
-          <q-item-side icon="fas fa-fw fa-church" />
-          <q-item-main label="Society settings" sublabel="admin settings for societies" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-church" />
+          </q-item-section>
+          <q-item-section side>
+              <q-item-label overline>Society settings</q-item-label>
+              <q-item-label caption>admin settings for societies</q-item-label>
+            </q-item-section>
         </q-item>
         <q-item @click.native="logout()">
-          <q-item-side icon="fas fa-fw fa-sign-out-alt" />
-          <q-item-main label="Log out" sublabel="log out of ChurchNet" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-sign-out-alt" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Log out</q-item-label>
+            <q-item-label caption>log out of ChurchNet</q-item-label>
+          </q-item-section>
         </q-item>
       </q-list>
-    </q-layout-drawer>
+    </q-drawer>
     <q-page-container>
       <router-view :key="$route.fullPath"></router-view>
     </q-page-container>
-    <q-layout-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
+    <q-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
-        <q-list-header class="text-center"><q-icon name="fas fa-users"></q-icon> Circuit</q-list-header>
+        <q-item-label class="text-center bg-secondary text-white q-py-md">
+          <q-icon color="primary" name="fas fa-users"></q-icon> Circuit
+        </q-item-label>
         <q-item to="/diary/circuit">
-          <q-item-side icon="fas fa-fw fa-calendar" />
-          <q-item-main label="Circuit diary" sublabel="add or edit diary entries" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-calendar" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Circuit diary</q-item-label>
+            <q-item-label caption>add or edit diary entries</q-item-label>
+          </q-item-section>
         </q-item>
         <q-item to="/plan">
-          <q-item-side icon="fas fa-fw fa-microphone" />
-          <q-item-main label="Preaching plan" sublabel="set up preachers and plan" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-microphone" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Preaching plan</q-item-label>
+            <q-item-label caption>set up preachers and plan</q-item-label>
+          </q-item-section>
         </q-item>
         <q-item to="/societies">
-          <q-item-side icon="fas fa-fw fa-map-marker-alt" />
-          <q-item-main label="Societies" sublabel="view all societies" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-map-marker-alt" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Societies</q-item-label>
+            <q-item-label caption>view all societies</q-item-label>
+          </q-item-section>
         </q-item>
         <q-item v-if="circuitadmin" to="/circuitsettings">
-          <q-item-side icon="fas fa-fw fa-users-cog" />
-          <q-item-main label="Circuit settings" sublabel="view circuit settings" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-users-cog" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Circuit settings</q-item-label>
+            <q-item-label caption>view circuit settings</q-item-label>
+          </q-item-section>
         </q-item>
       </div>
       <div v-if="$store.getters.hasEntity('districts')">
-        <q-list-header class="text-center"><q-icon name="fas fa-globe-africa"></q-icon> District</q-list-header>
+        <q-item-label class="text-center bg-secondary text-white q-py-md">
+          <q-icon color="primary" name="fas fa-globe-africa"></q-icon> District
+        </q-item-label>
         <q-item to="/circuits">
-          <q-item-side icon="fas fa-fw fa-sitemap" />
-          <q-item-main label="Circuits" sublabel="view all circuits" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-sitemap" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Circuits</q-item-label>
+            <q-item-label caption>view all circuits</q-item-label>
+          </q-item-section>
         </q-item>
         <q-item to="/diary/district">
-          <q-item-side icon="fas fa-fw fa-calendar" />
-          <q-item-main label="District diary" sublabel="add or edit diary entries" />
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-calendar" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>District diary</q-item-label>
+            <q-item-label caption>add or edit diary entries</q-item-label>
+          </q-item-section>
         </q-item>
       </div>
-      <q-list-header class="text-center"><q-icon name="fas fa-toolbox"></q-icon> Administration</q-list-header>
+      <q-item-label class="text-center bg-secondary text-white q-py-md">
+        <q-icon color="primary" name="fas fa-toolbox"></q-icon> Administration
+      </q-item-label>
       <q-item to="/settings">
-        <q-item-side icon="fas fa-fw fa-cogs" />
-        <q-item-main label="Settings" :sublabel="'user settings (v' + version + ')'" />
+        <q-item-section avatar>
+          <q-icon color="primary" name="fas fa-fw fa-cogs" />
+        </q-item-section>
+        <q-item-section side>
+          <q-item-label overline>Settings</q-item-label>
+          <q-item-label caption>user settings (v{{version}})</q-item-label>
+        </q-item-section>
       </q-item>
       <q-item v-if="$store.state.user.level < 5" to="/users">
-        <q-item-side icon="fas fa-fw fa-user-cog" />
-        <q-item-main label="Users" sublabel="user permissions" />
+        <q-item-section avatar>
+          <q-icon color="primary" name="fas fa-fw fa-user-cog" />
+        </q-item-section>
+        <q-item-section side>
+          <q-item-label overline>Users</q-item-label>
+          <q-item-label caption>user permissions</q-item-label>
+        </q-item-section>
       </q-item>
-    </q-layout-drawer>
+    </q-drawer>
   </q-layout>
 </template>
 
@@ -199,6 +306,7 @@ export default {
 </script>
 
 <style>
+
 .q-item {
   padding-top:3px;
   padding-bottom: 3px;

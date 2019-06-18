@@ -1,14 +1,18 @@
 <template>
-  <div class="layout-padding">
+  <div>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} GUEST
     </div>
     <div v-if="$route.params.action === 'add'">
       <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
-      <div class="card q-ma-xs bg-lightgrey">
-        <q-search v-if="$route.params.action === 'add'" ref="search" class="q-ma-md" @input="searchdb" v-model="search" placeholder="find the preacher or minister's name" />
+      <div class="card q-ma-md bg-lightgrey">
+        <q-input v-if="$route.params.action === 'add'" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="find the preacher or minister's name">
+          <template v-slot:append>
+            <q-icon name="fa fa-search" />
+          </template>
+        </q-input>
         <div class="q-ma-md" v-if="individualOptions.length">
-          <q-select float-label="Choose an existing person" v-model="individual_id" :options="individualOptions"/>
+          <q-select label="Choose an existing person" v-model="individual_id" :options="individualOptions"/>
         </div>
       </div>
     </div>

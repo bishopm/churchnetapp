@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center">Giving Statistics <small>{{society}}</small></p>
     <q-table v-if="columns.length" :data="rows" :columns="columns" :pagination.sync="pagination" hide-bottom>
       <q-td slot='body-cell' slot-scope='props' :props='props'>

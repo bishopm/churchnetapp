@@ -1,50 +1,49 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a roster <small>{{society}}</small>
       <q-btn v-if="this.$route.params.action === 'edit'" class="q-ml-md" @click="showRoster($route.params.id)">View roster</q-btn>
     </div>
     <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
     <div class="q-mx-md">
-      <q-field :error="$v.form.title.$error" error-label="The roster title field is required">
-        <q-input float-label="Roster title" v-model="form.title" @blur="$v.form.title.$touch()" :error="$v.form.title.$error" />
-      </q-field>
+      <q-input class="q-my-sm" label="Title" outlined hide-bottom-space error-message="The roster title field is required" v-model="form.title" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-mx-md">
-      <q-field :error="$v.form.message.$error" error-label="The message field is required">
-        <q-input float-label="Message" v-model="form.message" @blur="$v.form.message.$touch()" :error="$v.form.message.$error" />
-      </q-field>
+      <q-input class="q-my-sm" type="textarea" label="Message" outlined hide-bottom-space error-message="The message field is required" v-model="form.message" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
+      <q-select outlined label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
     <div v-if="this.$route.params.action === 'edit'">
       <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
-      <q-item v-for="rostergroup in form.rostergroups" :key="rostergroup.id">
-        <q-item-main>
-          {{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})
-          <span v-if="rostergroup.extrainfo === 'yes'">*</span>
-        </q-item-main>
-        <q-item-side color="black" icon="fas fa-times" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"></q-item-side>
+      <q-item v-for="(rostergroup, index) in form.rostergroups" :key="rostergroup.id" :class="{striped: index % 2 === 1}">
+        <q-item-section>
+          {{rostergroup.group.groupname}} ({{rostergroup.maxpeople}})&nbsp;<template v-if="rostergroup.extrainfo === 'yes'">*</template>
+        </q-item-section>
+        <q-item-section align="right" class="cursor-pointer" @click.native="removeRostergroup(rostergroup.id)"><q-icon name="fa fa-times"/></q-item-section>
       </q-item>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
     </div>
-    <q-modal minimized v-model="modalopen" content-css="padding: 50px">
+    <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
       <h4>Add a roster group</h4>
-      <q-search ref="search" @input="searchdb" v-model="search" placeholder="search by group name" />
+      <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by group name">
+        <template v-slot:append>
+          <q-icon name="fa fa-search" />
+        </template>
+      </q-input>
       <div v-if="search.length > 2">
-        <q-select float-label="Group" v-model="form.group_id" :options="groupOptions"/>
-        <q-input float-label="Maximum people" type="number" v-model="form.maxpeople"/>
+        <q-select label="Group" v-model="form.group_id" :options="groupOptions"/>
+        <q-input label="Maximum people" type="number" v-model="form.maxpeople"/>
         <q-toggle class="q-mt-md" v-model="form.extrainfo" true-value="yes" false-value="no" label="Extra info required?"/>
       </div>
       <div class="text-center">
         <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
         <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
       </div>
-    </q-modal>
+    </q-dialog>
   </div>
 </template>
 
@@ -119,7 +118,7 @@ export default {
       months[10] = 'November'
       months[11] = 'December'
       var mth = months[new Date().getMonth()]
-      this.$router.push({name: 'roster', params: { id: id, year: yr, month: mth }})
+      this.$router.push({ name: 'roster', params: { id: id, year: yr, month: mth } })
     },
     submit () {
       this.$v.form.$touch()
@@ -136,7 +135,7 @@ export default {
               society_id: this.$store.state.select
             })
             .then(response => {
-              this.$router.push({name: 'rosterform', params: { action: 'edit', id: response.data.id }})
+              this.$router.push({ name: 'rosterform', params: { action: 'edit', id: response.data.id } })
             })
             .catch(function (error) {
               this.error = error
@@ -152,7 +151,7 @@ export default {
             })
             .then(response => {
               this.$q.notify('Roster has been updated')
-              this.$router.push({name: 'rosters'})
+              this.$router.push({ name: 'rosters' })
             })
             .catch(function (error) {
               this.error = error
@@ -227,13 +226,11 @@ export default {
 </script>
 
 <style>
+  .q-item.striped {
+    background-color:#E6f2d9;
+  }
   a {
     text-decoration: none;
     color:white;
-  }
-  #map {
-    text-align:center;
-    height: 300px;
-    width: 100%;
   }
 </style>

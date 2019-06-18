@@ -1,5 +1,5 @@
 <template>
-<q-select v-if="showme > 1" @input="updateme" multiple chips class="q-my-md" v-model="societies" float-label="Societies" :options="societyOptions" />
+<q-select outlined v-if="showme > 1" @input="updateme" multiple use-chips class="q-my-md" v-model="societies" label="Societies" :options="societyOptions" map-options emit-value/>
 </template>
 
 <script>
@@ -37,4 +37,8 @@ export default {
 </script>
 
 <style>
+.q-chip {
+  background-color: #81be41;
+  color:white;
+}
 </style>

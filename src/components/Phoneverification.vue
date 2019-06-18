@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div id="firebaseui-auth-container"></div>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
 }
 </script>
 <style>
-.layout-padding {
+.q-ma-md {
   padding-top:0;
 }
 h3 {

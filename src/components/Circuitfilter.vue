@@ -1,5 +1,5 @@
 <template>
-<q-select @input="updateme" multiple chips class="q-my-md" v-model="circuits" float-label="Circuits" :options="circuitOptions" />
+<q-select outlined @input="updateme" multiple use-chips class="q-my-md" v-model="circuits" label="Circuits" :options="circuitOptions"  map-options emit-value/>
 </template>
 
 <script>

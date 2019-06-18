@@ -1,12 +1,12 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-list class="no-border">
       <p class="caption text-center">Admin and editor Users</p>
       <q-item v-for="user in users" :key="user.id" :to="'/users/' + user.id">
-        <q-item-main><b>{{user.name}}</b>&nbsp;
+        <q-item-section><b>{{user.name}}</b>&nbsp;
           <small class="text-primary" v-if="!user.phonetoken">inactive</small>
-        </q-item-main>
-        <q-item-side><small>{{user.email}}</small></q-item-side>
+        </q-item-section>
+        <q-item-section><small>{{user.email}}</small></q-item-section>
       </q-item>
       <div class="text-center">{{emptymessage}}</div>
     </q-list>
@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     addUser () {
-      this.$router.push({name: 'userform', params: { action: 'add' }})
+      this.$router.push({ name: 'userform', params: { action: 'add' } })
     }
   },
   mounted () {

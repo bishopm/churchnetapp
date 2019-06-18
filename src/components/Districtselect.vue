@@ -1,5 +1,5 @@
 <template>
-<q-select v-model="district" @input="updateme" class="q-my-md" float-label="District" :options="districtOptions" />
+<q-select outlined v-model="district" @input="updateme" class="q-my-md" label="District" :options="districtOptions"  map-options emit-value/>
 </template>
 
 <script>

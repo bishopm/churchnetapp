@@ -1,43 +1,43 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-tabs align="justify" position="top" color="primary">
       <q-tab default slot="title" name="tab-1" icon="fas fa-unlock" label="Login"/>
       <q-tab slot="title" name="tab-2" icon="fas fa-hand-point-up" label="Register"/>
-      <q-tab-pane class="no-border" name="tab-1">
+      <q-tab-panel class="no-border" name="tab-1">
         <div class="alert alert-danger" v-if="error">
           <p>There was an error, unable to sign in with those credentials.</p>
         </div>
         <form autocomplete="off" @submit.prevent="login" method="post">
           <div class="q-pa-sm">
-            <q-input float-label="Email" type="email" v-model="email" required />
+            <q-input label="Email" type="email" v-model="email" required />
           </div>
           <div class="q-pa-sm">
-            <q-input float-label="Password" type="password" v-model="password" required />
+            <q-input label="Password" type="password" v-model="password" required />
           </div>
           <div class="q-pa-sm text-center">
             <q-btn @click="login">Sign in</q-btn>
           </div>
         </form>
-      </q-tab-pane>
-      <q-tab-pane class="no-border" name="tab-2">
+      </q-tab-panel>
+      <q-tab-panel class="no-border" name="tab-2">
         <form autocomplete="off" @submit.prevent="login" method="post">
           <div class="q-pa-sm">
-            <q-input float-label="Name" v-model="newname" required />
+            <q-input label="Name" v-model="newname" required />
           </div>
           <div class="q-pa-sm">
-            <q-input float-label="Email" type="email" v-model="newemail" required />
+            <q-input label="Email" type="email" v-model="newemail" required />
           </div>
           <div class="q-pa-sm">
-            <q-input float-label="Cellphone" v-model="newphone" required />
+            <q-input label="Cellphone" v-model="newphone" required />
           </div>
           <div class="q-pa-sm">
-            <q-input float-label="Password" type="password" v-model="newpassword" required />
+            <q-input label="Password" type="password" v-model="newpassword" required />
           </div>
           <div class="q-pa-sm text-center">
             <q-btn @click="register">Register</q-btn>
           </div>
         </form>
-      </q-tab-pane>
+      </q-tab-panel>
     </q-tabs>
   </div>
 </template>
@@ -82,7 +82,7 @@ export default {
             this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
               .then((response) => {
                 this.$store.commit('setUser', response.data)
-                this.$router.push({name: 'home'})
+                this.$router.push({ name: 'home' })
               })
               .catch(function (error) {
                 console.log(error)
@@ -94,7 +94,7 @@ export default {
         })
     },
     verification () {
-      this.$router.push({name: 'phoneverification'})
+      this.$router.push({ name: 'phoneverification' })
     },
     register () {
       this.$axios.post(process.env.API + '/register',

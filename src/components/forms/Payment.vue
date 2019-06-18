@@ -1,23 +1,23 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{$route.params.action.toUpperCase()}} PAYMENT <small>{{society}}</small>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.paymentdate.$error" error-label="The date field is required">
-        <q-datetime float-label="Payment date" format="YYYY-MM-DD" format-model="string" v-model="form.paymentdate" type="date" @blur="$v.form.paymentdate.$touch()" :error="$v.form.paymentdate.$error" />
+        <q-datetime label="Payment date" format="YYYY-MM-DD" format-model="string" v-model="form.paymentdate" type="date" @blur="$v.form.paymentdate.$touch()" :error="$v.form.paymentdate.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
-        <q-input float-label="Giving number" v-model="form.pgnumber" @blur="checkpg" :error="$v.form.pgnumber.$error">
+        <q-input label="Giving number" v-model="form.pgnumber" @blur="checkpg" :error="$v.form.pgnumber.$error">
           <q-autocomplete :static-data="{field: 'value', list: indivOptions}" :min-characters="1"/>
         </q-input>
       </q-field>
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.amount.$error" error-label="The amount is required and must be numeric">
-        <q-input float-label="Amount" v-model="form.amount" @blur="$v.form.amount.$touch()" :error="$v.form.amount.$error" />
+        <q-input label="Amount" v-model="form.amount" @blur="$v.form.amount.$touch()" :error="$v.form.amount.$error" />
       </q-field>
     </div>
     <div class="q-ma-md text-center">

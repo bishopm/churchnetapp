@@ -21,14 +21,18 @@
     <div>
       <h4 class="text-center">Add worship statistics</h4>
       <div class="q-ma-md">
-        <q-field>
-          <q-datetime float-label="Service date" v-model="statdate" type="date" @input="checkdate ()"/>
-        </q-field>
+        <q-input outlined v-model="statdate" mask="####-##-##">
+          <template v-slot:append>
+            <q-icon name="fa fa-calendar" class="cursor-pointer">
+              <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                <q-date mask="YYYY-MM-DD" v-model="statdate" @input="() => $refs.qDateProxy.hide()" />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
-      <div v-for="(service, kkk) in attendance" :key="service.service_id" class="q-my-xs q-mx-md">
-        <q-field>
-          <q-input :float-label="'Attendance (' + service.servicetime + ')'" v-model="service.attendance" @blur="checknum(kkk)"/>
-        </q-field>
+      <div v-for="(service, kkk) in attendance" :key="service.service_id" class="q-my-sm q-mx-md">
+        <q-input outlined :label="'Attendance (' + service.servicetime + ')'" v-model="service.attendance" @blur="checknum(kkk)"/>
       </div>
       <div class="q-ma-lg text-center">
         <q-btn @click="submit()" color="primary">OK</q-btn>
@@ -98,7 +102,7 @@ export default {
   },
   methods: {
     moveto (yy) {
-      this.$router.push({name: 'statistic', params: { society: this.$route.params.society, yr: yy }})
+      this.$router.push({ name: 'statistic', params: { society: this.$route.params.society, yr: yy } })
       this.currentyr = yy
     },
     submit () {
@@ -111,7 +115,7 @@ export default {
         })
         .then(response => {
           this.$q.notify('Database has been updated')
-          this.$router.push({name: 'statistics'})
+          this.$router.push({ name: 'statistics' })
         })
         .catch(function (error) {
           console.log(error)

@@ -1,18 +1,18 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-list v-if="rosters" class="no-border">
       <p class="caption text-center">Rosters</p>
       <societyselect @altered="displayrosters" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
       <q-item v-for="roster in rosters" :key="roster.id" @click.native.prevent="showRoster(roster.id)" class="cursor-pointer">
-        <q-item-main>{{roster.name}}</q-item-main>
-        <q-item-side right>
-          <q-btn @click.capture.stop="editRoster(roster.id)" icon="fas fa-edit"></q-btn>
-        </q-item-side>
+        <q-item-section>{{roster.name}}</q-item-section>
+        <q-item-section align="right" class="cursor-pointer" @click.capture.stop="editRoster(roster.id)">
+          <q-icon name="fas fa-edit"></q-icon>
+        </q-item-section>
       </q-item>
     </q-list>
     <div class="text-center">{{emptymessage}}</div>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addRoster" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addRoster" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -37,13 +37,13 @@ export default {
   },
   methods: {
     addRoster () {
-      this.$router.push({name: 'rosterform', params: { action: 'add' }})
+      this.$router.push({ name: 'rosterform', params: { action: 'add' } })
     },
     editRoster (id) {
-      this.$router.push({name: 'rosterform', params: { action: 'edit', id: id }})
+      this.$router.push({ name: 'rosterform', params: { action: 'edit', id: id } })
     },
     showRoster (id) {
-      this.$router.push({name: 'roster', params: { id: id, year: new Date().getFullYear(), month: this.month }})
+      this.$router.push({ name: 'roster', params: { id: id, year: new Date().getFullYear(), month: this.month } })
     },
     displayrosters () {
       if (this.$store.state.user.societies.keys) {

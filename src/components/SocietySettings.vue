@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <q-list v-if="societies" class="no-border">
       <p class="caption text-center">Society settings</p>
       <q-item v-for="society in societies" :key="society.id" :to="'/societies/' + society.id">
@@ -7,13 +7,12 @@
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addSociety" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addSociety" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
 
 <script>
-import circuitfilter from './Circuitfilter'
 export default {
   data () {
     return {
@@ -21,12 +20,9 @@ export default {
       search: ''
     }
   },
-  components: {
-    'circuitfilter': circuitfilter
-  },
   methods: {
     addSociety () {
-      this.$router.push({name: 'societyform', params: { action: 'add' }})
+      this.$router.push({ name: 'societyform', params: { action: 'add' } })
     },
     showme () {
       return this.$store.state.user.societies.keys.length

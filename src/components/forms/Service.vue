@@ -1,16 +1,16 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center" v-if="society">{{society.society}}</p>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a service
     </div>
     <div class="q-ma-md">
       <q-field :error="$v.form.servicetime.$error" error-label="The service time field is required">
-        <q-datetime float-label="Service time" v-model="form.servicetime" type="time" @blur="$v.form.servicetime.$touch()" :error="$v.form.servicetime.$error" />
+        <q-datetime label="Service time" v-model="form.servicetime" type="time" @blur="$v.form.servicetime.$touch()" :error="$v.form.servicetime.$error" />
       </q-field>
     </div>
     <div class="q-ma-md">
-      <q-select float-label="Language" v-model="form.language" :options="[{ label: 'Afrikaans', value: 'Afrikaans' }, { label: 'English', value: 'English' }, { label: 'isiZulu', value: 'isiZulu' }]" @blur="$v.form.language.$touch()" :error="$v.form.language.$error"/>
+      <q-select label="Language" v-model="form.language" :options="[{ label: 'Afrikaans', value: 'Afrikaans' }, { label: 'English', value: 'English' }, { label: 'isiZulu', value: 'isiZulu' }]" @blur="$v.form.language.$touch()" :error="$v.form.language.$error"/>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>

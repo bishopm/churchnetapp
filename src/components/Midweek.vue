@@ -3,15 +3,15 @@
     <q-list v-if="services" class="no-border">
       <p class="q-mt-md caption text-center">Midweek services</p>
       <circuitselect class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></circuitselect>
-      <q-item v-for="service in services" :key="service.id" :to="'/midweek/' + service.circuit_id + '/edit/' + service.id">
-        <q-item-main>{{service.description}}</q-item-main>
-        <q-item-side>
+      <q-item class="q-mx-md" v-for="service in services" :key="service.id" :to="'/midweek/' + service.circuit_id + '/edit/' + service.id">
+        <q-item-section>{{service.description}}</q-item-section>
+        <q-item-section>
           <small>{{formatme(service.servicedate)}}</small>
-        </q-item-side>
+        </q-item-section>
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addMidweek" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addMidweek" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     addMidweek () {
-      this.$router.push({name: 'midweekform', params: { action: 'add', circuit: this.$store.state.select }})
+      this.$router.push({ name: 'midweekform', params: { action: 'add', circuit: this.$store.state.select } })
     },
     showme () {
       return this.$store.state.user.circuits.keys.length

@@ -1,23 +1,27 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center" v-if="circuit">{{circuit.circuit}}</p>
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} a midweek service
     </div>
-    <div class="q-mx-md">
-      <q-field :error="$v.form.description.$error" error-label="Enter a description of the service">
-        <q-input float-label="Service" v-model="form.description" @blur="$v.form.description.$touch()" :error="$v.form.description.$error" />
-      </q-field>
+    <div class="q-ma-md">
+      <q-input label="Service description" outlined hide-bottom-space error-message="The service description field is required" v-model="form.description" :rules="[ val => val.length >= 1 ]" />
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.servicedate.$error" error-label="The date field is required">
-        <q-datetime type="date" float-label="Service date" format="YYYY-MM-DD" format24h format-model="string" v-model="form.servicedate" @blur="$v.form.servicedate.$touch()" :error="$v.form.servicedate.$error" />
-      </q-field>
+      <q-input label="Service date" outlined v-model="form.servicedate" mask="####-##-##">
+        <template v-slot:append>
+          <q-icon name="fa fa-calendar" class="cursor-pointer">
+            <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+              <q-date mask="YYYY-MM-DD" v-model="form.servicedate" @input="() => $refs.qDateProxy.hide()" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
-      <q-btn class="q-ml-md" @click="deleteme" color="tertiary">Delete</q-btn>
+      <q-btn class="q-ml-md" @click="deleteme" color="black">Delete</q-btn>
     </div>
   </div>
 </template>

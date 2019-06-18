@@ -11,7 +11,7 @@
       <q-btn color="primary" @click="givingStats" class="fixed" icon="fas fa-chart-bar"/>
     </q-page-sticky>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -37,13 +37,13 @@ export default {
   },
   methods: {
     addPayment () {
-      this.$router.push({name: 'givingform', params: { action: 'add', society: this.$store.state.select }})
+      this.$router.push({ name: 'givingform', params: { action: 'add', society: this.$store.state.select } })
     },
     editPayment (row) {
-      this.$router.push({name: 'givingform', params: { action: 'edit', society: this.$store.state.select, id: row['id'] }})
+      this.$router.push({ name: 'givingform', params: { action: 'edit', society: this.$store.state.select, id: row['id'] } })
     },
     givingStats () {
-      this.$router.push({name: 'givingstats', params: { society: this.$store.state.select }})
+      this.$router.push({ name: 'givingstats', params: { society: this.$store.state.select } })
     },
     searchdb () {
       this.$q.loading.show()

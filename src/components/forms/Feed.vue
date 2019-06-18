@@ -1,12 +1,20 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <p class="caption text-center">Feed content</p>
     <societyfilter showme="2" ref="sfilter"></societyfilter>
     <circuitfilter showme="2" ref="cfilter"></circuitfilter>
-    <q-input ref="title" class="q-mb-md" float-label="Title" v-model="post.title" />
-    <q-select class="q-mb-md" v-model="post.category" float-label="Category" radio :options="categoryOptions" />
-    <q-datetime float-label="Publication date" v-model="post.publicationdate" format="YYYY-MM-DD" type="date" />
-    <q-select class="q-mb-md" float-label="Store in library" v-model="post.library" :options="[{ label: 'no', value: 'no' }, { label: 'yes', value: 'yes' }]"/>
+    <q-input outlined ref="title" class="q-mb-md" label="Title" v-model="post.title" />
+    <q-select outlined class="q-mb-md" v-model="post.category" label="Category" radio :options="categoryOptions" />
+    <q-input class="q-mb-md" label="Publication date" outlined v-model="post.publicationdate" mask="####-##-##">
+      <template v-slot:prepend>
+        <q-icon name="fa fa-calendar" class="cursor-pointer">
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="post.publicationdate" mask="YYYY-MM-DD" />
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+    </q-input>
+    <q-select outlined class="q-mb-md" label="Store in library" v-model="post.library" :options="[{ label: 'no', value: 'no' }, { label: 'yes', value: 'yes' }]"/>
     <q-editor v-model="post.body" :toolbar="[
       ['bold', 'italic', 'underline'],
       ['hr', 'link'],
@@ -25,7 +33,7 @@
       <q-btn class="q-ml-md" slot="custom_btn1" dense color="black" icon="fas fa-times" label="cancel" @click="$router.go(-1)" />
       <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="submit" @click="submit" />
     </div>
-    <q-input v-if="showHtml" class="q-mt-md" v-model="post.body" type="textarea" float-label="HTML" :max-height="100" rows="7"/>
+    <q-input v-if="showHtml" class="q-mt-md" v-model="post.body" type="textarea" label="HTML" :max-height="100" rows="7"/>
   </div>
 </template>
 
@@ -113,7 +121,7 @@ export default {
           })
           .then(response => {
             this.$q.notify('Your content has been updated!')
-            this.$router.push({name: 'feeds'})
+            this.$router.push({ name: 'feeds' })
           })
           .catch(function (error) {
             console.log(error)
@@ -127,7 +135,7 @@ export default {
           })
           .then(response => {
             this.$q.notify('Your content has been published')
-            this.$router.push({name: 'feeds'})
+            this.$router.push({ name: 'feeds' })
           })
           .catch(function (error) {
             console.log(error)

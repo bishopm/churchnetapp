@@ -1,139 +1,80 @@
 <template>
-  <div class="text-center layout-padding">
+  <div class="text-center q-ma-md">
     <p class="caption" v-if="title">{{title}} a society</p>
     <circuitselect :perms="['editor','admin']"></circuitselect>
     <leafletmap v-if="society.location.latitude" :latitude="society.location.latitude" :longitude="society.location.longitude" :popuplabel="society.society" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
     <p>Drag the marker to the correct position</p>
-    <form>
-      <q-tabs color="primary" class="no-border" align="justify" q-tabs-two-lines>
-        <q-tab default slot="title" name="contactDetails">Contact</q-tab>
-        <q-tab slot="title" name="featureDetails">Features</q-tab>
-        <q-tab slot="title" name="messageDetails">Messaging</q-tab>
-        <q-tab-pane name="contactDetails" class="no-border">
-          <div>
-            <q-field :error="$v.society.society.$error" error-label="The society name field is required">
-              <q-input float-label="Society name" v-model="society.society" @blur="$v.society.society.$touch()" :error="$v.society.society.$error" />
-            </q-field>
-          </div>
-          <div>
-            <q-field>
-              <q-input float-label="Address" v-model="society.location.address" />
-            </q-field>
-          </div>
-          <div class="q-mt-sm">
-            <q-field>
-              <q-input float-label="Phone" v-model="society.location.phone" />
-            </q-field>
-          </div>
-          <div class="q-mt-sm">
-            <q-field>
-              <q-input float-label="Website" v-model="society.website" />
-            </q-field>
-          </div>
-        </q-tab-pane>
-        <q-tab-pane name="featureDetails" class="no-border">
+    <q-form>
+      <q-tabs v-model="selectedTab" color="primary" active-bg-color="primary" class="no-border bg-secondary text-white" align="justify" q-tabs-two-lines>
+        <q-tab name="contactDetails">Contact</q-tab>
+        <q-tab name="featureDetails">Features</q-tab>
+        <q-tab name="messageDetails">Messaging</q-tab>
+      </q-tabs>
+      <q-tab-panels v-model="selectedTab">
+        <q-tab-panel name="contactDetails">
+          <q-input class="q-my-sm" label="Society name" outlined hide-bottom-space error-message="The society name field is required" v-model="society.society" :rules="[ val => val.length >= 1 ]"/>
+          <q-input class="q-my-sm" outlined label="Address" v-model="society.location.address" />
+          <q-input class="q-my-sm" outlined label="Phone" v-model="society.location.phone" />
+          <q-input class="q-my-sm" outlined label="Website" v-model="society.website" />
+        </q-tab-panel>
+        <q-tab-panel name="featureDetails">
           <div class="card bg-lightgrey">
             <div class="text-left caption"><b>Send a weekly birthday email</b></div>
             <div class="q-mt-sm">
-              <q-field>
-                <q-select float-label="Birthday email group" v-model="society.birthday_group" :options="groupOptions"/>
-              </q-field>
+              <q-select label="Birthday email group" v-model="society.birthday_group" :options="groupOptions" map-options emit-value/>
             </div>
             <div class="q-mt-sm">
-              <q-select float-label="Birthday email day" v-model="society.birthday_day" :options="[{ label: 'Sunday', value: 0 }, { label: 'Monday', value: 1 }, { label: 'Tuesday', value: 2 }, { label: 'Wednesday', value: 3 }, { label: 'Thursday', value: 4 }, { label: 'Friday', value: 5 }, { label: 'Saturday', value: 6 }]"/>
+              <q-select label="Birthday email day" v-model="society.birthday_day" :options="[{ label: 'Sunday', value: 0 }, { label: 'Monday', value: 1 }, { label: 'Tuesday', value: 2 }, { label: 'Wednesday', value: 3 }, { label: 'Thursday', value: 4 }, { label: 'Friday', value: 5 }, { label: 'Saturday', value: 6 }]" map-options emit-value/>
             </div>
           </div>
           <div class="card bg-lightgrey">
             <div class="text-left caption"><b>Send regular giving reports</b></div>
             <div class="q-mt-sm">
-              <q-field>
-                <q-select float-label="Giving administrator" v-model="society.giving_user" :options="userOptions"/>
-              </q-field>
+              <q-select label="Giving administrator" v-model="society.giving_user" :options="userOptions"  map-options emit-value/>
             </div>
             <div class="q-mt-sm">
-              <q-field>
-                <q-input float-label="Giving lag time" v-model="society.giving_lag" />
-              </q-field>
+              <q-input label="Giving lag time" v-model="society.giving_lag" map-options emit-value/>
             </div>
             <div class="q-mt-sm">
-              <div class="q-mt-sm">
-                <q-select float-label="Giving reports per year" v-model="society.giving_reports" :options="[{ label: '0', value: 0 }, { label: '1', value: 1 }, { label: '2', value: 2 }, { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '6', value: 6 }, { label: '12', value: 12 }]"/>
-              </div>
+              <q-select label="Giving reports per year" v-model="society.giving_reports" :options="[{ label: '0', value: 0 }, { label: '1', value: 1 }, { label: '2', value: 2 }, { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '6', value: 6 }, { label: '12', value: 12 }]" map-options emit-value/>
             </div>
           </div>
           <div class="q-mt-sm">
-            <q-field>
-              <q-input float-label="Journey App feed" v-model="society.journey" />
-            </q-field>
+            <q-select label="Pastoral group" v-model="society.pastoral_group" :options="groupOptions" map-options emit-value/>
           </div>
-          <div class="q-mt-sm">
-            <q-field>
-              <q-select float-label="Pastoral group" v-model="society.pastoral_group" :options="groupOptions"/>
-            </q-field>
-          </div>
-        </q-tab-pane>
-        <q-tab-pane name="messageDetails" class="no-border">
-          <div class="card bg-lightgrey">
-            <div class="text-left caption"><b>Email settings</b></div>
-            <div class="q-mt-sm">
-              <q-field>
-                <q-input float-label="Email username" v-model="society.email_user" />
-              </q-field>
-            </div>
-            <div class="q-mt-sm">
-              <q-field>
-                <q-input type="password" float-label="Email password" v-model="society.email_pw" />
-              </q-field>
-            </div>
-            <div class="q-mt-sm">
-              <q-field>
-                <q-input float-label="Email host name" v-model="society.email_host" />
-              </q-field>
-            </div>
-            <div class="q-mt-sm">
-              <q-field>
-                <q-input float-label="Email port" v-model="society.email_port" />
-              </q-field>
-            </div>
-            <div class="q-mt-sm">
-              <q-select float-label="Email encryption" v-model="society.email_encryption" :options="[{ label: 'Transport Layer Security (TLS)', value: 'tls' }, { label: 'Secure Sockets Layer (SSL)', value: 'ssl' }, { label: 'No encryption', value: 'null' }]"/>
-            </div>
-          </div>
+        </q-tab-panel>
+        <q-tab-panel name="messageDetails">
           <div class="card bg-lightgrey">
             <div class="text-left caption"><b>SMS settings</b></div>
             <div class="q-mt-sm">
-              <q-select float-label="SMS service" v-model="society.sms_service" :options="[{ label: 'BulkSMS', value: 'bulksms' }, { label: 'SMS Portal', value: 'smsportal' }]"/>
+              <q-select label="SMS service" v-model="society.sms_service" :options="[{ label: 'BulkSMS', value: 'bulksms' }, { label: 'SMS Portal', value: 'smsportal' }]"/>
             </div>
             <div class="q-mt-sm">
-              <q-field>
-                <q-input float-label="Username / client ID" v-model="society.sms_user" />
-              </q-field>
+              <q-input label="Username / client ID" v-model="society.sms_user" />
             </div>
             <div class="q-mt-sm">
-              <q-field>
-                <q-input type="password" float-label="Password / API secret" v-model="society.sms_pw" />
-              </q-field>
+              <q-input type="password" label="Password / API secret" v-model="society.sms_pw" />
             </div>
           </div>
-        </q-tab-pane>
-      </q-tabs>
+        </q-tab-panel>
+      </q-tab-panels>
       <div class="q-ma-lg text-center">
         <q-btn @click="submit()" color="primary">OK</q-btn>
         <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
       </div>
-    </form>
+    </q-form>
   </div>
 </template>
 
 <script>
 import circuitselect from './../Circuitselect'
 import leafletmap from './../Leafletmap'
-import { required } from 'vuelidate/lib/validators'
 import { format } from 'quasar'
 const { capitalize } = format
 export default {
   data () {
     return {
+      selectedTab: 'contactDetails',
       title: capitalize(this.$route.params.action),
       groupOptions: [],
       userOptions: [],
@@ -146,11 +87,6 @@ export default {
           phone: ''
         }
       }
-    }
-  },
-  validations: {
-    society: {
-      society: { required }
     }
   },
   components: {

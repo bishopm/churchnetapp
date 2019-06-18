@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-padding">
+  <div class="q-ma-md">
     <h3 class="text-center">App settings <small>(v{{version}})</small></h3>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style>
-.layout-padding {
+.q-ma-md {
   padding-top:0;
 }
 p {
