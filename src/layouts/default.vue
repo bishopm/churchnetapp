@@ -264,7 +264,7 @@ export default {
           message: 'Click OK to restart the app and upgrade to version ' + process.env.VERSION + '. This new version includes: ' + process.env.VNOTES,
           ok: 'OK',
           cancel: 'LATER'
-        }).then(() => {
+        }).onOk(() => {
           localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
           window.location.reload()
         }).catch(() => {

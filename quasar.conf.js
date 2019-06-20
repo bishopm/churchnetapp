@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.3.8')
-var vnotes = JSON.stringify('Society route changes')
+var version = JSON.stringify('0.4')
+var vnotes = JSON.stringify('Quasar v1')
 
 module.exports = function (ctx) {
   return {
