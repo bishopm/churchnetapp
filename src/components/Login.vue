@@ -1,8 +1,10 @@
 <template>
   <div class="q-ma-md">
-    <q-tabs align="justify" position="top" color="primary">
-      <q-tab default slot="title" name="tab-1" icon="fas fa-unlock" label="Login"/>
-      <q-tab slot="title" name="tab-2" icon="fas fa-hand-point-up" label="Register"/>
+    <q-tabs v-model="selectedTab" color="primary" active-bg-color="primary" class="bg-secondary text-white" align="justify">
+      <q-tab name="tab-1" icon="fas fa-unlock" label="Login"/>
+      <q-tab name="tab-2" icon="fas fa-hand-point-up" label="Register"/>
+    </q-tabs>
+    <q-tab-panels v-model="selectedTab">
       <q-tab-panel class="no-border" name="tab-1">
         <div class="alert alert-danger" v-if="error">
           <p>There was an error, unable to sign in with those credentials.</p>
@@ -38,7 +40,7 @@
           </div>
         </form>
       </q-tab-panel>
-    </q-tabs>
+    </q-tab-panels>
   </div>
 </template>
 
@@ -47,6 +49,7 @@ export default {
   data () {
     return {
       email: '',
+      selectedTab: 'tab-1',
       password: '',
       newpassword: '',
       newemail: '',

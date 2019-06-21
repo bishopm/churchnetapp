@@ -22,7 +22,7 @@
       <q-select class="q-ml-md" multiple label="Give circuit access to this user" v-model="form.circuits" :options="circuitOptions"/>
       <q-select class="q-mx-md" label="Level" v-model="form.circuitlevel" :options="levelOptions"/>
     </div>
-    <h4><b>Districts</b></h4>
+    <h4><b>Synods</b></h4>
     <div v-if="user.districts">
       <p v-for="district in user.districts.full" :key="district.id">{{district.district}} ({{district.pivot.permission}})
         <q-icon class="cursor-pointer" @click.native="deleteperm(district.pivot)" color="secondary" name="fas fa-times"></q-icon>

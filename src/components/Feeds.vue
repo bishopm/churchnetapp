@@ -4,7 +4,7 @@
     <q-list v-if="hasfeeds" no-border>
       <q-item v-for="feed in feeds" :key="feed.feedpost.id" :to="'/feed/edit/' + feed.feedpost.id">
         <q-item-section>{{feed.feedpost.title}}<br><small>{{feed.entity}}: {{feed.feedpost.category}}</small></q-item-section>
-        <q-item-section><small>{{feed.feedpost.publicationdate}}</small></q-item-section>
+        <q-item-section class="text-right"><small>{{feed.feedpost.publicationdate}}</small></q-item-section>
       </q-item>
       <p>{{message}}</p>
     </q-list>

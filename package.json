@@ -1,8 +1,8 @@
 {
-  "name": "churchnetapp",
+  "name": "ChurchNet",
   "version": "0.0.1",
   "description": "ChurchNet",
-  "productName": "ChurchNet App",
+  "productName": "ChurchNet",
   "cordovaId": "org.cordova.quasar.app",
   "author": "Michael Bishop <michael@bishop.net.za>",
   "private": true,

@@ -2,7 +2,7 @@
   <div class="text-center q-mt-lg" v-if="$store.state.user">
     <p v-if="$store.state.user.name" class="caption">Welcome, {{$store.state.user.name}}</p>
     <div v-if="$store.getters.hasEntity('districts')">
-      <b>District permissions</b>
+      <b>Synod permissions</b>
       <p v-for="district in $store.state.user['districts'].full" :key="district.id">
         {{district.district}} [{{district.pivot.permission}}]
       </p>

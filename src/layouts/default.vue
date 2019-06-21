@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header>
-      <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
+      <q-toolbar class="bg-black text-white" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
           <q-icon name="fas fa-user" />
         </q-btn>
@@ -16,8 +16,8 @@
     <q-drawer side="left" v-model="leftDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter>
         <div v-if="$store.getters.hasEntity('societies')">
-          <q-item-label class="text-center bg-secondary text-white q-py-md">
-            <q-icon color="primary" name="fas fa-user"></q-icon> Members
+          <q-item-label class="text-center bg-primary text-white q-py-md">
+            Members
           </q-item-label>
           <q-item to="/households">
             <q-item-section avatar>
@@ -47,7 +47,7 @@
             </q-item-section>
           </q-item>
           <q-item-label class="text-center bg-secondary text-white q-py-md">
-            <q-icon color="primary" name="fas fa-toolbox"></q-icon> Society admin
+            Society admin
           </q-item-label>
           <q-item to="/bulletin">
             <q-item-section avatar>
@@ -104,8 +104,8 @@
             </q-item-section>
           </q-item>
         </div>
-        <q-item-label class="text-center bg-secondary text-white q-py-md">
-          <q-icon color="primary" name="fas fa-cogs"></q-icon> Settings
+        <q-item-label class="text-center bg-black text-white q-py-md">
+          Settings
         </q-item-label>
         <q-item v-if="societyadmin" to="/societysettings">
           <q-item-section avatar>
@@ -116,7 +116,7 @@
               <q-item-label caption>admin settings for societies</q-item-label>
             </q-item-section>
         </q-item>
-        <q-item @click.native="logout()">
+        <q-item clickable @click.native="logout()">
           <q-item-section avatar>
             <q-icon color="primary" name="fas fa-fw fa-sign-out-alt" />
           </q-item-section>
@@ -132,8 +132,8 @@
     </q-page-container>
     <q-drawer side="right" v-model="rightDrawerOpen" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <div v-if="$store.getters.hasEntity('circuits')">
-        <q-item-label class="text-center bg-secondary text-white q-py-md">
-          <q-icon color="primary" name="fas fa-users"></q-icon> Circuit
+        <q-item-label class="text-center bg-primary text-white q-py-md">
+          Circuit
         </q-item-label>
         <q-item to="/diary/circuit">
           <q-item-section avatar>
@@ -174,7 +174,7 @@
       </div>
       <div v-if="$store.getters.hasEntity('districts')">
         <q-item-label class="text-center bg-secondary text-white q-py-md">
-          <q-icon color="primary" name="fas fa-globe-africa"></q-icon> District
+          Synod
         </q-item-label>
         <q-item to="/circuits">
           <q-item-section avatar>
@@ -190,13 +190,13 @@
             <q-icon color="primary" name="fas fa-fw fa-calendar" />
           </q-item-section>
           <q-item-section side>
-            <q-item-label overline>District diary</q-item-label>
+            <q-item-label overline>Synod diary</q-item-label>
             <q-item-label caption>add or edit diary entries</q-item-label>
           </q-item-section>
         </q-item>
       </div>
-      <q-item-label class="text-center bg-secondary text-white q-py-md">
-        <q-icon color="primary" name="fas fa-toolbox"></q-icon> Administration
+      <q-item-label class="text-center bg-black text-white q-py-md">
+        Administration
       </q-item-label>
       <q-item to="/settings">
         <q-item-section avatar>
@@ -306,9 +306,13 @@ export default {
 </script>
 
 <style>
-
+#toolbar {
+  display: flex;
+  justify-content: space-between;
+}
 .q-item {
-  padding-top:3px;
-  padding-bottom: 3px;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 20px;
 }
 </style>
