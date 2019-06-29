@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.4')
-var vnotes = JSON.stringify('Quasar v1')
+var version = JSON.stringify('0.4.1')
+var vnotes = JSON.stringify('Admin permissions and style changes')
 
 module.exports = function (ctx) {
   return {

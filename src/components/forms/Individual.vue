@@ -4,10 +4,10 @@
       {{$route.params.action.toUpperCase()}} INDIVIDUAL
     </div>
     <div class="q-ma-md">
-      <q-input class="q-my-sm" label="Surname" outlined hide-bottom-space error-message="The surname name field is required" v-model="form.surname" :rules="[ val => val.length >= 1 ]"/>
+      <q-input class="q-my-sm" label="Surname" outlined hide-bottom-space error-message="The surname field is required" v-model="form.surname" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-mx-md">
-      <q-input class="q-my-sm" label="First name" outlined hide-bottom-space error-message="The first name name field is required" v-model="form.firstname" :rules="[ val => val.length >= 1 ]"/>
+      <q-input class="q-my-sm" label="First name" outlined hide-bottom-space error-message="The first name field is required" v-model="form.firstname" :rules="[ val => val.length >= 1 ]"/>
     </div>
     <div class="q-ma-md">
       <q-select outlined label="Sex" v-model="form.sex" :options="['female', 'male']"/>
@@ -16,7 +16,7 @@
       <q-select outlined label="Title" v-model="form.title" :options="['Dr', 'Mr', 'Mrs', 'Ms', 'Prof', 'Rev']"/>
     </div>
     <div class="q-ma-md">
-      <q-input outlined v-model="form.birthdate" mask="####-##-##">
+      <q-input label="Date of birth" outlined v-model="form.birthdate" mask="####-##-##">
         <template v-slot:append>
           <q-icon name="fa fa-calendar" class="cursor-pointer">
             <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">

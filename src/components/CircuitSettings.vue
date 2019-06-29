@@ -3,13 +3,13 @@
     <p class="caption text-center">Circuit settings</p>
     <circuitselect class="q-ma-md" @altered="setcircuit" :perms="['admin']" showme="1"></circuitselect>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The circuit field is required" label="Circuit name" v-model="form.circuit"  :rules="[ val => val.length >= 1 ]" />
+      <q-input outlined hide-bottom-space error-message="The circuit field is required" label="Circuit name" v-model="form.circuit" :rules="[ val => val.length >= 1 ]" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The circuit number is required" label="Circuit number" v-model="form.circuitnumber"  :rules="[ val => val.length >= 1 ]" />
+      <q-input outlined hide-bottom-space error-message="The circuit number is required" label="Circuit number" v-model="form.circuitnumber" :rules="[ val => val >= 1 ]" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The slug is required" label="Slug" v-model="form.slug"  :rules="[ val => val.length >= 1 ]" />
+      <q-input outlined hide-bottom-space error-message="The slug is required" label="Slug" v-model="form.slug" :rules="[ val => val.length >= 1 ]" />
     </div>
     <div class="q-ma-md">
       <q-input outlined label="Circuit office contact details" v-model="form.office_contact" />
@@ -25,7 +25,6 @@
 
 <script>
 import circuitselect from './Circuitselect'
-import { required, numeric } from 'vuelidate/lib/validators'
 export default {
   data () {
     return {
@@ -67,13 +66,6 @@ export default {
             console.log(error)
           })
       }
-    }
-  },
-  validations: {
-    form: {
-      circuit: { required },
-      circuitnumber: { required, numeric },
-      slug: { required }
     }
   },
   components: {

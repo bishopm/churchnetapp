@@ -4,13 +4,13 @@
       {{$route.params.action.toUpperCase()}} USER
     </div>
     <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
-    <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search name for an existing circuit member">
+    <q-input class="q-mx-md" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search name for an existing circuit member">
       <template v-slot:append>
         <q-icon name="fa fa-search" />
       </template>
     </q-input>
     <div class="q-ma-md" v-if="individualOptions.length">
-      <q-select @input="populateIndiv()" label="Individual" v-model="form.indiv" :options="individualOptions"/>
+      <q-select outlined @input="populateIndiv()" label="Individual" v-model="form.indiv" :options="individualOptions"/>
     </div>
     <div class="q-ma-md" v-html="userdetails">
     </div>
@@ -20,30 +20,22 @@
     </div>
     <div v-if="!form.indiv" class="text-center">or add a new individual
       <div class="q-mx-md">
-        <q-field :error="$v.form.surname.$error" error-label="The surname field is required">
-          <q-input label="Surname" v-model="form.surname" @blur="$v.form.surname.$touch()" :error="$v.form.surname.$error" />
-        </q-field>
+        <q-input class="q-my-sm" label="Surname" outlined hide-bottom-space error-message="Surname field is required" v-model="form.surname" :rules="[ val => val.length >= 1 ]"/>
       </div>
       <div class="q-mx-md">
-        <q-field :error="$v.form.firstname.$error" error-label="The firstname field is required">
-          <q-input label="First name" v-model="form.firstname" @blur="$v.form.firstname.$touch()" :error="$v.form.firstname.$error" />
-        </q-field>
+        <q-input class="q-my-sm" label="First name" outlined hide-bottom-space error-message="First name field is required" v-model="form.surname" :rules="[ val => val.length >= 1 ]"/>
+      </div>
+      <div class="q-mx-md q-my-sm">
+        <q-select outlined label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
       </div>
       <div class="q-mx-md">
-        <q-select label="Sex" v-model="form.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" />
+        <q-select outlined label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
       </div>
       <div class="q-mx-md">
-        <q-select label="Title" v-model="form.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
+        <q-input class="q-my-sm" label="Cellphone" outlined v-model="form.cellphone"/>
       </div>
       <div class="q-mx-md">
-        <q-field :error="$v.form.cellphone.$error" error-label="Phone numbers must be numeric">
-          <q-input label="Cellphone" v-model="form.cellphone" @blur="$v.form.cellphone.$touch()" :error="$v.form.cellphone.$error" />
-        </q-field>
-      </div>
-      <div class="q-mx-md">
-        <q-field :error="$v.form.email.$error" error-label="Email address is required">
-          <q-input label="Email" v-model="form.email" @blur="$v.form.email.$touch()" :error="$v.form.email.$error" />
-        </q-field>
+        <q-input class="q-my-sm" label="Email" outlined hide-bottom-space error-message="Email field is required" v-model="form.email" :rules="[ val => val.length >= 1 ]"/>
       </div>
       <div class="q-mx-md text-center">
         <q-btn color="primary" @click="submitnew">OK</q-btn>
@@ -122,7 +114,10 @@ export default {
       }
     },
     populateIndiv () {
-      this.userdetails = '<b>Link user to: </b>' + this.form.indiv.title + ' ' + this.form.indiv.firstname + ' ' + this.form.indiv.surname + ' (Phone: ' + this.form.indiv.cellphone + ')'
+      this.userdetails = '<b>Link user to: </b>' + this.form.indiv.value.title + ' ' + this.form.indiv.value.firstname + ' ' + this.form.indiv.value.surname
+      if (this.form.indiv.value.cellphone) {
+        this.userdetails = this.userdetails + ' (Phone: ' + this.form.indiv.value.cellphone + ')'
+      }
     },
     submitexist () {
       this.submit()
