@@ -10,7 +10,8 @@ export default function (/* { ssrContext } */) {
       circuitfilter: [],
       societyfilter: [],
       select: '',
-      loaded: false
+      loaded: false,
+      adminoptions: false
     },
     getters: {
       hasEntity: (state) => (entity) => {
@@ -49,6 +50,9 @@ export default function (/* { ssrContext } */) {
       },
       setSelect (state, newselect) {
         state.select = newselect
+      },
+      setAdminoptions (state, newadminoptions) {
+        state.adminoptions = newadminoptions
       }
     }
   })

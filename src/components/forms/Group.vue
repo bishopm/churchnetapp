@@ -3,12 +3,27 @@
     <div class="q-mx-md text-center caption">
       {{$route.params.action.charAt(0).toUpperCase() + $route.params.action.slice(1)}} group
     </div>
-    <societyselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
+    <societyselect v-if="$route.params.action === 'add'" :perms="['editor','admin']" @altered="populateLeader" showme="1"></societyselect>
     <q-input class="q-my-sm" label="Group name" outlined hide-bottom-space error-message="The group name field is required" v-model="form.groupname" :rules="[ val => val.length >= 1 ]"/>
     <q-input outlined label="Description" type="textarea" rows="3" v-model="form.description" />
+    <q-select class="q-my-sm" @filter="filterFn" use-input outlined label="Leader" v-model="form.leader" :options="filteredOptions" map-options emit-value/>
     <q-select class="q-my-sm" outlined label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]" map-options emit-value/>
-    <q-select class="q-my-sm" outlined label="Leader" v-model="form.leader" :options="leaderOptions" map-options emit-value/>
-    <q-datetime v-if="form.grouptype === 'event'" label="Event date and time" clearable format="YYYY-MM-DD HH:mm" format24h format-model="string" v-model="form.eventdatetime" type="datetime" />
+    <q-input v-if="form.grouptype === 'event'" label="Event date and time" clearable outlined v-model="form.eventdatetime" mask="####-##-## ##:##">
+      <template v-slot:prepend>
+        <q-icon name="fa fa-calendar" class="cursor-pointer">
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="form.eventdatetime" mask="YYYY-MM-DD HH:mm" />
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+      <template v-slot:append>
+        <q-icon name="fa fa-clock" class="cursor-pointer">
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-time v-model="form.eventdatetime" mask="YYYY-MM-DD HH:mm" format24h />
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+    </q-input>
     <q-radio v-model="form.signup" :val="1" label="Allow sign-up from Journey" />
     <q-radio v-model="form.signup" :val="0" label="Private group" />
     <div class="q-ma-md text-center">
@@ -36,6 +51,7 @@ export default {
         signup: 0
       },
       leaderOptions: [],
+      filteredOptions: [],
       admin: false
     }
   },
@@ -48,6 +64,20 @@ export default {
     }
   },
   methods: {
+    filterFn (val, update) {
+      update(() => {
+        if (val === '') {
+          this.filteredOptions = this.leaderOptions
+        } else {
+          this.filteredOptions = []
+          for (var fndx in this.leaderOptions) {
+            if (this.leaderOptions[fndx].label.toLowerCase().includes(val.toLowerCase())) {
+              this.filteredOptions.push(this.leaderOptions[fndx])
+            }
+          }
+        }
+      })
+    },
     submit () {
       this.$v.form.$touch()
       if (this.$v.form.$error) {
@@ -93,6 +123,27 @@ export default {
         }
       }
     },
+    populateLeader () {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/individuals/search',
+        {
+          society: this.$store.state.select
+        })
+        .then(response => {
+          this.leaderOptions = []
+          for (var ikey in response.data) {
+            var newitem = {
+              label: response.data[ikey].surname + ', ' + response.data[ikey].firstname,
+              value: response.data[ikey].id
+            }
+            this.leaderOptions.push(newitem)
+          }
+          this.filteredOptions = this.leaderOptions
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
     deletegroup () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.delete(process.env.API + '/groups/' + this.$route.params.id)
@@ -107,6 +158,7 @@ export default {
     }
   },
   mounted () {
+    this.populateLeader()
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/groups/' + this.$route.params.id)
@@ -126,14 +178,7 @@ export default {
             this.admin = true
           }
           this.leaderOptions = []
-          for (var mndx in response.data.members) {
-            this.leaderOptions.push(
-              {
-                value: response.data.members[mndx].id,
-                label: response.data.members[mndx].firstname + ' ' + response.data.members[mndx].surname
-              }
-            )
-          }
+          this.populateLeader()
         })
         .catch(function (error) {
           console.log(error)

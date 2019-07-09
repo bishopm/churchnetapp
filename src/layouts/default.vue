@@ -257,6 +257,7 @@ export default {
     }
   },
   mounted () {
+    this.$store.commit('setAdminoptions', false)
     if (localStorage.getItem('CHURCHNET_Version')) {
       if (localStorage.getItem('CHURCHNET_Version') !== process.env.VERSION) {
         this.$q.dialog({

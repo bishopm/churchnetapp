@@ -22,14 +22,16 @@
         </q-td>
       </q-table>
       <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
-        <h4>{{form.grouplabel}}</h4>
-        <q-input readonly label="Roster date" v-model="form.rosterdate"/>
-        <div class="q-my-md">
-          <q-select v-if="checkpeople" label="Individual" multiple v-model="form.individuals" :options="indivOptions"/>
-          <q-select v-else label="Individual" v-model="form.indivint" :options="indivOptions"/>
-        </div>
-        <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
-        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="resetmodal" label="Cancel" />
+        <q-card class="q-pa-md">
+          <p class="text-center header">{{form.grouplabel}}</p>
+          <q-input readonly label="Roster date" v-model="form.rosterdate"/>
+          <div class="q-my-md">
+            <q-select v-if="checkpeople" label="Individual" multiple v-model="form.individuals" :options="indivOptions" map-options emit-value clearable/>
+            <q-select v-else label="Individual" v-model="form.indivint" :options="indivOptions" map-options emit-value clearable/>
+          </div>
+          <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
+          <q-btn class="q-mt-md q-ml-md" color="secondary" @click="resetmodal" label="Cancel" />
+        </q-card>
       </q-dialog>
     </div>
   </div>
