@@ -160,8 +160,8 @@ export default {
     },
     savechanges () {
       if (this.form.individuals.length <= this.form.maxpeople) {
+        this.form.individuals = []
         if (this.form.indivint) {
-          this.form.individuals = []
           this.form.individuals.push(this.form.indivint)
         }
         this.form.indivint = ''

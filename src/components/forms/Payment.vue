@@ -4,21 +4,29 @@
       {{$route.params.action.toUpperCase()}} PAYMENT <small>{{society}}</small>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.paymentdate.$error" error-label="The date field is required">
-        <q-datetime label="Payment date" format="YYYY-MM-DD" format-model="string" v-model="form.paymentdate" type="date" @blur="$v.form.paymentdate.$touch()" :error="$v.form.paymentdate.$error" />
-      </q-field>
+      <q-input label="Payment date" outlined v-model="form.paymentdate" mask="####-##-##">
+        <template v-slot:append>
+          <q-icon name="fa fa-calendar" class="cursor-pointer">
+            <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+              <q-date mask="YYYY-MM-DD" v-model="form.paymentdate" @input="() => $refs.qDateProxy.hide()" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.pgnumber.$error" error-label="The planned giving number is required">
-        <q-input label="Giving number" v-model="form.pgnumber" @blur="checkpg" :error="$v.form.pgnumber.$error">
-          <q-autocomplete :static-data="{field: 'value', list: indivOptions}" :min-characters="1"/>
-        </q-input>
-      </q-field>
+      <q-select v-model="form.pgnumber" use-input outlined hide-selected fill-input input-debounce="0" :options="filteredOptions" @filter="filterFn">
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No results
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
     </div>
     <div class="q-ma-md">
-      <q-field :error="$v.form.amount.$error" error-label="The amount is required and must be numeric">
-        <q-input label="Amount" v-model="form.amount" @blur="$v.form.amount.$touch()" :error="$v.form.amount.$error" />
-      </q-field>
+      <q-input class="q-my-sm" label="Amount" outlined hide-bottom-space error-message="The amount is required and must be numeric" v-model="form.amount" :rules="[val => val !== null && val !== '', val => val > 0 && val < 100000000]"/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -40,6 +48,7 @@ export default {
         amount: ''
       },
       indivOptions: [],
+      filteredOptions: [],
       allnums: [],
       society: ''
     }
@@ -63,11 +72,19 @@ export default {
           console.log(error)
         })
     },
-    checkpg () {
-      if ((this.form.pgnumber) && (!this.allnums.includes(this.form.pgnumber))) {
-        this.form.pgnumber = ''
-        this.$q.notify('This number does not exist - please re-enter!')
-      }
+    filterFn (val, update) {
+      update(() => {
+        if (val === '') {
+          this.filteredOptions = this.indivOptions
+        } else {
+          this.filteredOptions = []
+          for (var fndx in this.indivOptions) {
+            if (this.indivOptions[fndx].label.toLowerCase().includes(val.toLowerCase())) {
+              this.filteredOptions.push(this.indivOptions[fndx])
+            }
+          }
+        }
+      })
     },
     submit () {
       this.$v.form.$touch()
@@ -80,7 +97,7 @@ export default {
             {
               amount: this.form.amount,
               paymentdate: this.form.paymentdate,
-              pgnumber: this.form.pgnumber
+              pgnumber: this.form.pgnumber.value
             })
             .then(response => {
               this.$q.notify('Payment updated')
@@ -96,7 +113,7 @@ export default {
               society_id: this.$store.state.select,
               amount: this.form.amount,
               paymentdate: this.form.paymentdate,
-              pgnumber: this.form.pgnumber
+              pgnumber: this.form.pgnumber.value
             })
             .then(response => {
               this.$q.notify('Payment added')

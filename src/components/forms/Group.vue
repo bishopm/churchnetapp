@@ -110,7 +110,9 @@ export default {
               description: this.form.description,
               eventdatetime: this.form.eventdatetime,
               grouptype: this.form.grouptype,
-              society_id: this.$store.state.select
+              society_id: this.$store.state.select,
+              leader: this.form.leader,
+              signup: this.form.signup
             })
             .then(response => {
               this.$q.notify('Group added')

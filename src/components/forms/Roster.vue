@@ -28,21 +28,23 @@
       <q-btn class="q-ml-md" @click="$router.go(-1)" color="secondary">Cancel</q-btn>
     </div>
     <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
-      <h4>Add a roster group</h4>
-      <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by group name">
-        <template v-slot:append>
-          <q-icon name="fa fa-search" />
-        </template>
-      </q-input>
-      <div v-if="search.length > 2">
-        <q-select label="Group" v-model="form.group_id" :options="groupOptions"/>
-        <q-input label="Maximum people" type="number" v-model="form.maxpeople"/>
-        <q-toggle class="q-mt-md" v-model="form.extrainfo" true-value="yes" false-value="no" label="Extra info required?"/>
-      </div>
-      <div class="text-center">
-        <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
-        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
-      </div>
+      <q-card class="q-pa-md">
+        <p class="caption text-center">Add a roster group</p>
+        <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="search by group name">
+          <template v-slot:append>
+            <q-icon name="fa fa-search" />
+          </template>
+        </q-input>
+        <div v-if="search.length > 2">
+          <q-select label="Group" v-model="form.group_id" :options="groupOptions"/>
+          <q-input label="Maximum people" type="number" v-model="form.maxpeople"/>
+          <q-toggle class="q-mt-md" v-model="form.extrainfo" true-value="yes" false-value="no" label="Extra info required?"/>
+        </div>
+        <div class="text-center">
+          <q-btn class="q-mt-md" color="primary" @click="addGroup()" label="Save" />
+          <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+        </div>
+      </q-card>
     </q-dialog>
   </div>
 </template>
@@ -179,7 +181,7 @@ export default {
       this.$axios.post(process.env.API + '/rostergroups',
         {
           roster_id: this.$route.params.id,
-          group_id: this.form.group_id,
+          group_id: this.form.group_id.value,
           maxpeople: this.form.maxpeople,
           extrainfo: this.form.extrainfo
         })

@@ -15,7 +15,7 @@
         </template>
       </q-input>
       <div class="q-my-md" v-if="search.length > 2">
-        <q-select outlined @input="addIndiv()" label="Individual" v-model="individual_id" :options="individualOptions"/>
+        <q-select outlined @input="addIndiv()" label="Individual" v-model="individual_id" :options="individualOptions" map-options emit-value/>
       </div>
       <q-item v-for="individual in members" :key="individual.id">
         <q-item-section>{{individual.firstname}} {{individual.surname}}</q-item-section>
