@@ -1,11 +1,11 @@
 <template>
   <div>
     <q-form>
-      <leafletmap v-if="household.location" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
+      <leafletmap v-if="household.location && household.location.latitude" :latitude="household.location.latitude" :longitude="household.location.longitude" :popuplabel="household.addressee" editable="yes" @newlat="newlat" @newlng="newlng"></leafletmap>
       <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
         {{$route.params.action.toUpperCase()}} HOUSEHOLD
       </div>
-      <societyselect v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
+      <societyselect @altered="setsocieties" v-if="$route.params.action === 'add' && $route.params.scope === 'society'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
       <div class="q-ma-md" v-if="$route.params.action === 'add' && $route.params.scope === 'circuit'">
         <circuitselect @altered="setsocieties" :perms="['editor','admin']" showme="1"></circuitselect>
         <q-select label="Society" v-model="society" :options="csocietyOptions" @input="setMap()">
@@ -142,13 +142,8 @@ export default {
         this.$axios.post(process.env.API + '/households/' + this.household.id,
           {
             addressee: this.household.addressee,
-            addr1: this.household.addr1,
-            addr2: this.household.addr2,
-            addr3: this.household.addr3,
-            homephone: this.household.location.phone,
-            householdcell: this.household.householdcell,
-            latitude: this.household.location.latitude,
-            longitude: this.household.location.longitude
+            location: this.household.location,
+            householdcell: this.household.householdcell
           })
           .then(response => {
             this.$q.loading.hide()
@@ -169,14 +164,9 @@ export default {
         this.$axios.post(process.env.API + '/households',
           {
             addressee: this.household.addressee,
-            addr1: this.household.addr1,
-            addr2: this.household.addr2,
-            addr3: this.household.addr3,
-            homephone: this.household.homephone,
+            location: this.household.location,
             householdcell: this.household.householdcell,
-            society_id: this.soc,
-            latitude: this.household.location.latitude,
-            longitude: this.household.location.longitude
+            society_id: this.soc
           })
           .then(response => {
             this.$q.loading.hide()
@@ -210,6 +200,8 @@ export default {
           console.log(error)
         })
     } else {
+      this.household.location.latitude = this.$store.state.user.societies.full[this.$store.state.select].location.latitude
+      this.household.location.longitude = this.$store.state.user.societies.full[this.$store.state.select].location.longitude
       this.setsocieties()
     }
   }

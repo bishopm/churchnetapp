@@ -55,15 +55,17 @@
       <q-btn class="q-ml-md" color="black" @click="modalopen = true">Delete</q-btn>
     </div>
     <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
-      <h4>Confirm removal reason</h4>
-      <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="subform.deletereason" :options="[
-        { label: 'Individual has left the church', value: 'archive' },
-        { label: 'Individual was added in error', value: 'delete' },
-        { label: 'Individual has died', value: 'death' }
-      ]"/>
-      <q-datetime label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
-      <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
-      <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+      <q-card class="q-pa-md">
+        <p class="text-center text-h5">Confirm removal reason</p>
+        <q-option-group @input="checkDeath" color="secondary" type="radio" v-model="subform.deletereason" :options="[
+          { label: 'Individual has left the church', value: 'archive' },
+          { label: 'Individual was added in error', value: 'delete' },
+          { label: 'Individual has died', value: 'death' }
+        ]"/>
+        <q-datetime label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
+        <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
+        <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
+      </q-card>
     </q-dialog>
   </div>
 </template>

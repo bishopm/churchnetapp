@@ -2,9 +2,7 @@
   <div class="q-ma-md">
     <p class="caption" v-if="message">{{$message}}</p>
     <q-list v-if="households" class="no-border">
-      <p class="caption text-center">All households
-        <q-checkbox v-if="$store.state.user.level === 1" class="text-grey" v-model="bypass" label="Admin search" @input="searchdb"/>
-      </p>
+      <p class="caption text-center">All households</p>
       <societyfilter @altered="searchdb" initial="all" :showme="showme()"></societyfilter>
       <q-input outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="Search by addressee">
         <template v-slot:append>

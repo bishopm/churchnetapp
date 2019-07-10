@@ -16,6 +16,7 @@
       <div v-if="household.individuals.length">
         <q-tabs dense active-bg-color="primary" no-pane-border align="justify" class="q-mt-md bg-secondary text-white" indicator-color="secondary" v-model="tab">
           <q-tab v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id" :label="individual.firstname"/>
+          <q-tab key="0" slot="title" name="tabadd" icon="fas fa-plus-circle" label="+"/>
         </q-tabs>
         <q-tab-panels dense v-model="tab">
           <q-tab-panel v-for="individual in household.individuals" :key="individual.id" :name="'tab' + individual.id">
@@ -45,7 +46,6 @@
               </div>
             </div>
           </q-tab-panel>
-          <q-tab key="0" slot="title" name="tabadd" icon="fas fa-plus-circle"/>
           <q-tab-panel name="tabadd">
             <q-btn @click.native="addIndividual()">Add a new member to this household</q-btn>
           </q-tab-panel>
