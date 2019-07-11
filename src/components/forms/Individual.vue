@@ -62,7 +62,17 @@
           { label: 'Individual was added in error', value: 'delete' },
           { label: 'Individual has died', value: 'death' }
         ]"/>
-        <q-datetime label="Date of death" format="YYYY-MM-DD" format-model="string" v-if="showdate" v-model="subform.deathdate" type="date" />
+        <div class="q-ma-md" v-if="showdate">
+          <q-input label="Date of death" outlined v-model="subform.deathdate" mask="####-##-##">
+            <template v-slot:append>
+              <q-icon name="fa fa-calendar" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date mask="YYYY-MM-DD" v-model="subform.deathdate" @input="() => $refs.qDateProxy.hide()" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
         <q-btn class="q-mt-md" color="black" @click="deleteMe" label="Delete" />
         <q-btn class="q-mt-md q-ml-md" color="secondary" @click="modalopen = false" label="Cancel" />
       </q-card>
@@ -95,7 +105,7 @@ export default {
       },
       subform: {
         deletereason: 'archive',
-        deathdate: ''
+        deathdate: new Date().toJSON().slice(0, 10).replace(/-/g, '/')
       },
       modalopen: false,
       showdate: false,
