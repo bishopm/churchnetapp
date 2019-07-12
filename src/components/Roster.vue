@@ -159,12 +159,17 @@ export default {
       }
     },
     savechanges () {
-      if (this.form.individuals.length <= this.form.maxpeople) {
+      if (!this.form.individuals) {
         this.form.individuals = []
-        if (this.form.indivint) {
-          this.form.individuals.push(this.form.indivint)
+      }
+      if (this.form.individuals.length <= this.form.maxpeople) {
+        if (this.form.maxpeople < 2) {
+          this.form.individuals = []
+          if (this.form.indivint) {
+            this.form.individuals.push(this.form.indivint)
+          }
+          this.form.indivint = ''
         }
-        this.form.indivint = ''
         this.$axios.post(process.env.API + '/rosteritems',
           {
             rostergroup_id: this.form.rostergroup_id,

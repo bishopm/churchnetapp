@@ -8,7 +8,7 @@
       <circuitselect v-if="$route.params.scope==='circuit'" class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></circuitselect>
       <districtselect v-if="$route.params.scope==='district'" class="q-mx-md" @altered="searchdb" :perms="['editor','admin']" showme="1"></districtselect>
       <q-item class="q-mx-sm" v-for="meeting in meetings" :key="meeting.id" :to="'/meeting/' + $route.params.scope + '/edit/' + entity.id + '/' + meeting.id">
-        <q-item-section>{{meeting.description}}&nbsp;<small>({{meeting.society.society}})</small></q-item-section>
+        <q-item-section>{{meeting.description}}&nbsp;<small v-if="meeting.society">({{meeting.society.society}})</small></q-item-section>
         <q-item-section>
           <small>{{formatme(meeting.meetingdatetime)}}</small>
         </q-item-section>

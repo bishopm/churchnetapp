@@ -152,7 +152,7 @@ export default {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
           this.$axios.post(process.env.API + '/meetings/' + this.$route.params.id + '/update',
             {
-              society_id: this.form.society_id.value,
+              society_id: this.form.society_id,
               meetable_id: this.entity.id,
               meetable_type: this.$route.params.scope,
               description: this.form.description,

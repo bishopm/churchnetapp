@@ -26,10 +26,10 @@
             <q-card-section>
               <q-input readonly label="Service date" v-model="form.servicedate"/>
               <div class="q-my-md">
-                <q-select label="Preacher" filter v-model="form.plan.person.id" :options="preacherOptions"/>
+                <q-select label="Preacher" filter v-model="form.plan.person.id" :options="preacherOptions" map-options emit-value/>
               </div>
               <div class="q-my-md">
-                <q-select label="Service type" v-model="form.plan.tag" :options="labelOptions"/>
+                <q-select label="Service type" v-model="form.plan.tag" :options="labelOptions" map-options emit-value/>
               </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -147,6 +147,7 @@ export default {
         this.form.servicedate = label
         this.form.societyname = JSON.parse(row.society).society + ' ' + JSON.parse(row.society).servicetime
         if (item) {
+          console.log(item)
           this.form.plan = item
         } else {
           this.form.plan.person.name = ''

@@ -23,18 +23,16 @@
       {{person.title}} {{person.firstname}} {{person.surname}}
     </div>
     <div v-if="form.status !== 'minister'" class="q-ma-md">
-      <q-field :error="$v.form.inducted.$error" error-label="This field must be a valid year">
-        <q-input label="Year on full plan (leave blank if not on full plan)" v-model="form.inducted" @blur="$v.form.inducted.$touch()" :error="$v.form.inducted.$error" />
-      </q-field>
+      <q-input outlined label="Year on full plan (leave blank if not on full plan)" v-model="form.inducted" />
     </div>
     <div class="q-ma-md">
-      <q-select @input="populateTags(form.status)" label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]"/>
+      <q-select @input="populateTags(form.status)" outlined label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]" map-options emit-value/>
     </div>
     <div class="q-ma-md">
-      <q-select multiple use-chips label="Roles" v-model="form.roles" :options="roleOptions"/>
+      <q-select multiple outlined use-chips label="Roles" v-model="form.roles" :options="roleOptions" map-options emit-value/>
     </div>
     <div class="q-ma-md">
-      <q-select label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]"/>
+      <q-select outlined label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]" map-options emit-value/>
     </div>
     <div class="q-ma-md text-center">
       <q-btn color="primary" @click="submit">OK</q-btn>
@@ -79,6 +77,7 @@ export default {
       roleOptions: [],
       modalopen: false,
       form: {
+        status: '',
         inducted: '',
         individual_id: '',
         circuit_id: '',
