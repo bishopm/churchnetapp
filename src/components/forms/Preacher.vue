@@ -29,7 +29,7 @@
       <q-select @input="populateTags(form.status)" outlined label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]" map-options emit-value/>
     </div>
     <div class="q-ma-md">
-      <q-select multiple outlined use-chips label="Roles" v-model="form.roles" :options="roleOptions" map-options emit-value/>
+      <q-select multiple outlined use-chips label="Roles" v-model="form.roles" :options="roleOptions" map-options/>
     </div>
     <div class="q-ma-md">
       <q-select outlined label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]" map-options emit-value/>
@@ -81,7 +81,7 @@ export default {
         inducted: '',
         individual_id: '',
         circuit_id: '',
-        roles: [],
+        roles: null,
         active: 'yes'
       },
       person: {
