@@ -2,11 +2,13 @@
   <div>
     <leafletmap v-if="society.location" :latitude="society.location.latitude" :longitude="society.location.longitude" :popuplabel="society.society + ' Methodist Church'" editable="no"></leafletmap>
     <div v-if="society" class="text-center q-ma-md">
-      <h3>
-        {{society.society}} <q-icon v-if="perm === 'admin'" class="cursor-pointer" @click.native="editSociety()" name="fas fa-edit"></q-icon>
-      </h3>
+      <p class="text-h5">
+        {{society.society}}
+        <q-icon v-if="perm === 'admin'" class="q-ml-sm cursor-pointer" @click.native="editSociety()" name="far fa-edit"></q-icon>
+        <q-icon v-if="perm !== ''" class="q-ml-sm cursor-pointer" @click.native="showReport()" name="far fa-file-alt"></q-icon>
+      </p>
       <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
-        <q-icon v-if="perm === 'edit'" class="cursor-pointer" @click.native="editService(service.id)" name="fas fa-edit"></q-icon>
+        <q-icon v-if="perm !== ''" class="cursor-pointer" @click.native="editService(service.id)" name="fas fa-edit"></q-icon>
       </p>
       <p v-if="noservices">No services have been added yet</p>
       <q-btn v-if="perm === 'edit'" @click="addService()" color="primary">Add a service</q-btn>
@@ -17,6 +19,7 @@
 
 <script>
 import leafletmap from './Leafletmap'
+import { openURL } from 'quasar'
 export default {
   data () {
     return {
@@ -31,6 +34,9 @@ export default {
   methods: {
     editSociety () {
       this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
+    },
+    showReport () {
+      openURL(process.env.WEB + '/admin/households/report/' + this.$route.params.id)
     },
     addService () {
       this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' } })
