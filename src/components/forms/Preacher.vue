@@ -29,7 +29,7 @@
       <q-select @input="populateTags(form.status)" outlined label="Status" v-model="form.status" :options="[{ label: 'Biblewoman', value: 'biblewoman' }, { label: 'Deacon', value: 'deacon' }, { label: 'Evangelist', value: 'evangelist' }, { label: 'Local preacher', value: 'preacher' }, { label: 'Minister', value: 'minister' }]" map-options emit-value/>
     </div>
     <div class="q-ma-md">
-      <q-select multiple outlined use-chips label="Roles" v-model="form.roles" :options="roleOptions" map-options/>
+      <q-select multiple outlined use-chips label="Roles" v-model="roles" :options="roleOptions" map-options emit-value/>
     </div>
     <div class="q-ma-md">
       <q-select outlined label="Active" v-model="form.active" :options="[{ label: 'Yes', value: 'yes' }, { label: 'No', value: 'no' }]" map-options emit-value/>
@@ -81,9 +81,10 @@ export default {
         inducted: '',
         individual_id: '',
         circuit_id: '',
-        roles: null,
+        roles: [],
         active: 'yes'
       },
+      roles: [],
       person: {
         firstname: '',
         surname: '',
@@ -112,54 +113,49 @@ export default {
   },
   methods: {
     submit () {
-      this.$v.form.$touch()
-      if (this.$v.form.$error) {
-        this.$q.notify('Please check for errors!')
+      this.$q.loading.show()
+      if (this.$route.params.action === 'add') {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/circuits/' + this.$store.state.select + '/people',
+          {
+            personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
+            personable_id: this.$store.state.select,
+            inducted: this.form.inducted,
+            active: this.form.active,
+            individual_id: this.form.individual_id.value,
+            roles: this.roles,
+            status: this.form.status
+          })
+          .then(response => {
+            this.$q.loading.hide()
+            this.$q.notify('Preacher added')
+            this.$router.push({ name: 'preachers' })
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
       } else {
-        this.$q.loading.show()
-        if (this.$route.params.action === 'add') {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(process.env.API + '/circuits/' + this.$store.state.select + '/people',
-            {
-              personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
-              personable_id: this.$store.state.select,
-              inducted: this.form.inducted,
-              active: this.form.active,
-              individual_id: this.form.individual_id,
-              roles: this.form.roles,
-              status: this.form.status
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Preacher added')
-              this.$router.push({ name: 'preachers' })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
-        } else {
-          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-          this.$axios.post(process.env.API + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
-            {
-              personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
-              personable_id: this.$store.state.select,
-              inducted: this.form.inducted,
-              individual_id: this.form.individual_id,
-              roles: this.form.roles,
-              active: this.form.active,
-              status: this.form.status
-            })
-            .then(response => {
-              this.$q.loading.hide()
-              this.$q.notify('Preacher updated')
-              this.$router.push({ name: 'preachers' })
-            })
-            .catch(function (error) {
-              console.log(error)
-              this.$q.loading.hide()
-            })
-        }
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/circuits/' + this.form.circuit_id + '/people/' + this.form.id,
+          {
+            personable_type: 'Bishopm\\Churchnet\\Models\\Circuit',
+            personable_id: this.$store.state.select,
+            inducted: this.form.inducted,
+            individual_id: this.form.individual_id.value,
+            roles: this.roles,
+            active: this.form.active,
+            status: this.form.status
+          })
+          .then(response => {
+            this.$q.loading.hide()
+            this.$q.notify('Preacher updated')
+            this.$router.push({ name: 'preachers' })
+          })
+          .catch(function (error) {
+            console.log(error)
+            this.$q.loading.hide()
+          })
       }
     },
     deletePerson () {
@@ -182,9 +178,9 @@ export default {
         }
         this.roleOptions.push(newitem)
       }
-      this.form.roles = []
+      this.roles = []
       for (var tkey in this.form.tags) {
-        this.form.roles.push(this.form.tags[tkey].tag_id)
+        this.roles.push(this.form.tags[tkey].tag_id)
       }
     },
     searchdb () {
