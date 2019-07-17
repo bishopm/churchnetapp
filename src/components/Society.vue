@@ -19,6 +19,8 @@
 
 <script>
 import leafletmap from './Leafletmap'
+import { openURL } from 'quasar'
+import jsPDF from 'jspdf'
 export default {
   data () {
     return {
@@ -35,7 +37,9 @@ export default {
       this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
     },
     showReport () {
-      this.$q.notify('Under construction - will eventually produce a list of households')
+      var doc = new jsPDF()
+      doc.text('Hello world!', 10, 10)
+      openURL(doc.output('bloburl'))
     },
     addService () {
       this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' } })
