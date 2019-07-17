@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.4.2')
-var vnotes = JSON.stringify('Various fixes')
+var version = JSON.stringify('0.4.2.1')
+var vnotes = JSON.stringify('More form fixes')
 
 module.exports = function (ctx) {
   return {

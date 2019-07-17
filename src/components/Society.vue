@@ -19,7 +19,6 @@
 
 <script>
 import leafletmap from './Leafletmap'
-import { openURL } from 'quasar'
 export default {
   data () {
     return {
@@ -36,7 +35,7 @@ export default {
       this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
     },
     showReport () {
-      openURL(process.env.WEB + '/admin/households/report/' + this.$route.params.id)
+      this.$q.notify('Under construction - will eventually produce a list of households')
     },
     addService () {
       this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' } })
