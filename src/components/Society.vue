@@ -19,14 +19,15 @@
 
 <script>
 import leafletmap from './Leafletmap'
-import { openURL } from 'quasar'
 import jsPDF from 'jspdf'
 export default {
   data () {
     return {
       society: {},
+      societies: [],
       noservices: false,
-      perm: ''
+      perm: '',
+      websiteurl: ''
     }
   },
   components: {
@@ -37,9 +38,42 @@ export default {
       this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
     },
     showReport () {
-      var doc = new jsPDF()
-      doc.text('Hello world!', 10, 10)
-      openURL(doc.output('bloburl'))
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+      this.$axios.post(process.env.API + '/households/search',
+        {
+          search: '',
+          societies: this.societies,
+          scope: false
+        })
+        .then((response) => {
+          var pdf = new jsPDF()
+          pdf.text('List of Households: ' + this.society.society, 10, 10)
+          pdf.setFontSize(10)
+          var yy = 15
+          for (var hndx in response.data) {
+            if (yy >= 280) {
+              pdf.addPage()
+              yy = 15
+            } else {
+              if (response.data[hndx].individuals.length) {
+                yy = yy + 5
+              }
+            }
+            var thistxt = response.data[hndx].addressee + ' ('
+            for (var indx in response.data[hndx].individuals) {
+              thistxt = thistxt + response.data[hndx].individuals[indx].firstname + ', '
+            }
+            if (response.data[hndx].individuals.length) {
+              pdf.text(thistxt.substring(0, thistxt.length - 2) + ')', 10, yy)
+            } else {
+              thistxt = ''
+            }
+          }
+          window.open(pdf.output('bloburl'), '_blank')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     addService () {
       this.$router.push({ name: 'serviceform', params: { society: JSON.stringify(this.society), action: 'add' } })
@@ -49,6 +83,7 @@ export default {
     }
   },
   async mounted () {
+    this.societies.push(this.$route.params.id)
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(process.env.API + '/societies/' + this.$route.params.id)
       .then((response) => {
