@@ -4,7 +4,7 @@
     <societyfilter showme="2" ref="sfilter"></societyfilter>
     <circuitfilter showme="2" ref="cfilter"></circuitfilter>
     <q-input outlined ref="title" class="q-mb-md" label="Title" v-model="post.title" />
-    <q-select outlined class="q-mb-md" v-model="post.category" label="Category" radio :options="categoryOptions" />
+    <q-select outlined class="q-mb-md" v-model="post.category" label="Category" radio :options="categoryOptions" map-options emit-value/>
     <q-input class="q-mb-md" label="Publication date" outlined v-model="post.publicationdate" mask="####-##-##">
       <template v-slot:prepend>
         <q-icon name="fa fa-calendar" class="cursor-pointer">
@@ -53,8 +53,8 @@ export default {
       },
       categoryOptions: [
         {
-          label: 'Community',
-          value: 'community'
+          label: 'Children',
+          value: 'children'
         },
         {
           label: 'Groups',
