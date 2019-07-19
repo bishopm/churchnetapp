@@ -5,7 +5,20 @@
       <p class="text-h5">
         {{society.society}}
         <q-icon v-if="perm === 'admin'" class="q-ml-sm cursor-pointer" @click.native="editSociety()" name="far fa-edit"></q-icon>
-        <q-icon v-if="perm !== ''" class="q-ml-sm cursor-pointer" @click.native="showReport()" name="far fa-file-alt"></q-icon>
+        <q-btn-dropdown v-if="perm !== ''" class="q-ml-md" color="primary" label="Reports">
+          <q-list>
+            <q-item clickable v-close-popup @click="showReport('list')">
+              <q-item-section>
+                <q-item-label>Household list</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="showReport('details')">
+              <q-item-section>
+                <q-item-label>Household details</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </p>
       <p v-for="service in society.services" :key="service.id">{{service.servicetime}} ({{service.language}})
         <q-icon v-if="perm !== ''" class="cursor-pointer" @click.native="editService(service.id)" name="fas fa-edit"></q-icon>
@@ -37,7 +50,7 @@ export default {
     editSociety () {
       this.$router.push({ name: 'societyform', params: { society: JSON.stringify(this.society), action: 'edit' } })
     },
-    showReport () {
+    showReport (report) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.post(process.env.API + '/households/search',
         {
@@ -47,26 +60,54 @@ export default {
         })
         .then((response) => {
           var pdf = new jsPDF()
-          pdf.text('List of Households: ' + this.society.society, 10, 10)
-          pdf.setFontSize(10)
-          var yy = 15
-          for (var hndx in response.data) {
-            if (yy >= 280) {
-              pdf.addPage()
-              yy = 15
-            } else {
+          var yy = 0
+          if (report === 'list') {
+            pdf.text('List of Households: ' + this.society.society, 10, 10)
+            pdf.setFontSize(10)
+            yy = 15
+            for (var hndx in response.data) {
+              if (yy >= 280) {
+                pdf.addPage()
+                yy = 15
+              } else {
+                if (response.data[hndx].individuals.length) {
+                  yy = yy + 5
+                }
+              }
+              var thistxt = response.data[hndx].addressee + ' ('
+              for (var indx in response.data[hndx].individuals) {
+                thistxt = thistxt + response.data[hndx].individuals[indx].firstname + ', '
+              }
               if (response.data[hndx].individuals.length) {
-                yy = yy + 5
+                pdf.text(thistxt.substring(0, thistxt.length - 2) + ')', 10, yy)
+              } else {
+                thistxt = ''
               }
             }
-            var thistxt = response.data[hndx].addressee + ' ('
-            for (var indx in response.data[hndx].individuals) {
-              thistxt = thistxt + response.data[hndx].individuals[indx].firstname + ', '
-            }
-            if (response.data[hndx].individuals.length) {
-              pdf.text(thistxt.substring(0, thistxt.length - 2) + ')', 10, yy)
-            } else {
-              thistxt = ''
+          } else if (report === 'details') {
+            for (var dndx in response.data) {
+              pdf.setFontSize(14)
+              pdf.setFont('Helvetica', 'Bold')
+              if (response.data[dndx].individuals.length) {
+                pdf.text(response.data[dndx].addressee, 10, 10)
+                pdf.roundedRect(8, 4, 194, 8, 2, 2)
+                pdf.setFont('Helvetica', '')
+                pdf.setFontSize(10)
+                pdf.text('Address: ' + response.data[dndx].location.address, 10, 19)
+                pdf.roundedRect(8, 14, 194, 8, 2, 2)
+                pdf.text('Home phone: ' + response.data[dndx].location.phone, 10, 29)
+                pdf.roundedRect(8, 24, 194, 8, 2, 2)
+                yy = 40
+                for (var dindx in response.data[dndx].individuals) {
+                  if (response.data[dndx].individuals[dindx].firstname && response.data[dndx].individuals[dindx].surname) {
+                    pdf.text(response.data[dndx].individuals[dindx].firstname + ' ' + response.data[dndx].individuals[dindx].surname, 10, yy)
+                  }
+                  yy = yy + 7
+                }
+                if (dndx < response.data.length) {
+                  pdf.addPage()
+                }
+              }
             }
           }
           window.open(pdf.output('bloburl'), '_blank')
