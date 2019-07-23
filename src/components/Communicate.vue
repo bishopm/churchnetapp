@@ -20,7 +20,7 @@
       <q-select outlined @input="getcredits" class="q-ma-md" v-model="message.messagetype" label="Type" radio :options="categoryOptions" map-options emit-value/>
       <div class="q-ma-md" v-if="this.message.messagetype === 'sms'"><small>Credit balance: {{credits}}</small></div>
       <q-input outlined v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" label="Reply to" v-model="message.sender" />
-      <q-input class="q-ma-md" outlined v-if="this.message.messagetype === 'email'" ref="title" label="Title" v-model="message.title" />
+      <q-input class="q-ma-md" label="Title" outlined hide-bottom-space error-message="The title field is required" v-model="message.title" :rules="[ val => val.length >= 1 ]"/>
       <q-select class="q-ma-md" outlined filter filter-placeholder="Search" use-chips multiple v-model="message.groups" label="Group" :options="groupOptions" map-options emit-value/>
       <q-editor v-if="this.message.messagetype === 'email'" class="q-ma-md" v-model="message.body" :toolbar="[
         ['bold', 'italic', 'underline'],
