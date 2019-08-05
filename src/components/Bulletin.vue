@@ -1,6 +1,6 @@
 <template>
   <div class="text-center q-mt-lg">
-      Bulletin here
+      Bulletin here - still a work in progress ...
   </div>
 </template>
 
