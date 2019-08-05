@@ -9,7 +9,7 @@
         <div class="flex flex-center">
           <q-btn class="q-mr-md bg-black text-white" label="<" @click="backmonth()"></q-btn>Preaching plan: {{monthname}} {{planyear}}<q-btn class="q-ml-md bg-black text-white" label=">" @click="forwardmonth()"></q-btn> <q-btn class="q-ml-sm" @click="viewplan" label="View"></q-btn>
         </div>
-        <q-select @input="showplan(planyear,planmonth)" label="Circuit" v-model="circuit" :options="circuitOptions"/>
+        <q-select @input="showplan(planyear,planmonth)" label="Circuit" v-model="circuit" :options="circuitOptions" map-options emit-value/>
         <q-table v-if="headers" dense :data="rows" :columns="headers" :pagination.sync="paginationControl" hide-bottom>
           <q-td :class="'c' + props.col.field" slot='body-cell' slot-scope='props' :props='props' @click.native="editplan(props.row[props.col.field], props.row, headers[1 + parseInt(props.col.field)].label, props.col.field)">
             <div v-if="props.col.field === 'society'">

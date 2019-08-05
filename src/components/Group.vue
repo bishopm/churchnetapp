@@ -105,6 +105,7 @@ export default {
           id: this.individual_id
         })
         .then(response => {
+          this.individual_id = ''
           this.members.push(response.data)
           this.search = ''
         })

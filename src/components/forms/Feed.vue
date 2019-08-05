@@ -14,7 +14,7 @@
         </q-icon>
       </template>
     </q-input>
-    <q-select outlined class="q-mb-md" label="Store in library" v-model="post.library" :options="[{ label: 'no', value: 'no' }, { label: 'yes', value: 'yes' }]"/>
+    <q-select outlined class="q-mb-md" label="Store in library" v-model="post.library" :options="[{ label: 'no', value: 'no' }, { label: 'yes', value: 'yes' }]"  map-options emit-value/>
     <q-editor v-model="post.body" :toolbar="[
       ['bold', 'italic', 'underline'],
       ['hr', 'link'],

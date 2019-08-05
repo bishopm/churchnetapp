@@ -36,7 +36,7 @@
       ],
       ]"/>
       <q-input outlined class="q-ma-md" type="textarea" rows="6" v-else v-model="message.textmessage" label="Message" />
-      <q-uploader v-if="this.message.messagetype === 'email'" ref="uploader" @add="$refs.uploader.upload()" label="Attachment" hide-upload-button hide-upload-progress :multiple=false @uploaded="addfile" v-model="message.attachment" url="" class="q-ma-md" clearable :upload-factory="uploadFile" send-raw :headers="{ 'content-type': 'application/x-www-form-urlencoded' }" :no-content-type="true"/>
+      <q-input class="q-ma-md" @input="addfile" outlined type="file"/>
       <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="send" @click="submit" />
     </div>
   </div>
@@ -50,7 +50,7 @@ export default {
     return {
       results: [],
       reader: '',
-      file: '',
+      file: null,
       societies: [],
       groupOptions: [],
       credits: 'checking...',
@@ -107,15 +107,15 @@ export default {
         }
       }
     },
-    uploadFile (file, updateProgress) {
-      return new Promise((resolve, reject) => {
-        resolve(file)
-      })
-    },
-    addfile (file, xhr) {
-      this.file = file
-      this.message.attachment.type = file.type
-      this.message.attachment.name = file.name
+    addfile (files, xhr) {
+      this.file = files[0]
+      this.message.attachment.type = this.file.type
+      this.message.attachment.name = this.file.name
+      var reader = new FileReader()
+      reader.addEventListener('load', function () {
+        this.message.attachment.data = reader.result
+      }.bind(this), false)
+      reader.readAsDataURL(this.file)
     },
     searchdb () {
       this.societies = []
@@ -161,15 +161,12 @@ export default {
       if (this.$v.message.$error) {
         this.$q.notify('Please check for errors!')
       } else {
-        var formData = new FormData()
-        if (this.file) {
-          formData.append('file', this.file)
-        }
         this.message.society_id = this.$store.state.select
-        formData.append('message', JSON.stringify(this.message))
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.defaults.headers.common['Content-Type'] = 'multipart/form-data'
-        this.$axios.post(process.env.API + '/messages', formData)
+        this.$axios.post(process.env.API + '/messages',
+          {
+            message: this.message
+          })
           .then(response => {
             this.results = response.data
             this.$q.notify('Messages sent')
