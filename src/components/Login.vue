@@ -22,6 +22,7 @@
         </form>
       </q-tab-panel>
       <q-tab-panel class="no-border" name="tab-2">
+        Your phone number has already been confirmed. Please now choose a password and confirm your email address to provide an extra layer of security. Once registered and authorised by your administrator, you will be able to edit confidential member details.
         <form autocomplete="off" @submit.prevent="login" method="post">
           <div class="q-pa-sm">
             <q-input label="Name" v-model="newname" required />
@@ -30,7 +31,7 @@
             <q-input label="Email" type="email" v-model="newemail" required />
           </div>
           <div class="q-pa-sm">
-            <q-input label="Cellphone" v-model="newphone" required />
+            <q-input label="Cellphone" v-model="newphone" required readonly />
           </div>
           <div class="q-pa-sm">
             <q-input label="Password" type="password" v-model="newpassword" required />
@@ -63,6 +64,18 @@ export default {
     if ((!localStorage.getItem('CHURCHNET_phonetoken')) && (!localStorage.getItem('CHURCHNET_verifiedphone'))) {
       this.verification()
     }
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+    this.$axios.post(process.env.API + '/checkphone',
+      {
+        phone: this.newphone
+      })
+      .then(response => {
+        this.newname = response.data.firstname + ' ' + response.data.surname
+        this.newemail = response.data.email
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   },
   methods: {
     login () {
