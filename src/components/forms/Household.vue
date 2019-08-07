@@ -14,7 +14,7 @@
       <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Addressee" v-model="household.addressee" :rules="[ val => val.length >= 1 ]"/>
       <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Residential Address" v-model="household.location.address"/>
       <q-input class="q-ma-md" outlined hide-bottom-space error-message="Phone numbers must be valid and numeric" label="Home phone" v-model="household.location.phone" :rules="[ val => val > 1000000 ]"/>
-      <q-select outlined class="q-ma-md" label="Household cellphone" v-model="household.householdcell" :options="housecellOptions"  map-options emit-value/>
+      <q-select outlined class="q-ma-md" label="Household cellphone" v-model="household.householdcell" :options="housecellOptions" map-options emit-value/>
       <div class="q-ma-md text-center">
         <q-btn color="primary" @click="submit">OK</q-btn>
         <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>

@@ -9,8 +9,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 5">
-      <q-select class="q-ml-md" multiple label="Give society access to this user" v-model="form.societies" :options="societyOptions"/>
-      <q-select class="q-mx-md" label="Level" v-model="form.societylevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give society access to this user" v-model="form.societies" :options="societyOptions" map-options emit-value/>
+      <q-select class="q-mx-md" label="Level" v-model="form.societylevel" :options="levelOptions" map-options emit-value/>
     </div>
     <h4><b>Circuits</b></h4>
     <div v-if="user.circuits">
@@ -19,8 +19,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 4">
-      <q-select class="q-ml-md" multiple label="Give circuit access to this user" v-model="form.circuits" :options="circuitOptions"/>
-      <q-select class="q-mx-md" label="Level" v-model="form.circuitlevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give circuit access to this user" v-model="form.circuits" :options="circuitOptions" map-options emit-value/>
+      <q-select class="q-mx-md" label="Level" v-model="form.circuitlevel" :options="levelOptions" map-options emit-value/>
     </div>
     <h4><b>Synods</b></h4>
     <div v-if="user.districts">
@@ -29,8 +29,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 3">
-      <q-select class="q-ml-md" multiple label="Give district access to this user" v-model="form.districts" :options="districtOptions"/>
-      <q-select class="q-mx-md" label="Level" v-model="form.districtlevel" :options="levelOptions"/>
+      <q-select class="q-ml-md" multiple label="Give district access to this user" v-model="form.districts" :options="districtOptions" map-options emit-value/>
+      <q-select class="q-mx-md" label="Level" v-model="form.districtlevel" :options="levelOptions" map-options emit-value/>
     </div>
   </div>
 </template>

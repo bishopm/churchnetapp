@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.4.2.3')
-var vnotes = JSON.stringify('Email attachments fixed')
+var version = JSON.stringify('0.4.2.4')
+var vnotes = JSON.stringify('User permissions bug fixed')
 
 module.exports = function (ctx) {
   return {
