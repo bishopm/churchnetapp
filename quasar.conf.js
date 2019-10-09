@@ -1,6 +1,6 @@
 // Configuration for your app
-var version = JSON.stringify('0.4.2.4')
-var vnotes = JSON.stringify('User permissions bug fixed')
+var version = JSON.stringify('0.4.2.5')
+var vnotes = JSON.stringify('Giving admin')
 
 module.exports = function (ctx) {
   return {
