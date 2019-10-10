@@ -31,6 +31,9 @@
               <div class="q-my-md">
                 <q-select label="Service type" v-model="form.plan.tag" :options="labelOptions" map-options emit-value/>
               </div>
+              <div class="q-my-md">
+                <q-select label="Trial service" filter v-model="form.plan.trial.id" :options="trialOptions" map-options emit-value/>
+              </div>
             </q-card-section>
             <q-card-actions align="right">
               <q-btn class="q-mt-md" color="primary" @click="savechanges()" label="Save" />
@@ -65,6 +68,7 @@ export default {
       modalopen: false,
       labelOptions: [],
       preacherOptions: [],
+      trialOptions: [],
       circuitOptions: [],
       planyear: parseInt(date.formatDate(Date.now(), 'YYYY')),
       planmonth: parseInt(date.formatDate(Date.now(), 'M')),
@@ -78,7 +82,11 @@ export default {
           service_id: '',
           society_id: '',
           tag: '',
-          id: 0
+          id: 0,
+          trial: {
+            name: '',
+            id: ''
+          }
         },
         rowndx: '',
         rowfld: '',
@@ -130,12 +138,17 @@ export default {
       } else {
         if (obj.tag) {
           if (obj.person.name) {
-            label = '<span><small><b>' + obj.tag + '</b><br>' + obj.person.name + '</small></span>'
+            label = '<span><small><b>' + obj.tag + '</b><br>' + obj.person.name + '</small>'
           } else {
-            label = '<span><small><b>' + obj.tag + '</b><br></small></span>'
+            label = '<span><small><b>' + obj.tag + '</b><br></small>'
           }
         } else {
-          label = '<span><small>' + obj.person.name + '</small></span>'
+          label = '<span><small>' + obj.person.name + '</small>'
+        }
+        if (obj.trial.id) {
+          label = label + '<br><small>(' + obj.trial.name + ')</small></span>'
+        } else {
+          label = label + '</span>'
         }
       }
       return label
@@ -147,11 +160,12 @@ export default {
         this.form.servicedate = label
         this.form.societyname = JSON.parse(row.society).society + ' ' + JSON.parse(row.society).servicetime
         if (item) {
-          console.log(item)
           this.form.plan = item
         } else {
           this.form.plan.person.name = ''
           this.form.plan.person.id = ''
+          this.form.plan.trial.name = ''
+          this.form.plan.trial.id = ''
           this.form.plan.tag = ''
           this.form.plan.id = 0
         }
@@ -176,7 +190,7 @@ export default {
           planday: parseInt(this.form.servicedate.split(' ')[0]),
           person_id: this.form.plan.person.id,
           servicetype: this.form.plan.tag,
-          trialservice: null,
+          trialservice: this.form.plan.trial.id,
           id: this.form.plan.id
         })
         .then(response => {
@@ -197,6 +211,13 @@ export default {
               this.rows[this.form.rowndx][this.form.rowfld] = this.form.plan
               this.rows[this.form.rowndx][this.form.rowfld].tag = this.form.plan.tag
               this.rows[this.form.rowndx][this.form.rowfld].id = this.form.plan.id
+            }
+            if (this.preacherOptions[lll].value === this.form.plan.trial.id) {
+              if (this.rows[this.form.rowndx][this.form.rowfld]) {
+                this.rows[this.form.rowndx][this.form.rowfld].trial.name = this.preacherOptions[lll].abbr
+              } else {
+                this.form.plan.trial.name = this.preacherOptions[lll].abbr
+              }
             }
           }
         })
@@ -221,6 +242,7 @@ export default {
                 newitem[vname] = {
                   person: response.data.plans[skey][pkey].person,
                   tag: response.data.plans[skey][pkey].tag,
+                  trial: response.data.plans[skey][pkey].trial,
                   id: response.data.plans[skey][pkey].id
                 }
               }
@@ -238,6 +260,7 @@ export default {
               this.headers.push(newh)
             }
             this.preacherOptions = [{ label: '', abbr: '', value: '' }]
+            this.trialOptions = [{ label: '', abbr: '', value: '' }]
             for (var ikey in response.data.preachers) {
               var newp = {
                 label: response.data.preachers[ikey].surname + ', ' + response.data.preachers[ikey].title + ' ' + (response.data.preachers[ikey].firstname).substring(0, 1),
@@ -245,6 +268,7 @@ export default {
                 value: response.data.preachers[ikey].person.id
               }
               this.preacherOptions.push(newp)
+              this.trialOptions.push(newp)
             }
             for (var gkey in response.data.guests) {
               var newg = {
