@@ -1,6 +1,6 @@
 <template>
   <div class="q-ma-md">
-    <h3 class="text-center">App settings <small>(v{{version}})</small></h3>
+    <h5 class="text-center">App settings <small>(v{{version}})</small></h5>
   </div>
 </template>
 

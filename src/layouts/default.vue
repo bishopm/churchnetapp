@@ -227,7 +227,7 @@ export default {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
       rightDrawerOpen: this.$q.platform.is.desktop,
-      version: process.env.VERSION
+      version: localStorage.getItem('CHURCHNET_Version')
     }
   },
   computed: {
@@ -258,23 +258,6 @@ export default {
   },
   mounted () {
     this.$store.commit('setAdminoptions', false)
-    if (localStorage.getItem('CHURCHNET_Version')) {
-      if (localStorage.getItem('CHURCHNET_Version') !== process.env.VERSION) {
-        this.$q.dialog({
-          title: 'New version available',
-          message: 'Click OK to restart the app and upgrade to version ' + process.env.VERSION + '. This new version includes: ' + process.env.VNOTES,
-          ok: 'OK',
-          cancel: 'LATER'
-        }).onOk(() => {
-          localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
-          window.location.reload()
-        }).catch(() => {
-          console.log('Delaying upgrade')
-        })
-      }
-    } else {
-      localStorage.setItem('CHURCHNET_Version', process.env.VERSION)
-    }
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$q.loading.show({
         message: 'Welcome! Logging you in...',
@@ -286,6 +269,24 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
+          if (localStorage.getItem('CHURCHNET_Version')) {
+            this.$q.loading.hide()
+            if (localStorage.getItem('CHURCHNET_Version') !== response.data.version) {
+              this.$q.dialog({
+                title: 'New version available',
+                message: 'Click OK to restart the app and upgrade to version ' + response.data.version + '. This new version includes: ' + response.data.updatenotes,
+                ok: 'OK',
+                cancel: 'LATER'
+              }).onOk(() => {
+                localStorage.setItem('CHURCHNET_Version', response.data.version)
+                window.location.reload()
+              }).catch(() => {
+                console.log('Delaying upgrade')
+              })
+            }
+          } else {
+            localStorage.setItem('CHURCHNET_Version', response.data.version)
+          }
           this.$store.commit('setUser', response.data)
           this.$store.commit('setLoaded', true)
           this.$q.loading.hide()

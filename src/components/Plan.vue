@@ -32,7 +32,7 @@
                 <q-select label="Service type" v-model="form.plan.tag" :options="labelOptions" map-options emit-value/>
               </div>
               <div class="q-my-md">
-                <q-select label="Trial service" filter v-model="form.plan.trial.id" :options="trialOptions" map-options emit-value/>
+                <q-select label="Trial service marker" filter v-model="form.plan.trial.id" :options="trialOptions" map-options emit-value/>
               </div>
             </q-card-section>
             <q-card-actions align="right">
@@ -268,7 +268,9 @@ export default {
                 value: response.data.preachers[ikey].person.id
               }
               this.preacherOptions.push(newp)
-              this.trialOptions.push(newp)
+              if (response.data.preachers[ikey].person.tags[0].name !== 'Local preacher on trial') {
+                this.trialOptions.push(newp)
+              }
             }
             for (var gkey in response.data.guests) {
               var newg = {
