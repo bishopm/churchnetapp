@@ -14,6 +14,9 @@
     <div class="q-ma-md">
       <q-select outlined label="Day of week" v-model="form.dayofweek" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
     </div>
+    <div class="q-ma-md">
+      <q-select outlined label="Reminder day" v-model="form.reminderday" :options="[{ label: 'Monday', value: 'Monday' }, { label: 'Tuesday', value: 'Tuesday' }, { label: 'Wednesday', value: 'Wednesday' }, { label: 'Thursday', value: 'Thursday' }, { label: 'Friday', value: 'Friday' }, { label: 'Saturday', value: 'Saturday' }, { label: 'Sunday', value: 'Sunday' }]"/>
+    </div>
     <div v-if="this.$route.params.action === 'edit'">
       <p class="caption text-center">Roster Groups <q-btn class="q-ml-md" @click="modalopen = true">Add</q-btn></p>
       <q-item v-for="(rostergroup, index) in form.rostergroups" :key="rostergroup.id" :class="{striped: index % 2 === 1}">
@@ -68,6 +71,7 @@ export default {
         title: '',
         message: '',
         dayofweek: 'Sunday',
+        reminderday: 'Thursday',
         rostergroups: [],
         maxpeople: 1,
         group_id: '',
@@ -133,6 +137,7 @@ export default {
             {
               name: this.form.title,
               dayofweek: this.form.dayofweek,
+              reminderday: this.form.reminderday,
               message: this.form.message,
               society_id: this.$store.state.select
             })
@@ -148,6 +153,7 @@ export default {
             {
               name: this.form.title,
               dayofweek: this.form.dayofweek,
+              reminderday: this.form.reminderday,
               message: this.form.message,
               society_id: this.$store.state.select
             })
