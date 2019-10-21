@@ -177,18 +177,13 @@ export default {
             individuals: this.form.individuals
           })
           .then(response => {
-            var indarray = response.data.individuals.split(',').map(function (item) {
-              return parseInt(item, 10)
-            })
             this.rows[this.form.rowndx][this.form.colndx].people = []
-            for (var lll in this.indivOptions) {
-              if (indarray.indexOf(this.indivOptions[lll].value) !== -1) {
-                var newitem = {
-                  label: this.indivOptions[lll].display,
-                  id: this.indivOptions[lll].value
-                }
-                this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
+            for (var iii in response.data.individuals) {
+              var newitem = {
+                label: response.data.individuals[iii].firstname.substring(0, 1) + ' ' + response.data.individuals[iii].surname,
+                id: response.data.individuals[iii].id
               }
+              this.rows[this.form.rowndx][this.form.colndx].people.push(newitem)
             }
           })
           .catch(function (error) {
