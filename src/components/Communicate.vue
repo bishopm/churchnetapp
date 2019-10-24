@@ -20,7 +20,7 @@
       <q-select outlined @input="getcredits" class="q-ma-md" v-model="message.messagetype" label="Type" radio :options="categoryOptions" map-options emit-value/>
       <div class="q-ma-md" v-if="this.message.messagetype === 'sms'"><small>Credit balance: {{credits}}</small></div>
       <q-input outlined v-if="this.message.messagetype === 'email'" readonly class="q-ma-md" label="Reply to" v-model="message.sender" />
-      <q-input class="q-ma-md" label="Title" outlined hide-bottom-space error-message="The title field is required" v-model="message.title" :rules="[ val => val.length >= 1 ]"/>
+      <q-input v-if="this.message.messagetype === 'email'" class="q-ma-md" label="Title" outlined hide-bottom-space error-message="The title field is required" v-model="message.title" :rules="[ val => val.length >= 1 ]"/>
       <q-select class="q-ma-md" outlined filter filter-placeholder="Search" use-chips multiple v-model="message.groups" label="Group" :options="groupOptions" map-options emit-value/>
       <q-editor v-if="this.message.messagetype === 'email'" class="q-ma-md" v-model="message.body" :toolbar="[
         ['bold', 'italic', 'underline'],
@@ -36,7 +36,7 @@
       ],
       ]"/>
       <q-input outlined class="q-ma-md" type="textarea" rows="6" v-else v-model="message.textmessage" label="Message" />
-      <q-input class="q-ma-md" @input="addfile" outlined type="file"/>
+      <q-input v-if="this.message.messagetype === 'email'" class="q-ma-md" @input="addfile" outlined type="file"/>
       <q-btn class="q-ml-md" slot="custom_btn2" dense color="primary" icon="fas fa-check" label="send" @click="submit" />
     </div>
   </div>
