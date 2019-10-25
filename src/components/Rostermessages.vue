@@ -5,10 +5,10 @@
       <q-item v-for="result in results" :key="result">
         <q-item-section>
           <small>
-            [{{result.to}}] {{result.body}}
+            {{result.to}}
           </small>
         </q-item-section>
-        <q-item-section class="text-right"><small>{{result.result}}</small></q-item-section>
+        <q-item-section class="text-right"><small>{{result.body}}</small></q-item-section>
       </q-item>
     </q-list>
     <q-list v-else-if="messages.length">
