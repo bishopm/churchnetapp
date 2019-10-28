@@ -17,7 +17,7 @@
     "firebaseui": "^3.6.0",
     "jspdf": "^1.5.3",
     "leaflet": "^1.4.0",
-    "quasar": "^1.2.5",
+    "quasar": "^1.2.7",
     "vue-avatar-cropper": "^1.0.5",
     "vue-save-state": "^1.2.0",
     "vue2-frappe": "^1.0.28",

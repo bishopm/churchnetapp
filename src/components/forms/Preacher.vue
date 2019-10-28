@@ -5,14 +5,14 @@
     </div>
     <div v-if="$route.params.action === 'add'">
       <circuitselect v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></circuitselect>
-      <div class="card q-ma-xs bg-lightgrey">
+      <div class="card q-ma-md bg-lightgrey">
         <q-input v-if="$route.params.action === 'add'" outlined ref="search" @input="searchdb" v-model="search" debounce="500" placeholder="find the preacher or minister's name">
           <template v-slot:append>
             <q-icon name="fa fa-search" />
           </template>
         </q-input>
         <div class="q-ma-md" v-if="individualOptions.length">
-          <q-select label="Choose an existing person" v-model="form.individual_id" :options="individualOptions"/>
+          <q-select label="Choose an existing person" v-model="form.individual_id" :options="individualOptions" map-options emit-value/>
         </div>
         <div class="text-center" v-if="search.length > 2">
           <q-btn color="black" @click="modalopen=true" label="Or add a new person"></q-btn>
@@ -39,26 +39,20 @@
       <q-btn class="q-ml-md" color="secondary" @click="$router.back()">Cancel</q-btn>
       <q-btn v-if="$route.params.action === 'edit'" class="q-ml-md" color="black" @click="deletePerson">Delete</q-btn>
     </div>
-    <q-dialog minimized v-model="modalopen" content-css="padding: 50px">
-      <div class="caption text-center">Add a new individual</div>
-      <q-field v-if="modalopen" :error="$v.person.firstname.$error" error-label="This field is required">
-        <q-input label="First name" v-model="person.firstname" @blur="$v.person.firstname.$touch()" :error="$v.person.firstname.$error"/>
-      </q-field>
-      <q-field v-if="modalopen" :error="$v.person.surname.$error" error-label="This field is required">
-        <q-input label="Surname" v-model="person.surname" @blur="$v.person.surname.$touch()" :error="$v.person.surname.$error"/>
-      </q-field>
-      <q-field v-if="modalopen" :error="$v.person.cellphone.$error" error-label="The cellphone number must be numeric">
-        <q-input label="Cellphone" v-model="person.cellphone" @blur="$v.person.cellphone.$touch()" :error="$v.person.cellphone.$error"/>
-      </q-field>
-      <q-select label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]"/>
-      <q-select label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]"/>
-      <q-field v-if="modalopen" :error="$v.person.society_id.$error" error-label="This field is required">
-        <q-select label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error"/>
-      </q-field>
-      <div class="text-center">
-        <q-btn class="q-mt-md" color="primary" @click="addperson()" label="Save" />
-        <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
-      </div>
+    <q-dialog minimized full-width v-model="modalopen">
+      <q-card class="q-pa-lg">
+        <div class="caption text-center">Add a new individual</div>
+        <q-input class="q-my-sm" outlined hide-bottom-space error-message="First name is required" label="First name" v-model="person.firstname" :rules="[ val => val.length >= 1 ]"/>
+        <q-input class="q-my-sm" outlined hide-bottom-space error-message="Surname is required" label="Surname" v-model="person.firstname" :rules="[ val => val.length >= 1 ]"/>
+        <q-input class="q-my-sm" outlined hide-bottom-space error-message="Cellphone must be numeric" label="Cellphone" v-model="person.cellphone" :rules="[ val => val > 1000000 ]"/>
+        <q-select class="q-my-sm" outlined label="Sex" v-model="person.sex" :options="[{ label: 'female', value: 'female' }, { label: 'male', value: 'male' }]" map-options emit-value/>
+        <q-select class="q-my-sm" outlined label="Title" v-model="person.title" :options="[{ label: 'Dr', value: 'Dr' }, { label: 'Mr', value: 'Mr' }, { label: 'Mrs', value: 'Mrs' }, { label: 'Ms', value: 'Ms' }, { label: 'Prof', value: 'Prof' }, { label: 'Rev', value: 'Rev' }]" map-options emit-value/>
+        <q-select class="q-my-sm" outlined label="Society" v-model="person.society_id" :options="societyOptions" @blur="$v.person.society_id.$touch()" :error="$v.person.society_id.$error" map-options emit-value/>
+        <div class="text-center">
+          <q-btn class="q-mt-md" color="primary" @click="addperson()" label="Save" />
+          <q-btn class="q-mt-md q-ml-md" color="black" @click="modalopen = false" label="Cancel" />
+        </div>
+      </q-card>
     </q-dialog>
   </div>
 </template>
