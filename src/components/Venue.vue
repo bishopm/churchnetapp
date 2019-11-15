@@ -32,7 +32,7 @@ export default {
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/venuebookings/' + this.$store.state.select)
+      this.$axios.get(process.env.API + '/venuebookings/' + this.$route.params.id)
         .then(response => {
           this.bookings = response.data.bookings
           this.venue = response.data.venue

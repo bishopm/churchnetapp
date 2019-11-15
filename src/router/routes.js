@@ -51,6 +51,7 @@ const routes = [
       { name: 'userform', path: '/user/:action/:id?', component: () => import('components/forms/User'), meta: { auth: true } },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: { auth: true } },
       { name: 'venue', path: '/venues/:id', component: () => import('components/Venue'), meta: { auth: true } },
+      { name: 'venueform', path: '/venues/:action/:id?', component: () => import('components/forms/Venue'), meta: { auth: true } },
       { name: 'venues', path: '/venues', component: () => import('components/Venues'), meta: { auth: true } }
     ]
   }

@@ -13,7 +13,7 @@
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn size="sm" round color="primary" @click="addGroup" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addVenue" class="fixed" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
@@ -31,7 +31,7 @@ export default {
     'societyselect': societyselect
   },
   methods: {
-    addGroup () {
+    addVenue () {
       this.$router.push({ name: 'venueform', params: { action: 'add' } })
     },
     showme () {
