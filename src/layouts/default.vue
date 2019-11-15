@@ -76,6 +76,15 @@
               <q-item-label caption>view giving records</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item to="/feeds">
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-book-open" />
+          </q-item-section>
+          <q-item-section side>
+              <q-item-label overline>Published content</q-item-label>
+              <q-item-label caption>current & historic feed content</q-item-label>
+            </q-item-section>
+          </q-item>
           <q-item to="/rosters">
             <q-item-section avatar>
               <q-icon color="primary" name="fas fa-fw fa-calendar-alt" />
@@ -94,13 +103,13 @@
               <q-item-label caption>view worship service statistics</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item to="/feeds">
+          <q-item to="/venues">
           <q-item-section avatar>
-            <q-icon color="primary" name="fas fa-fw fa-book-open" />
+            <q-icon color="primary" name="fas fa-fw fa-search-location" />
           </q-item-section>
           <q-item-section side>
-              <q-item-label overline>Published content</q-item-label>
-              <q-item-label caption>current & historic feed content</q-item-label>
+              <q-item-label overline>Venues</q-item-label>
+              <q-item-label caption>venue bookings</q-item-label>
             </q-item-section>
           </q-item>
         </div>

@@ -49,7 +49,9 @@ const routes = [
       { name: 'settings', path: '/settings', component: () => import('components/Settings'), meta: { auth: true } },
       { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: { auth: true } },
       { name: 'userform', path: '/user/:action/:id?', component: () => import('components/forms/User'), meta: { auth: true } },
-      { name: 'users', path: '/users', component: () => import('components/Users'), meta: { auth: true } }
+      { name: 'users', path: '/users', component: () => import('components/Users'), meta: { auth: true } },
+      { name: 'venue', path: '/venues/:id', component: () => import('components/Venue'), meta: { auth: true } },
+      { name: 'venues', path: '/venues', component: () => import('components/Venues'), meta: { auth: true } }
     ]
   }
 ]
