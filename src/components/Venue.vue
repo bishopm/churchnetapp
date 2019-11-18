@@ -4,6 +4,8 @@
       <p class="q-mt-md caption text-center">
         Venue
       </p>
+      <q-calendar ref="calendar" view="scheduler">
+      </q-calendar>
       <q-item class="q-mx-sm" v-for="booking in bookings" :key="booking.id" :to="'/booking/' + $route.params.scope + '/edit/' + entity.id + '/' + booking.id">
         {{booking}}
       </q-item>
