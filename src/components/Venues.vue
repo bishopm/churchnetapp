@@ -12,7 +12,7 @@
             <q-btn stretch flat label="<" @click="calendarPrev" />
           </div>
           <div class="col">
-            <q-select v-model="calendarview" :options="displayOptions" map-options emit-value/>
+            <q-select v-model="calendarView" :options="displayOptions" map-options emit-value/>
           </div>
           <div class="col">
             <q-btn stretch flat label=">" @click="calendarNext" />
@@ -20,78 +20,37 @@
           <q-space />
         </div>
         <q-separator />
-        <q-calendar :no-default-header-btn="nohead" ref="bcal" :view="calendarview" :resources="venues" v-model="selectedDate" @click:time="addBooking" interval-start="7" interval-count="14">
+        <q-calendar ref="calendar" class="calendar" v-model="selectedDate" :view="calendarView" :interval-start="7" :interval-count="14" :resources="venues" @click:interval="addBooking" @click:time="addBooking" @click:day="addBooking" @click:week="addBooking">
           <template #day="{ date }">
             <template v-for="(event, index) in getEvents(date)">
-              <q-badge
-                :key="index"
-                style="width: 100%; cursor: pointer; height: 14px; max-height: 14px"
-                class="ellipsis"
-                :class="badgeClasses(event, 'day')"
-                :style="badgeStyles(event, 'day')"
-                @click.stop.prevent="showEvent(event)"
-                :draggable="true"
-                @dragstart.native="(e) => onDragStart(e, event)"
-                @dragend.native="(e) => onDragEnd(e, event)"
-                @dragenter.native="(e) => onDragEnter(e, event)"
-                @touchmove.native="(e) => {}"
-              >
-                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
+              <q-badge :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :class="badgeClasses(event, 'day')" :style="badgeStyles(event, 'day')" @click.stop.prevent="showEvent(event)">
+                <span class="ellipsis">{{ event.title }}</span>
               </q-badge>
             </template>
           </template>
           <template #day-header="{ date }">
             <div class="row justify-center">
               <template v-for="(event, index) in eventsMap[date]">
-                <q-badge
-                  v-if="!event.time"
-                  :key="index"
-                  style="width: 100%; cursor: pointer; height: 14px; max-height: 14px"
-                  class="ellipsis"
-                  :class="badgeClasses(event, 'header')"
-                  :style="badgeStyles(event, 'header')"
-                  @click.stop.prevent="showEvent(event)"
-                  :draggable="true"
-                  @dragstart.native="(e) => onDragStart(e, event)"
-                  @dragend.native="(e) => onDragEnd(e, event)"
-                  @dragenter.native="(e) => onDragEnter(e, event)"
-                  @touchmove.native="(e) => {}"
-                >
-                  <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
+                <q-badge v-if="!event.time" :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')" @click.stop.prevent="showEvent(event)">
+                  <span class="ellipsis">{{ event.title }}</span>
                 </q-badge>
-                <q-badge
-                  v-else
-                  :key="index"
-                  class="q-ma-xs self-end"
-                  :class="badgeClasses(event, 'header')"
-                  :style="badgeStyles(event, 'header')"
-                  style="width: 10px; max-width: 10px; height: 10px; max-height: 10px"
-                />
+                <q-badge v-else :key="index" class="q-ma-xs self-end" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')" style="width: 10px; max-width: 10px; height: 10px; max-height: 10px">{{event.title}}</q-badge>
               </template>
             </div>
           </template>
           <template #day-body="{ date, timeStartPos, timeDurationHeight }">
             <template v-for="(event, index) in getEvents(date)">
-              <q-badge
-                v-if="event.time"
-                :key="index"
-                class="my-event justify-center ellipsis"
-                :class="badgeClasses(event, 'body')"
-                :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)"
-                @click.stop.prevent="showEvent(event)"
-                :draggable="true"
-                @dragstart.native="(e) => onDragStart(e, event)"
-                @dragend.native="(e) => onDragEnd(e, event)"
-                @dragenter.native="(e) => onDragEnter(e, event)"
-                @touchmove.native="(e) => {}"
-              >
-                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
+              <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
+                <span class="ellipsis">{{ event.title }}</span>
+              </q-badge>
+              <q-badge v-else :key="index" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
+                sdfaskjfhaskjfhkasjfh
               </q-badge>
             </template>
           </template>
           <template #intervals-header="days">
             <div class="fit flex justify-center items-end">
-              <span class="q-calendar-daily__interval-text">{{days}}</span>
+              <span class="q-calendar-daily__interval-text">aa{{days}}</span>
             </div>
           </template>
         </q-calendar>
@@ -149,13 +108,12 @@ export default {
       events: [{
         title: 'Meeting',
         details: 'Time to pitch my idea to the company',
-        date: '2019-11-18',
-        time: '10:00',
+        date: '2019-11-20',
+        time: '09:00',
         duration: 120,
-        bgcolor: 'red',
-        icon: 'fas fa-handshake'
+        bgcolor: 'red'
       }],
-      calendarview: 'scheduler',
+      calendarView: 'scheduler',
       displayOptions: [
         { label: 'Day view', value: 'day' },
         { label: 'Week view', value: 'week' },
@@ -181,10 +139,10 @@ export default {
       this.modalopen = true
     },
     calendarNext () {
-      this.$refs.bcal.next()
+      this.$refs.calendar.next()
     },
     calendarPrev () {
-      this.$refs.bcal.prev()
+      this.$refs.calendar.prev()
     },
     addVenue () {
       this.$router.push({ name: 'venueform', params: { action: 'add' } })
