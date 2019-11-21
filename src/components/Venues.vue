@@ -24,7 +24,7 @@
           <template #day="{ date }">
             <template v-for="(event, index) in getEvents(date)">
               <q-badge :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :class="badgeClasses(event, 'day')" :style="badgeStyles(event, 'day')" @click.stop.prevent="showEvent(event)">
-                <span class="ellipsis">{{ event.title }}</span>
+                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
               </q-badge>
             </template>
           </template>
@@ -32,25 +32,24 @@
             <div class="row justify-center">
               <template v-for="(event, index) in eventsMap[date]">
                 <q-badge v-if="!event.time" :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')" @click.stop.prevent="showEvent(event)">
-                  <span class="ellipsis">{{ event.title }}</span>
+                  <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
                 </q-badge>
-                <q-badge v-else :key="index" class="q-ma-xs self-end" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')" style="width: 10px; max-width: 10px; height: 10px; max-height: 10px">{{event.title}}</q-badge>
+                <q-badge v-else :key="index" class="q-ma-xs self-end" :class="badgeClasses(event, 'header')" :style="badgeStyles(event, 'header')" style="width: 10px; max-width: 10px; height: 10px; max-height: 10px"/>
               </template>
             </div>
           </template>
           <template #day-body="{ date, timeStartPos, timeDurationHeight }">
             <template v-for="(event, index) in getEvents(date)">
               <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
-                <span class="ellipsis">{{ event.title }}</span>
-              </q-badge>
-              <q-badge v-else :key="index" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
-                sdfaskjfhaskjfhkasjfh
+                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
               </q-badge>
             </template>
           </template>
-          <template #intervals-header="days">
-            <div class="fit flex justify-center items-end">
-              <span class="q-calendar-daily__interval-text">aa{{days}}</span>
+          <template #scheduler-resource-day="{ date, resource }">
+            <div class="row justify-center">
+              <template v-for="(event, index) in resourcesMap[resource][date]">
+                {{index}} {{event}}
+              </template>
             </div>
           </template>
         </q-calendar>
@@ -97,7 +96,7 @@
 
 <script>
 import societyselect from './Societyselect'
-import { date } from 'quasar'
+import { date, colors } from 'quasar'
 export default {
   data () {
     return {
@@ -108,12 +107,20 @@ export default {
       events: [{
         title: 'Meeting',
         details: 'Time to pitch my idea to the company',
-        date: '2019-11-20',
+        date: '2019-11-21',
         time: '09:00',
+        duration: 120,
+        bgcolor: 'blue'
+      },
+      {
+        title: 'Another meeting',
+        details: 'Time to pitch my idea to the company',
+        date: '2019-11-21',
+        time: '09:30',
         duration: 120,
         bgcolor: 'red'
       }],
-      calendarView: 'scheduler',
+      calendarView: 'day',
       displayOptions: [
         { label: 'Day view', value: 'day' },
         { label: 'Week view', value: 'week' },
@@ -148,6 +155,11 @@ export default {
       this.$router.push({ name: 'venueform', params: { action: 'add' } })
     },
     eventsMap () {
+      const map = {}
+      this.events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
+      return map
+    },
+    resourcesMap () {
       const map = {}
       this.events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
       return map
@@ -191,8 +203,11 @@ export default {
       }
       return events
     },
+    isCssColor (color) {
+      return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/)
+    },
     badgeClasses (event, type) {
-      const cssColor = '#444444'
+      const cssColor = this.isCssColor(event.bgcolor)
       const isHeader = type === 'header'
       return {
         [`text-white bg-${event.bgcolor}`]: !cssColor,
@@ -203,8 +218,10 @@ export default {
     },
     badgeStyles (event, type, timeStartPos, timeDurationHeight) {
       let s = {}
-      s['background-color'] = event.bgcolor
-      s['color'] = '#ffffff'
+      if (this.isCssColor(event.bgcolor)) {
+        s['background-color'] = event.bgcolor
+        s['color'] = colors.luminosity(event.bgcolor) > 0.5 ? 'black' : 'white'
+      }
       if (timeStartPos) {
         s['top'] = timeStartPos(event.time) + 'px'
       }
@@ -248,5 +265,30 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style lang="stylus">
+  // calendar overrides
+  .q-calendar-daily__day-interval:hover
+    background-color rgba(0,0,255,.1)
+  .q-calendar-weekly__workweek:hover
+    background-color rgba(0,0,255,.1)
+  .q-calendar-weekly__day:hover
+    background-color rgba(0,0,255,.1)
+  .q-calendar-weekly__head-weekday:hover
+    background-color rgba(0,0,255,.1)
+  // this page
+  .calendar-container
+    position relative
+  .my-event
+    width 100%
+    position absolute
+    font-size 12px
+  .full-width
+    left 0
+    width 100%
+  .left-side
+    left 0
+    width 49.75%
+  .right-side
+    left 50.25%
+    width 49.75%
+  </style>
