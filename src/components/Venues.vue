@@ -39,15 +39,17 @@
             </div>
           </template>
           <template #day-body="{ date, timeStartPos, timeDurationHeight }">
-            <template v-for="(event, index) in getEvents(date)">
-              <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
-                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
-              </q-badge>
-            </template>
+            <div style="display:flex; flex-direction: row;">
+              <template v-for="(event, index) in getEvents(date)">
+                <q-badge v-if="event.time" :key="index" style="flex-shrink: 1;" class="my-event justify-center ellipsis" :class="badgeClasses(event, 'body')" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
+                  <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.title }}</span>
+                </q-badge>
+              </template>
+            </div>
           </template>
           <template #scheduler-resource-day="{ day, index, resource }">
             <template v-for="(event, index) in getResourcesEvents(day, resource)">
-              <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" @click.stop.prevent="showEvent(event)">
+              <q-badge v-if="event.time" :key="index" class="my-resource justify-center ellipsis" :class="badgeClasses(event, 'resource')" @click.stop.prevent="showEvent(event)">
                 {{event.title}}
               </q-badge>
             </template>
@@ -111,7 +113,7 @@ export default {
         time: '09:00',
         duration: 120,
         bgcolor: 'blue',
-        resource: 'Church'
+        resource: 'Hall'
       },
       {
         title: 'Another meeting',
@@ -121,6 +123,15 @@ export default {
         duration: 120,
         bgcolor: 'red',
         resource: 'Hall'
+      },
+      {
+        title: 'Last meeting',
+        details: 'Time to pitch my idea to the company',
+        date: '2019-11-22',
+        time: '09:45',
+        duration: 120,
+        bgcolor: 'orange',
+        resource: 'Church'
       }],
       calendarView: 'day',
       displayOptions: [
@@ -181,12 +192,14 @@ export default {
               // check for overlapping times
               let startTime = new Date(this.events[i].date + ' ' + this.events[i].time).getTime()
               let endTime = date.addToDate(startTime, { minutes: this.events[i].duration }).getTime()
+              let ndx = 1
               for (let j = 0; j < events.length; ++j) {
                 let startTime2 = new Date(events[j].date + ' ' + events[j].time).getTime()
                 let endTime2 = date.addToDate(startTime2, { minutes: events[j].duration }).getTime()
                 if ((startTime >= startTime2 && startTime < endTime2) || (startTime2 >= startTime && startTime2 < endTime)) {
-                  events[j].side = 'left'
-                  this.events[i].side = 'right'
+                  events[j].side = 'col' + ndx
+                  ndx = ndx + 1
+                  this.events[i].side = 'col' + ndx
                   events.push(this.events[i])
                   added = true
                   break
@@ -216,11 +229,21 @@ export default {
     badgeClasses (event, type) {
       const cssColor = this.isCssColor(event.bgcolor)
       const isHeader = type === 'header'
-      return {
-        [`text-white bg-${event.bgcolor}`]: !cssColor,
-        'full-width': !isHeader && (!event.side || event.side === 'full'),
-        'left-side': !isHeader && event.side === 'left',
-        'right-side': !isHeader && event.side === 'right'
+      const isResource = type === 'resource'
+      if (isResource) {
+        return {
+          [`text-white bg-${event.bgcolor}`]: !cssColor
+        }
+      } else {
+        return {
+          [`text-white bg-${event.bgcolor}`]: !cssColor,
+          'full-width': !isHeader && (!event.side || event.side === 'full'),
+          'col1': !isHeader && event.side === 'col1',
+          'col2': !isHeader && event.side === 'col2',
+          'col3': !isHeader && event.side === 'col3',
+          'col4': !isHeader && event.side === 'col4',
+          'col5': !isHeader && event.side === 'col5'
+        }
       }
     },
     badgeStyles (event, type, timeStartPos, timeDurationHeight) {
@@ -289,13 +312,26 @@ export default {
     width 100%
     position absolute
     font-size 12px
+  .my-resource
+    width 100%
+    position relative
+    font-size 10px
   .full-width
     left 0
     width 100%
-  .left-side
+  .col1
     left 0
-    width 49.75%
-  .right-side
-    left 50.25%
-    width 49.75%
+    width 20%
+  .col2
+    left 20%
+    width 20%
+  .col3
+    left 40%
+    width 20%
+  .col4
+    left 60%
+    width 20%
+  .col5
+    left 80%
+    width 20%
   </style>
