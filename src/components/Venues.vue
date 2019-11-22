@@ -45,12 +45,12 @@
               </q-badge>
             </template>
           </template>
-          <template #scheduler-resource-day="{ date, resource }">
-            <div class="row justify-center">
-              <template v-for="(event, index) in resourcesMap[resource][date]">
-                {{index}} {{event}}
-              </template>
-            </div>
+          <template #scheduler-resource-day="{ day, index, resource }">
+            <template v-for="(event, index) in getResourcesEvents(day, resource)">
+              <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" @click.stop.prevent="showEvent(event)">
+                {{event.title}}
+              </q-badge>
+            </template>
           </template>
         </q-calendar>
       </q-tab-panel>
@@ -107,18 +107,20 @@ export default {
       events: [{
         title: 'Meeting',
         details: 'Time to pitch my idea to the company',
-        date: '2019-11-21',
+        date: '2019-11-22',
         time: '09:00',
         duration: 120,
-        bgcolor: 'blue'
+        bgcolor: 'blue',
+        resource: 'Church'
       },
       {
         title: 'Another meeting',
         details: 'Time to pitch my idea to the company',
-        date: '2019-11-21',
+        date: '2019-11-22',
         time: '09:30',
         duration: 120,
-        bgcolor: 'red'
+        bgcolor: 'red',
+        resource: 'Hall'
       }],
       calendarView: 'day',
       displayOptions: [
@@ -159,10 +161,15 @@ export default {
       this.events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
       return map
     },
-    resourcesMap () {
-      const map = {}
-      this.events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
-      return map
+    getResourcesEvents (date, resource) {
+      console.log(date.date)
+      let events = []
+      for (var endx in this.events) {
+        if ((this.events[endx].resource === resource.label) && (this.events[endx].date === date.date)) {
+          events.push(this.events[endx])
+        }
+      }
+      return events
     },
     getEvents (dt) {
       let events = []
