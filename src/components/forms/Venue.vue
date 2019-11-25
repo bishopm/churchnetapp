@@ -3,9 +3,19 @@
     <div v-if="$route.params.action" class="q-mx-md q-mt-md text-center caption">
       {{title}} venue
     </div>
-    <societyselect @altered="setsocieties" v-if="$route.params.action === 'add'" class="q-ma-md" :perms="['editor','admin']" showme="1"></societyselect>
     <div class="q-ma-md">
       <q-input outlined label="Venue name" v-model="venue" />
+    </div>
+    <div class="q-ma-md">
+      <q-input outlined label="Venue colour" v-model="colour" class="my-input">
+        <template v-slot:append>
+          <q-icon name="fa fa-palette" class="cursor-pointer">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-color v-model="colour" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </div>
     <div class="q-ma-lg text-center">
       <q-btn @click="submit()" color="primary">OK</q-btn>
@@ -15,24 +25,24 @@
 </template>
 
 <script>
-import societyselect from './../Societyselect'
 export default {
   data () {
     return {
       title: this.$route.params.action.charAt(0).toUpperCase() + this.$route.params.action.slice(1),
       id: '',
-      venue: ''
+      venue: '',
+      colour: ''
     }
-  },
-  components: {
-    'societyselect': societyselect
   },
   mounted () {
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.get(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service)
+      this.$axios.get(process.env.API + '/venues/' + this.$route.params.id + '/edit')
         .then((response) => {
-          console.log(response.data)
+          this.venue = response.data.venue
+          this.colour = response.data.colour
+          this.id = this.$route.params.id
+          this.society_id = response.data.society_id
         })
         .catch(function (error) {
           console.log(error)
@@ -40,39 +50,6 @@ export default {
     }
   },
   methods: {
-    setsocieties () {
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-      this.$axios.post(process.env.API + '/societies/search',
-        {
-          search: '',
-          circuits: this.$store.state.user.circuits.keys
-        })
-        .then(response => {
-          for (var skey in response.data) {
-            if (response.data[skey].location) {
-              var slat = response.data[skey].location.latitude
-              var slng = response.data[skey].location.longitude
-            } else {
-              slat = -29.8579
-              slng = 31.0292
-            }
-            var newitem = {
-              label: response.data[skey].society,
-              value: {
-                id: response.data[skey].id,
-                lat: slat,
-                lng: slng
-              }
-            }
-            this.csocietyOptions.push(newitem)
-          }
-          this.$q.loading.hide()
-        })
-        .catch(function (error) {
-          console.log(error)
-          this.$q.loading.hide()
-        })
-    },
     submit () {
       if (this.$route.params.action === 'add') {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
@@ -88,13 +65,13 @@ export default {
             this.error = error
           })
       } else {
-        this.$axios.post(process.env.API + '/circuits/' + this.society.circuit_id + '/services/' + this.$route.params.service,
+        this.$axios.post(process.env.API + '/venues/' + this.id,
           {
-            society_id: this.society.id,
-            language: this.form.language
+            society_id: this.society_id,
+            venue: this.venue,
+            colour: this.colour
           })
           .then(response => {
-            console.log(response.data)
             this.$router.go(-1)
           })
           .catch(function (error) {
@@ -115,5 +92,8 @@ export default {
     text-align:center;
     height: 300px;
     width: 100%;
+  }
+  .my-input {
+    max-width: 250px
   }
 </style>
