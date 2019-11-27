@@ -56,7 +56,8 @@ export default {
         this.$axios.post(process.env.API + '/venues',
           {
             society_id: this.$store.state.select,
-            venue: this.venue
+            venue: this.venue,
+            colour: this.colour
           })
           .then(response => {
             this.$router.go(-1)
