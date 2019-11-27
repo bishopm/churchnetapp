@@ -17,7 +17,9 @@
           <template #day="{ date }">
             <template v-for="(event, index) in getEvents(date)">
               <q-badge :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :style="badgeStyles(event, 'day')" @click.stop.prevent="showEvent(event)">
-                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.description }}</span>
+                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">
+                  {{ event.description }} ({{event.name}})
+                </span>
               </q-badge>
             </template>
           </template>
@@ -25,7 +27,7 @@
             <div class="row justify-center">
               <template v-for="(event, index) in eventsMap[date]">
                 <q-badge v-if="!event.time" :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :style="badgeStyles(event, 'header')" @click.stop.prevent="showEvent(event)">
-                  <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.description }}</span>
+                  <span class="ellipsis">{{ event.description }} ({{event.name}})</span>
                 </q-badge>
                 <q-badge v-else :key="index" class="q-ma-xs self-end" :style="badgeStyles(event, 'header')" style="width: 10px; max-width: 10px; height: 10px; max-height: 10px"/>
               </template>
@@ -34,14 +36,14 @@
           <template #day-body="{ date, timeStartPos, timeDurationHeight }">
             <template v-for="(event, index) in getEvents(date)">
               <q-badge v-if="event.time" :key="index" class="my-event justify-center ellipsis" :style="badgeStyles(event, 'body', timeStartPos, timeDurationHeight)" @click.stop.prevent="showEvent(event)">
-                <q-icon v-if="event.icon" :name="event.icon" class="q-mr-xs"></q-icon><span class="ellipsis">{{ event.description }}</span>
+                <span class="ellipsis">{{ event.description }}<br>({{event.name}})</span>
               </q-badge>
             </template>
           </template>
           <template #scheduler-resource-day="{ day, index, resource }">
             <template v-for="(event, index) in getResourcesEvents(day, resource)">
               <q-badge v-if="event.time" :key="index" :style="'background-color:' + event.colour" class="my-resource justify-center ellipsis" @click.stop.prevent="showEvent(event)">
-                {{event.description}}
+                {{event.description}}<br>({{event.name}})
               </q-badge>
             </template>
           </template>
@@ -137,7 +139,7 @@ export default {
       nohead: false,
       search: '',
       events: [],
-      calendarView: 'day',
+      calendarView: 'scheduler',
       userOptions: [],
       displayOptions: [
         { label: 'Day view', value: 'day' },
@@ -156,7 +158,7 @@ export default {
         recurring: 0,
         id: null,
         venueuser: '',
-        status: 'requested'
+        status: 'confirmed'
       },
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
@@ -279,6 +281,8 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/venues/' + this.$store.state.select)
         .then(response => {
+          this.venueOptions = []
+          this.venues = []
           for (var vv in response.data.venues) {
             var newitem = {
               label: response.data.venues[vv].venue,
