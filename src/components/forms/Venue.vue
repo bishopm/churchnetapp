@@ -7,9 +7,9 @@
       <q-input outlined label="Venue name" v-model="venue" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined label="Venue colour" v-model="colour" class="my-input">
+      <q-input outlined label="Venue colour" v-model="colour">
         <template v-slot:append>
-          <q-icon name="fa fa-palette" class="cursor-pointer">
+          <q-icon name="fa fa-palette" class="cursor-pointer" :style="'color:' + colour">
             <q-popup-proxy transition-show="scale" transition-hide="scale">
               <q-color v-model="colour" />
             </q-popup-proxy>

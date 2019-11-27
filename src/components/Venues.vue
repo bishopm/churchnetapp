@@ -7,20 +7,13 @@
     </q-tabs>
     <q-tab-panels v-model="selectedTab">
       <q-tab-panel name="tab-1">
-        <div class="flex text-center">
-          <div class="col">
-            <q-btn color="primary" label="<" @click="calendarPrev" />
-          </div>
-          <div class="col">
-            <q-select v-model="calendarView" :options="displayOptions" map-options emit-value/>
-          </div>
-          <div class="col">
-            <q-btn color="primary" label=">" @click="calendarNext" />
-          </div>
-          <q-space />
+        <div class="row content-end">
+          <q-btn class="col" color="primary" label="<" @click="calendarPrev" />
+          <q-select class="col-9 q-mx-lg" :label="title" v-model="calendarView" :options="displayOptions" map-options emit-value/>
+          <q-btn class="col" color="primary" label=">" @click="calendarNext" />
         </div>
         <q-separator />
-        <q-calendar short-weekday-label ref="calendar" class="calendar" v-model="selectedDate" :view="calendarView" :interval-start="7" :interval-count="14" :resources="venues" @click:interval="addBooking" @click:time="addBooking" @click:day="addBooking" @click:week="addBooking">
+        <q-calendar short-weekday-label ref="calendar" class="calendar" v-model="selectedDate" :show-month-label="false" :view="calendarView" :interval-start="7" :interval-count="14" :resources="venues" @click:interval="addBooking" @click:time="addBooking" @click:day="addBooking" @click:week="addBooking" @click:date="openDay">
           <template #day="{ date }">
             <template v-for="(event, index) in getEvents(date)">
               <q-badge :key="index" style="width: 100%; cursor: pointer; height: 14px; max-height: 14px" class="ellipsis" :style="badgeStyles(event, 'day')" @click.stop.prevent="showEvent(event)">
@@ -156,7 +149,6 @@ export default {
       venueOptions: [],
       selectedDate: null,
       selectedTab: 'tab-1',
-      title: '',
       booking: {
         starttime: '',
         endtime: '',
@@ -165,27 +157,43 @@ export default {
         id: null,
         venueuser: '',
         status: 'requested'
-      }
+      },
+      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
   components: {
     'societyselect': societyselect
   },
+  computed: {
+    title () {
+      if (this.selectedDate) {
+        return this.months[this.selectedDate.substr(5, 2) - 1] + ' ' + this.selectedDate.substr(0, 4)
+      } else {
+        return this.months[(new Date().getMonth())] + ' ' + new Date().getFullYear()
+      }
+    }
+  },
   methods: {
-    addBooking (day, type) {
-      this.booking.starttime = day.date + ' ' + day.time.substr(0, 2) + ':00'
-      if (day.hour < 9) {
+    addBooking (day) {
+      if (day.hour === 0) {
+        this.booking.starttime = day.date + ' 09:00'
+        this.booking.endtime = day.date + ' 10:00'
+      } else if (day.hour < 9) {
+        this.booking.starttime = day.date + ' ' + day.time.substr(0, 2) + ':00'
         this.booking.endtime = day.date + ' ' + '0' + (day.hour + 1).toString() + ':00'
       } else {
+        this.booking.starttime = day.date + ' ' + day.time.substr(0, 2) + ':00'
         this.booking.endtime = day.date + ' ' + (day.hour + 1).toString() + ':00'
       }
-      this.booking.starttime = day.date + ' ' + day.time.substr(0, 2) + ':00'
       this.booking.description = ''
       this.booking.title = 'Add venue booking'
       this.booking.id = null
       this.booking.venue_id = ''
       this.booking.venueuser = ''
       this.modalopen = true
+    },
+    openDay (day) {
+      this.calendarView = 'day'
     },
     showEvent (event) {
       this.booking.description = event.description
@@ -324,7 +332,6 @@ export default {
   },
   mounted () {
     this.searchdb()
-    this.title = this.selectedDate
   }
 
 }
