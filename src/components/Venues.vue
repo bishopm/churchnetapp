@@ -7,10 +7,10 @@
     </q-tabs>
     <q-tab-panels v-model="selectedTab">
       <q-tab-panel name="tab-1">
-        <div class="row content-end">
-          <q-btn class="col" color="primary" label="<" @click="calendarPrev" />
-          <q-select class="col-9 q-mx-lg" :label="title" v-model="calendarView" :options="displayOptions" map-options emit-value/>
-          <q-btn class="col" color="primary" label=">" @click="calendarNext" />
+        <div class="fit row inline wrap justify-center items-center content-center">
+          <q-icon color="primary" size="md" class="cursor-pointer" name="fa fa-arrow-left" @click="calendarPrev" />
+          <q-select class="col-6 q-mx-lg" :label="title" v-model="calendarView" :options="displayOptions" map-options emit-value/>
+          <q-icon color="primary" size="md" class="cursor-pointer" name="fa fa-arrow-right" @click="calendarNext" />
         </div>
         <q-separator />
         <q-calendar short-weekday-label ref="calendar" class="calendar" v-model="selectedDate" :show-month-label="false" :view="calendarView" :interval-start="7" :interval-count="14" :resources="venues" @click:interval="addBooking" @click:time="addBooking" @click:day="addBooking" @click:week="addBooking" @click:date="openDay">
@@ -232,20 +232,22 @@ export default {
     },
     getEvents (dt) {
       let events = []
-      for (let i = 0; i < this.events.length; ++i) {
-        let added = false
-        if (this.events[i].date === dt) {
-          if (!added) {
-            this.events[i].side = void 0
-            events.push(this.events[i])
-          }
-        } else if (this.events[i].days) {
-          // check for overlapping dates
-          let startDate = new Date(this.events[i].date)
-          let endDate = date.addToDate(startDate, { days: this.events[i].days })
-          if (date.isBetweenDates(dt, startDate, endDate)) {
-            events.push(this.events[i])
-            added = true
+      if (this.events) {
+        for (let i = 0; i < this.events.length; ++i) {
+          let added = false
+          if (this.events[i].date === dt) {
+            if (!added) {
+              this.events[i].side = void 0
+              events.push(this.events[i])
+            }
+          } else if (this.events[i].days) {
+            // check for overlapping dates
+            let startDate = new Date(this.events[i].date)
+            let endDate = date.addToDate(startDate, { days: this.events[i].days })
+            if (date.isBetweenDates(dt, startDate, endDate)) {
+              events.push(this.events[i])
+              added = true
+            }
           }
         }
       }
