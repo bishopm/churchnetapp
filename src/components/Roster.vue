@@ -153,8 +153,12 @@ export default {
           this.form.indivint = record.people[0].id
         }
         this.form.grouplabel = row.groups.label
-        this.form.rowndx = row.__index
         this.form.colndx = col.field
+        for (var rndx in this.rows) {
+          if (this.rows[rndx] === row) {
+            this.form.rowndx = parseInt(rndx)
+          }
+        }
         this.modalopen = true
       }
     },

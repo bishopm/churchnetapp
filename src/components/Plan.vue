@@ -172,7 +172,11 @@ export default {
         this.form.plan.service_id = JSON.parse(row.society).service_id
         this.form.plan.society_id = JSON.parse(row.society).society_id
         this.modalopen = true
-        this.form.rowndx = row.__index
+        for (var rndx in this.rows) {
+          if (this.rows[rndx] === row) {
+            this.form.rowndx = parseInt(rndx)
+          }
+        }
         this.form.rowfld = fld
       }
     },
