@@ -7,11 +7,11 @@
         <div v-html="props.row[props.col.field]"></div>
       </q-td>
     </q-table>
-    <q-page-sticky expand position="top-right" :offset="[92, 32]">
-      <q-btn color="primary" @click="givingStats" class="fixed" icon="fas fa-chart-bar"/>
+    <q-page-sticky expand position="top-right" :offset="[62, 12]">
+      <q-btn color="primary" @click="givingStats" icon="fas fa-chart-bar"/>
     </q-page-sticky>
-    <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn size="sm" round color="primary" @click="addPayment" class="fixed" icon="fas fa-plus"/>
+    <q-page-sticky expand position="top-right" :offset="[22, 12]">
+      <q-btn size="sm" round color="primary" @click="addPayment" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

@@ -15,7 +15,7 @@
     </q-list>
     <p class="q-ma-md" v-if="!guests">No guest preachers have been added to this circuit</p>
     <q-page-sticky expand position="top-right" :offset="[32, 22]">
-      <q-btn size="xs" round color="primary" @click="addPerson" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="xs" round color="primary" @click="addPerson" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

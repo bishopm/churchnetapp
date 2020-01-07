@@ -57,7 +57,7 @@
             </q-item>
           </q-list>
           <q-page-sticky expand position="top-right" :offset="[32, 202]">
-            <q-btn size="sm" round color="primary" @click="addVenue" class="fixed" icon="fas fa-plus"/>
+            <q-btn size="sm" round color="primary" @click="addVenue" icon="fas fa-plus"/>
           </q-page-sticky>
         </div>
       </q-tab-panel>

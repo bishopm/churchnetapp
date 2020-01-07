@@ -9,8 +9,8 @@
         </q-item-section>
       </q-item>
     </q-list>
-    <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn size="sm" round color="primary" @click="addLeader" class="fixed" icon="fas fa-plus"/>
+    <q-page-sticky expand position="top-right" :offset="[17, 12]">
+      <q-btn size="sm" round color="primary" @click="addLeader" icon="fas fa-plus"/>
     </q-page-sticky>
     <q-dialog persistent minimized v-model="modalopen" content-css="padding: 35px">
       <q-card>

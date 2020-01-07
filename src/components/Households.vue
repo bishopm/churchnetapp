@@ -15,8 +15,8 @@
         <span class="q-ml-md text-weight-thin" v-else-if="$store.state.user.societies.keys.length > 0">({{household.society.society}})</span>
       </q-item>
     </q-list>
-    <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round color="primary" size="sm" @click="addHousehold" class="fixed" icon="fas fa-plus"/>
+    <q-page-sticky expand position="top-right" :offset="[17, 12]">
+      <q-btn round color="primary" size="sm" @click="addHousehold" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

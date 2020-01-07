@@ -14,8 +14,8 @@
       </q-item>
       <div class="text-center">{{emptymessage}}</div>
     </q-list>
-    <q-page-sticky expand position="top-right" :offset="[32, 32]">
-      <q-btn round size="sm" color="primary" @click="addUser" class="fixed" icon="fas fa-plus"/>
+    <q-page-sticky expand position="top-right" :offset="[17, 12]">
+      <q-btn round size="sm" color="primary" @click="addUser" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>

@@ -14,7 +14,7 @@
       </q-item>
     </q-list>
     <q-page-sticky expand position="top-right" :offset="[32, 19]">
-      <q-btn size="sm" round color="primary" @click="addPerson" class="fixed" icon="fas fa-plus"/>
+      <q-btn size="sm" round color="primary" @click="addPerson" icon="fas fa-plus"/>
     </q-page-sticky>
   </div>
 </template>
