@@ -1,43 +1,54 @@
 <template>
   <div>
-    <p class="q-mt-md caption text-center">{{header}}</p>
-    <vue-frappe v-if="ready"
-      id="my-chart-id"
-      type="line"
-      :labels=labels
-      :axisOptions="{ xIsSeries: true }"
-      :lineOptions="{ dotSize: 4 }"
-      :height="350"
-      :tooltipOptions="{ formatTooltipY: d => 'Attendance: ' + d }"
-      :colors="['#0000AA','#00AA00','#AA0000']"
-      :dataSets=dataSets
-    ></vue-frappe>
-    <h4 class="text-center" v-if="dataSets.length === 1">{{dataSets[0].name}}</h4>
-    <div class="text-center">
-      <q-btn @click="moveto(yr)" class="q-ma-xs" v-for="yr in allyears" color="primary" :key="yr">
-        <small>{{yr}}</small>
-      </q-btn>
-    </div>
-    <div>
-      <h4 class="text-center">Add worship statistics</h4>
-      <div class="q-ma-md">
-        <q-input outlined v-model="statdate" mask="####-##-##">
-          <template v-slot:append>
-            <q-icon name="fa fa-calendar" class="cursor-pointer">
-              <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date mask="YYYY-MM-DD" v-model="statdate" @input="() => $refs.qDateProxy.hide()" />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
-      <div v-for="(service, kkk) in attendance" :key="service.service_id" class="q-my-sm q-mx-md">
-        <q-input outlined :label="'Attendance (' + service.servicetime + ')'" v-model="service.attendance" @blur="checknum(kkk)"/>
-      </div>
-      <div class="q-ma-lg text-center">
-        <q-btn @click="submit()" color="primary">OK</q-btn>
-      </div>
-    </div>
+    <q-tabs dense active-bg-color="primary" no-pane-border align="justify" class="q-mt-md bg-secondary text-white" indicator-color="primary" v-model="tab">
+      <q-tab key="worshipTab" name="worshipTab" label="Worship"/>
+      <q-tab key="otherTab" name="otherTab" label="Other stats"/>
+    </q-tabs>
+    <q-tab-panels dense v-model="tab">
+      <q-tab-panel key="worshipTab" name="worshipTab">
+        <p class="q-mt-md caption text-center">{{header}}</p>
+        <vue-frappe v-if="ready"
+          id="my-chart-id"
+          type="line"
+          :labels=labels
+          :axisOptions="{ xIsSeries: true }"
+          :lineOptions="{ dotSize: 4 }"
+          :height="350"
+          :tooltipOptions="{ formatTooltipY: d => 'Attendance: ' + d }"
+          :colors="['#0000AA','#00AA00','#AA0000']"
+          :dataSets=dataSets
+        ></vue-frappe>
+        <h4 class="text-center" v-if="dataSets.length === 1">{{dataSets[0].name}}</h4>
+        <div class="text-center">
+          <q-btn @click="moveto(yr)" class="q-ma-xs" v-for="yr in allyears" color="primary" :key="yr">
+            <small>{{yr}}</small>
+          </q-btn>
+        </div>
+        <div>
+          <h4 class="text-center">Add worship statistics</h4>
+          <div class="q-ma-md">
+            <q-input outlined v-model="statdate" mask="####-##-##">
+              <template v-slot:append>
+                <q-icon name="fa fa-calendar" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date mask="YYYY-MM-DD" v-model="statdate" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+          <div v-for="(service, kkk) in attendance" :key="service.service_id" class="q-my-sm q-mx-md">
+            <q-input outlined :label="'Attendance (' + service.servicetime + ')'" v-model="service.attendance" @blur="checknum(kkk)"/>
+          </div>
+          <div class="q-ma-lg text-center">
+            <q-btn @click="submit()" color="primary">OK</q-btn>
+          </div>
+        </div>
+      </q-tab-panel>
+      <q-tab-panel key="otherTab" name="otherTab">
+        Other stats go here
+      </q-tab-panel>
+    </q-tab-panels>
   </div>
 </template>
 
@@ -46,6 +57,7 @@ import { date } from 'quasar'
 export default {
   data () {
     return {
+      tab: 'worshipTab',
       currentyr: '',
       header: '',
       allyears: [],
