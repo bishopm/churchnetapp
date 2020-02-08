@@ -47,6 +47,7 @@ module.exports = function (ctx) {
         'QFooter',
         'QDrawer',
         'QOptionGroup',
+        'QMarkupTable',
         'QPageContainer',
         'QPage',
         'QPageSticky',

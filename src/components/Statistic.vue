@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-tabs dense active-bg-color="primary" no-pane-border align="justify" class="q-mt-md bg-secondary text-white" indicator-color="primary" v-model="tab">
+    <q-tabs dense active-bg-color="primary" no-pane-border align="justify" class="q-mb-md bg-secondary text-white" indicator-color="primary" v-model="tab">
       <q-tab key="worshipTab" name="worshipTab" label="Worship"/>
       <q-tab key="otherTab" name="otherTab" label="Other stats"/>
     </q-tabs>
@@ -46,7 +46,41 @@
         </div>
       </q-tab-panel>
       <q-tab-panel key="otherTab" name="otherTab">
-        Other stats go here
+        <div class="text-h6 text-center">Member statistics: {{currentyr}}</div>
+        <q-markup-table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Connect</th>
+              <th>Give</th>
+              <th>Grow</th>
+              <th>Serve</th>
+              <th>Worship</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="measure in measures" :key="measure.id">
+              <td class="text-center">{{months[measure.measuremonth]}}</td>
+              <td class="text-center">{{measure.connect}}</td>
+              <td class="text-center">{{measure.give}}</td>
+              <td class="text-center">{{measure.grow}}</td>
+              <td class="text-center">{{measure.serve}}</td>
+              <td class="text-center">{{measure.worship}}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+        <vue-frappe v-if="ready"
+          id="my-chart-id"
+          type="line"
+          valuesOverPoints=1
+          :labels=mlabels
+          :axisOptions="{ xIsSeries: true }"
+          :lineOptions="{ dotSize: 4 }"
+          :height="500"
+          :tooltipOptions="{ formatTooltipY: d => d }"
+          :colors="['#0000AA','#00AA00','#AA0000']"
+          :dataSets=mdataSets
+        ></vue-frappe>
       </q-tab-panel>
     </q-tab-panels>
   </div>
@@ -63,10 +97,14 @@ export default {
       allyears: [],
       labels: [],
       dataSets: [],
+      mlabels: [],
+      mdataSets: [],
       ready: false,
       statdate: null,
       attendance: [],
-      society: {}
+      society: {},
+      measures: [],
+      months: ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     }
   },
   mounted () {
@@ -93,11 +131,32 @@ export default {
           this.labels = response.data.labels
           this.header = response.data.society.society + ' [' + this.$route.params.yr + ']'
         }
+        if (response.data.mlabels.length === 0) {
+          this.mdataSets.push({ name: 'No data for this year', values: [0, 0] })
+          this.mlabels = ['No data', 'yet']
+          this.ready = true
+        } else {
+          for (var mval in response.data.mdatasets) {
+            var mnewitem = {
+              name: mval,
+              values: response.data.mdatasets[mval]
+            }
+            this.mdataSets.push(mnewitem)
+          }
+          for (var mlab in response.data.mlabels) {
+            var mnew = {
+              name: mlab,
+              values: this.months[response.data.mlabels[mlab]]
+            }
+            this.mlabels.push(mnew.values)
+          }
+        }
         if (response.data.years) {
           this.allyears = response.data.years
           this.ready = true
         }
         this.society = response.data.society
+        this.measures = response.data.measures
         for (var sss in response.data.society.services) {
           var news = {
             service_id: response.data.society.services[sss].id,
