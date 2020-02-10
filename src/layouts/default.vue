@@ -278,27 +278,39 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
       this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
         .then((response) => {
-          if (localStorage.getItem('CHURCHNET_Version')) {
+          if (response.data === 'Invalid token') {
             this.$q.loading.hide()
-            if (localStorage.getItem('CHURCHNET_Version') !== response.data.version) {
-              this.$q.dialog({
-                title: 'New version available',
-                message: 'Click OK to restart the app and upgrade to version ' + response.data.version + '. This new version includes: ' + response.data.updatenotes,
-                ok: 'OK',
-                cancel: 'LATER'
-              }).onOk(() => {
-                localStorage.setItem('CHURCHNET_Version', response.data.version)
-                window.location.reload()
-              }).catch(() => {
-                console.log('Delaying upgrade')
-              })
-            }
+            localStorage.removeItem('CHURCHNET_Token')
+            this.$q.dialog({
+              title: 'Authentication token refresh',
+              message: 'Due to a software upgrade or some other issue with your device, your authentication token needs to be refreshed. This shouldn\'t happen very often! The app will now restart. Thank you :)',
+              ok: 'OK'
+            }).onOk(() => {
+              window.location.reload()
+            })
           } else {
-            localStorage.setItem('CHURCHNET_Version', response.data.version)
+            if (localStorage.getItem('CHURCHNET_Version')) {
+              this.$q.loading.hide()
+              if (localStorage.getItem('CHURCHNET_Version') !== response.data.version) {
+                this.$q.dialog({
+                  title: 'New version available',
+                  message: 'Click OK to restart the app and upgrade to version ' + response.data.version + '. This new version includes: ' + response.data.updatenotes,
+                  ok: 'OK',
+                  cancel: 'LATER'
+                }).onOk(() => {
+                  localStorage.setItem('CHURCHNET_Version', response.data.version)
+                  window.location.reload()
+                }).catch(() => {
+                  console.log('Delaying upgrade')
+                })
+              }
+            } else {
+              localStorage.setItem('CHURCHNET_Version', response.data.version)
+            }
+            this.$store.commit('setUser', response.data)
+            this.$store.commit('setLoaded', true)
+            this.$q.loading.hide()
           }
-          this.$store.commit('setUser', response.data)
-          this.$store.commit('setLoaded', true)
-          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
