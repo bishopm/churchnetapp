@@ -286,31 +286,30 @@ export default {
               message: 'Due to a software upgrade or some other issue with your device, your authentication token needs to be refreshed. This shouldn\'t happen very often! The app will now restart. Thank you :)',
               ok: 'OK'
             }).onOk(() => {
+              localStorage.setItem('CHURCHNET_Version', response.data.version)
               window.location.reload()
             })
-          } else {
-            if (localStorage.getItem('CHURCHNET_Version')) {
-              this.$q.loading.hide()
-              if (localStorage.getItem('CHURCHNET_Version') !== response.data.version) {
-                this.$q.dialog({
-                  title: 'New version available',
-                  message: 'Click OK to restart the app and upgrade to version ' + response.data.version + '. This new version includes: ' + response.data.updatenotes,
-                  ok: 'OK',
-                  cancel: 'LATER'
-                }).onOk(() => {
-                  localStorage.setItem('CHURCHNET_Version', response.data.version)
-                  window.location.reload()
-                }).catch(() => {
-                  console.log('Delaying upgrade')
-                })
-              }
-            } else {
-              localStorage.setItem('CHURCHNET_Version', response.data.version)
-            }
-            this.$store.commit('setUser', response.data)
-            this.$store.commit('setLoaded', true)
+          } else if (localStorage.getItem('CHURCHNET_Version')) {
             this.$q.loading.hide()
+            if (localStorage.getItem('CHURCHNET_Version') !== response.data.version) {
+              this.$q.dialog({
+                title: 'New version available',
+                message: 'Click OK to restart the app and upgrade to version ' + response.data.version + '. This new version includes: ' + response.data.updatenotes,
+                ok: 'OK',
+                cancel: 'LATER'
+              }).onOk(() => {
+                localStorage.setItem('CHURCHNET_Version', response.data.version)
+                window.location.reload()
+              }).onCancel(() => {
+                console.log('Delaying upgrade')
+              })
+            }
+          } else {
+            localStorage.setItem('CHURCHNET_Version', response.data.version)
           }
+          this.$store.commit('setUser', response.data)
+          this.$store.commit('setLoaded', true)
+          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
