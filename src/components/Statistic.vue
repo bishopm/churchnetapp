@@ -72,7 +72,6 @@
         <vue-frappe v-if="ready"
           id="my-chart-id"
           type="line"
-          valuesOverPoints=1
           :labels=mlabels
           :axisOptions="{ xIsSeries: true }"
           :lineOptions="{ dotSize: 4 }"
