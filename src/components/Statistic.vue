@@ -2,7 +2,8 @@
   <div>
     <q-tabs dense active-bg-color="primary" no-pane-border align="justify" class="q-mb-md bg-secondary text-white" indicator-color="primary" v-model="tab">
       <q-tab key="worshipTab" name="worshipTab" label="Worship"/>
-      <q-tab key="otherTab" name="otherTab" label="Other stats"/>
+      <q-tab key="otherTab" name="otherTab" label="Discipleship"/>
+      <q-tab key="reportsTab" name="reportsTab" label="Reports"/>
     </q-tabs>
     <q-tab-panels dense v-model="tab">
       <q-tab-panel key="worshipTab" name="worshipTab">
@@ -81,6 +82,10 @@
           :dataSets=mdataSets
         ></vue-frappe>
       </q-tab-panel>
+      <q-tab-panel key="reportsTab" name="reportsTab">
+        Giving report (planned giving per month)<br>
+        List of members
+      </q-tab-panel>
     </q-tab-panels>
   </div>
 </template>
@@ -110,11 +115,16 @@ export default {
     var sun = new Date()
     sun.setDate(sun.getDate() - (sun.getDay()) % 7)
     this.statdate = date.formatDate(sun, 'YYYY-MM-DD')
-    this.currentyr = this.$route.params.yr
+    if (!this.$route.params.yr) {
+      this.currentyr = 2020
+      this.yr = this.currentyr
+    } else {
+      this.currentyr = this.$route.params.yr
+    }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
     this.$axios.get(process.env.API + '/statistics/' + this.$route.params.society + '/' + this.currentyr)
       .then((response) => {
-        if (response.data.labels.length === 0) {
+        if (!response.data.labels) {
           this.header = 'No statistics have been entered this year'
           this.dataSets.push({ name: 'No data for this year', values: [0, 0] })
           this.labels = ['No data', 'yet']
@@ -128,9 +138,9 @@ export default {
             this.dataSets.push(newitem)
           }
           this.labels = response.data.labels
-          this.header = response.data.society.society + ' [' + this.$route.params.yr + ']'
+          this.header = response.data.society.society + ' [' + this.currentyr + ']'
         }
-        if (response.data.mlabels.length === 0) {
+        if (!response.data.mlabels === 0) {
           this.mdataSets.push({ name: 'No data for this year', values: [0, 0] })
           this.mlabels = ['No data', 'yet']
           this.ready = true

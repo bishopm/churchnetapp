@@ -94,7 +94,7 @@
               <q-item-label caption>society rosters</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item to="/statistics">
+          <q-item :to="$store.state.user.societies.keys.length > 1 ? '/statistics' : '/statistics/' + $store.state.user.societies.keys[0]">
             <q-item-section avatar>
               <q-icon color="primary" name="fas fa-fw fa-chart-line" />
             </q-item-section>
