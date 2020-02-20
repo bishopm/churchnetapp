@@ -28,6 +28,12 @@
         <q-icon class="cursor-pointer" @click.native="deleteperm(district.pivot)" color="secondary" name="fas fa-times"></q-icon>
       </p>
     </div>
+    <h4><b>Denominations</b></h4>
+    <div v-if="user.denominations">
+      <p v-for="denomination in user.denominations.full" :key="denomination.id">{{denomination.denomination}} ({{denomination.pivot.permission}})
+        <q-icon class="cursor-pointer" @click.native="deleteperm(denomination.pivot)" color="secondary" name="fas fa-times"></q-icon>
+      </p>
+    </div>
     <div class="row justify-center" v-if="$store.state.user.level < 3">
       <q-select class="q-ml-md" multiple label="Give district access to this user" v-model="form.districts" :options="districtOptions" map-options emit-value/>
       <q-select class="q-mx-md" label="Level" v-model="form.districtlevel" :options="levelOptions" map-options emit-value/>
@@ -44,6 +50,8 @@ export default {
         districts: [],
         circuits: [],
         societies: [],
+        denominations: [],
+        denominationlevel: 'editor',
         districtlevel: 'editor',
         circuitlevel: 'editor',
         societylevel: 'editor'
@@ -51,6 +59,7 @@ export default {
       societyOptions: [],
       circuitOptions: [],
       districtOptions: [],
+      denominationOptions: [],
       levelOptions: [{ label: 'admin', value: 'admin' }, { label: 'editor', value: 'editor' }]
     }
   },
@@ -118,6 +127,16 @@ export default {
               value: response.data.auth.districts[dkey].id
             }
             this.districtOptions.push(dnewitem)
+          }
+        }
+        this.denominationOptions = []
+        for (var dkey2 in response.data.auth.denomination) {
+          if ((!this.user.denominations) || (this.user.denomination.keys.indexOf(response.data.auth.denomination[dkey2].id) === -1)) {
+            var dnewitem2 = {
+              label: response.data.auth.denomination[dkey2].denomination,
+              value: response.data.auth.denomination[dkey2].id
+            }
+            this.denominationOptions.push(dnewitem2)
           }
         }
       })
