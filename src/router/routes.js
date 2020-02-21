@@ -9,6 +9,7 @@ const routes = [
       { name: 'circuits', path: '/circuits', component: () => import('components/Circuits'), meta: { auth: true } },
       { name: 'circuitsettings', path: '/circuitsettings', component: () => import('components/CircuitSettings'), meta: { auth: true } },
       { name: 'communicate', path: '/communicate', component: () => import('components/Communicate'), meta: { auth: true } },
+      { name: 'denominationsettings', path: '/denominationsettings', component: () => import('components/DenominationSettings'), meta: { auth: true } },
       { name: 'diaryform', path: '/meeting/:scope/:action/:entity?/:id?', component: () => import('components/forms/Diary'), meta: { auth: true } },
       { name: 'diary', path: '/diary/:scope', component: () => import('components/Diary'), meta: { auth: true } },
       { name: 'feeds', path: '/feeds', component: () => import('components/Feeds'), meta: { auth: true } },

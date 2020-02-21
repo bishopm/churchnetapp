@@ -204,6 +204,20 @@
           </q-item-section>
         </q-item>
       </div>
+      <div v-if="$store.getters.hasEntity('denominations')">
+        <q-item-label class="text-center bg-grey text-white q-py-md">
+          Church
+        </q-item-label>
+        <q-item to="/denominationsettings">
+          <q-item-section avatar>
+            <q-icon color="primary" name="fas fa-fw fa-users-cog" />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label overline>Denomination</q-item-label>
+            <q-item-label caption>settings and officials</q-item-label>
+          </q-item-section>
+        </q-item>
+      </div>
       <q-item-label class="text-center bg-black text-white q-py-md">
         Administration
       </q-item-label>

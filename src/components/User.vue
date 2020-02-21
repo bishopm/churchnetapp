@@ -35,8 +35,8 @@
       </p>
     </div>
     <div class="row justify-center" v-if="$store.state.user.level < 3">
-      <q-select class="q-ml-md" multiple label="Give district access to this user" v-model="form.districts" :options="districtOptions" map-options emit-value/>
-      <q-select class="q-mx-md" label="Level" v-model="form.districtlevel" :options="levelOptions" map-options emit-value/>
+      <q-select class="q-ml-md" multiple label="Give denominational access to this user" v-model="form.denominations" :options="denominationOptions" map-options emit-value/>
+      <q-select class="q-mx-md" label="Level" v-model="form.denominationlevel" :options="levelOptions" map-options emit-value/>
     </div>
   </div>
 </template>
@@ -130,11 +130,11 @@ export default {
           }
         }
         this.denominationOptions = []
-        for (var dkey2 in response.data.auth.denomination) {
-          if ((!this.user.denominations) || (this.user.denomination.keys.indexOf(response.data.auth.denomination[dkey2].id) === -1)) {
+        for (var dkey2 in response.data.auth.denominations) {
+          if ((!this.user.denominations) || (this.user.denominations.keys.indexOf(response.data.auth.denominations[dkey2].id) === -1)) {
             var dnewitem2 = {
-              label: response.data.auth.denomination[dkey2].denomination,
-              value: response.data.auth.denomination[dkey2].id
+              label: response.data.auth.denominations[dkey2].denomination,
+              value: response.data.auth.denominations[dkey2].id
             }
             this.denominationOptions.push(dnewitem2)
           }
