@@ -47,6 +47,13 @@
               </q-badge>
             </template>
           </template>
+          <template #scheduler-resource="{ resource }">
+            <template v-for="(venue, ndx) in venues">
+              <span v-if="venue.label === resource.label" :key="ndx">
+                <q-badge :style="'background-color:#' + venue.colour"> </q-badge>{{venue.label}}
+              </span>
+            </template>
+          </template>
         </q-calendar>
       </q-tab-panel>
       <q-tab-panel name="tab-2">
@@ -291,7 +298,7 @@ export default {
               value: response.data.venues[vv].id
             }
             this.venueOptions.push(newitem)
-            this.venues.push({ label: response.data.venues[vv].venue })
+            this.venues.push({ label: response.data.venues[vv].venue, colour: response.data.venues[vv].colour })
           }
           this.events = response.data.events
           for (var uu in response.data.venueusers) {
