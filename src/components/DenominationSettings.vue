@@ -1,48 +1,45 @@
 <template>
   <div class="q-ma-md">
-    <p class="caption text-center">Circuit settings</p>
-    <circuitselect class="q-ma-md" @altered="setcircuit" :perms="['admin']" showme="1"></circuitselect>
+    <p class="caption text-center">Denomination settings</p>
+    <denominationselect class="q-ma-md" @altered="setdenomination" :perms="['admin']" showme="1"></denominationselect>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The circuit field is required" label="Circuit name" v-model="form.circuit" :rules="[ val => val.length >= 1 ]" />
+      <q-input outlined label="Name" v-model="form.denomination" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The circuit number is required" label="Circuit number" v-model="form.circuitnumber" :rules="[ val => val >= 1 ]" />
+      <q-input outlined label="National structure" v-model="form.national" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined hide-bottom-space error-message="The slug is required" label="Slug" v-model="form.slug" :rules="[ val => val.length >= 1 ]" />
+      <q-input outlined label="Provincial structure" v-model="form.provincial" />
     </div>
     <div class="q-ma-md">
-      <q-input outlined label="Circuit office contact details" v-model="form.office_contact" />
+      <q-input outlined label="Regional structure" v-model="form.regional" />
     </div>
     <div class="q-ma-md">
-      <q-select outlined label="Preaching plan first month" v-model="form.plan_month" :options="[{ label: 'January', value: 1 }, { label: 'February', value: 2 }, { label: 'March', value: 3 }]" map-options emit-value/>
-    </div>
-    <div class="text-center">
-      <q-btn class="q-mt-md" color="primary" @click="update()" label="Update" />
+      <q-input outlined label="Local structure" v-model="form.local" />
     </div>
   </div>
 </template>
 
 <script>
-import circuitselect from './Circuitselect'
+import denominationselect from './Denominationselect'
 export default {
   data () {
     return {
       search: '',
-      circuit: {},
+      denomination: {},
       form: {
-        circuit: '',
-        circuitnumber: '',
-        slug: '',
-        plan_month: '',
-        office_contact: ''
+        denomination: '',
+        national: '',
+        provincial: '',
+        regional: '',
+        local: ''
       }
     }
   },
   methods: {
-    setcircuit () {
-      this.circuit = this.$store.state.user.circuits.full[this.$store.state.select]
-      this.form = this.circuit
+    setdenomination () {
+      this.denomination = this.$store.state.user.denominations.full[this.$store.state.select]
+      this.form = this.denomination
     },
     update () {
       this.$v.form.$touch()
@@ -50,17 +47,13 @@ export default {
         this.$q.notify('Please check for errors!')
       } else {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
-        this.$axios.post(process.env.API + '/circuits/' + this.$store.state.select,
+        this.$axios.post(process.env.API + '/denominations/' + this.$store.state.select,
           {
-            circuit: this.form.circuit,
-            circuitnumber: this.form.circuitnumber,
-            slug: this.form.slug,
-            plan_month: this.form.plan_month,
-            office_contact: this.form.office_contact
+            denomination: this.form.denomination
           })
           .then(response => {
             this.$q.notify('Circuit updated')
-            this.$router.push({ name: 'circuitsettings' })
+            this.$router.push({ name: 'denominationsettings' })
           })
           .catch(function (error) {
             console.log(error)
@@ -69,10 +62,10 @@ export default {
     }
   },
   components: {
-    'circuitselect': circuitselect
+    'denominationselect': denominationselect
   },
   mounted () {
-    this.setcircuit()
+    this.setdenomination()
   }
 
 }
