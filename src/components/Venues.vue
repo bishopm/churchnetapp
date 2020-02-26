@@ -45,13 +45,15 @@
               <q-badge v-if="event.time" :key="index" :style="'background-color:' + event.colour" class="my-resource justify-center ellipsis" @click.stop.prevent="showEvent(event)">
                 {{event.description}}<br>({{event.name}})
               </q-badge>
+              <div v-else @click="alert(day)" :key="index">
+              </div>
             </template>
           </template>
           <template #scheduler-resource="{ resource }">
             <template v-for="(venue, ndx) in venues">
-              <span v-if="venue.label === resource.label" :key="ndx">
-                <q-badge :style="'background-color:#' + venue.colour"> </q-badge>{{venue.label}}
-              </span>
+              <div v-if="venue.label === resource.label" :key="ndx" class="text-left">
+                <q-icon name="fa fa-home" :style="'color:' + venue.colour"></q-icon><br><span class="text-caption">{{venue.label}}</span>
+              </div>
             </template>
           </template>
         </q-calendar>
