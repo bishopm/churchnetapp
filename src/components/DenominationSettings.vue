@@ -17,6 +17,9 @@
     <div class="q-ma-md">
       <q-input outlined label="Local structure" v-model="form.local" />
     </div>
+    <div class="q-ma-md" v-for="indiv in denomination.individuals" :key="indiv.id">
+      {{indiv.pivot.description}}: {{indiv.title}} {{indiv.firstname}} {{indiv.surname}}
+    </div>
   </div>
 </template>
 
@@ -32,7 +35,8 @@ export default {
         national: '',
         provincial: '',
         regional: '',
-        local: ''
+        local: '',
+        office: []
       }
     }
   },
