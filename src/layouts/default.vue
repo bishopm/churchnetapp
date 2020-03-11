@@ -100,7 +100,7 @@
             </q-item-section>
             <q-item-section side>
               <q-item-label overline>Reports</q-item-label>
-              <q-item-label caption>view worship service statistics</q-item-label>
+              <q-item-label caption>view statistics and reports</q-item-label>
             </q-item-section>
           </q-item>
           <q-item to="/rosters">
