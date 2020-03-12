@@ -85,13 +85,13 @@
               <q-item-label caption>current & historic feed content</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item to="/rosters">
+          <q-item :to="$store.state.user.societies.keys.length > 1 ? '/readings' : '/readings/' + $store.state.user.societies.keys[0]">
             <q-item-section avatar>
-              <q-icon color="primary" name="fas fa-fw fa-calendar-alt" />
+              <q-icon color="primary" name="fas fa-fw fa-book" />
             </q-item-section>
             <q-item-section side>
-              <q-item-label overline>Rosters</q-item-label>
-              <q-item-label caption>society rosters</q-item-label>
+              <q-item-label overline>Readings</q-item-label>
+              <q-item-label caption>non-lectionary weekly readings</q-item-label>
             </q-item-section>
           </q-item>
           <q-item :to="$store.state.user.societies.keys.length > 1 ? '/statistics' : '/statistics/' + $store.state.user.societies.keys[0]">
@@ -99,8 +99,17 @@
               <q-icon color="primary" name="fas fa-fw fa-chart-line" />
             </q-item-section>
             <q-item-section side>
-              <q-item-label overline>Statistics</q-item-label>
-              <q-item-label caption>view worship service statistics</q-item-label>
+              <q-item-label overline>Reports</q-item-label>
+              <q-item-label caption>view statistics and reports</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item to="/rosters">
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-fw fa-calendar-alt" />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label overline>Rosters</q-item-label>
+              <q-item-label caption>society rosters</q-item-label>
             </q-item-section>
           </q-item>
           <q-item to="/venues">
