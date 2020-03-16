@@ -2,7 +2,7 @@
   <div class="q-ma-md">
     <h4 class="text-center">Choose a {{$store.state.user.denomination.local}}</h4>
     <q-list v-if="$store.state.user" class="no-border q-my-md">
-      <q-item v-for="society in $store.state.user.societies.full" :key="society.id" :to="'/statistics/' + society.id + '/' + (new Date()).getFullYear()">
+      <q-item v-for="society in $store.state.user.societies.full" :key="society.id" :to="'/readings/' + society.id">
         {{society.society}}
       </q-item>
     </q-list>
