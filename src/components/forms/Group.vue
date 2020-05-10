@@ -8,6 +8,7 @@
     <q-input outlined label="Description" type="textarea" rows="3" v-model="form.description" />
     <q-select class="q-my-sm" @filter="filterFn" use-input outlined label="Leader" v-model="form.leader" :options="filteredOptions" map-options emit-value/>
     <q-select class="q-my-sm" outlined label="Group type" v-model="form.grouptype" :options="[{ label: 'Administration', value: 'administration' }, { label: 'Event', value: 'event' }, { label: 'Fellowship', value: 'fellowship' }, { label: 'Service', value: 'service' }]" map-options emit-value/>
+    <q-select class="q-my-sm" outlined label="Individuals or Household members" v-model="form.memberunit" :options="[{ label: 'Individuals', value: 'individual' }, { label: 'Households', value: 'household' }]" map-options emit-value/>
     <q-input v-if="form.grouptype === 'event'" label="Event date and time" clearable outlined v-model="form.eventdatetime" mask="####-##-## ##:##">
       <template v-slot:prepend>
         <q-icon name="fa fa-calendar" class="cursor-pointer">
@@ -47,6 +48,7 @@ export default {
         grouptype: '',
         blocked: '',
         society_id: 0,
+        memberunit: 'individual',
         leader: '',
         signup: 0
       },
@@ -70,6 +72,7 @@ export default {
           this.filteredOptions = this.leaderOptions
         } else {
           this.filteredOptions = []
+
           for (var fndx in this.leaderOptions) {
             if (this.leaderOptions[fndx].label.toLowerCase().includes(val.toLowerCase())) {
               this.filteredOptions.push(this.leaderOptions[fndx])
@@ -91,6 +94,7 @@ export default {
               eventdatetime: this.form.eventdatetime,
               description: this.form.description,
               grouptype: this.form.grouptype,
+              memberunit: this.form.memberunit,
               society_id: this.form.society_id,
               leader: this.form.leader,
               signup: this.form.signup
@@ -109,6 +113,7 @@ export default {
               groupname: this.form.groupname,
               description: this.form.description,
               eventdatetime: this.form.eventdatetime,
+              memberunit: this.form.memberunit,
               grouptype: this.form.grouptype,
               society_id: this.$store.state.select,
               leader: this.form.leader,
@@ -160,6 +165,9 @@ export default {
     }
   },
   mounted () {
+    if (!this.$store.state.select) {
+      this.$store.commit('setSelect', this.$store.state.societyfilter[0])
+    }
     this.populateLeader()
     if (this.$route.params.action === 'edit') {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
@@ -170,6 +178,7 @@ export default {
           this.form.grouptype = response.data.group.grouptype
           this.form.eventdatetime = response.data.group.datestr
           this.form.society_id = response.data.group.society_id
+          this.form.memberunit = response.data.group.memberunit
           this.form.leader = response.data.group.leader
           if (response.data.group.signup === 1) {
             this.form.signup = 1

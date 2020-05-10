@@ -51,6 +51,7 @@
       <div v-else class="q-mt-md">
         <p>No household members have been added yet</p>
         <q-btn class="q-mt-md" color="secondary" @click="addIndividual()">Add an individual</q-btn>
+        <q-btn class="q-mt-md q-ml-md" color="black" @click="deleteHousehold()">Delete household</q-btn>
       </div>
       <q-dialog minimized v-model="modalopen">
         <q-card class="q-pa-md">
@@ -232,6 +233,29 @@ export default {
   methods: {
     editHousehold () {
       this.$router.push({ name: 'householdform', params: { id: this.$route.params.id, action: 'edit', scope: 'society' } })
+    },
+    deleteHousehold () {
+      this.$q.dialog({
+        title: 'Confirm deletion',
+        message: 'Are you sure you want to delete this household?',
+        ok: 'Yes',
+        cancel: 'No'
+      }).onOk(() => {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
+        this.$axios.post(process.env.API + '/households/delete',
+          {
+            id: this.household.id
+          })
+          .then(response => {
+            this.$q.notify('Household deleted')
+            this.$router.push({ name: 'households' })
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }).onCancel(() => {
+        console.log('Cancelling deletion')
+      })
     },
     editIndividual (individual) {
       individual.alltags = this.household.alltags

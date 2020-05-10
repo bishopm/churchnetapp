@@ -13,7 +13,7 @@
       </div>
       <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Addressee" v-model="household.addressee" :rules="[ val => val.length >= 1 ]"/>
       <q-input class="q-ma-md" outlined hide-bottom-space error-message="Addressee is required" label="Residential Address" v-model="household.location.address"/>
-      <q-input class="q-ma-md" outlined hide-bottom-space error-message="Phone numbers must be valid and numeric" label="Home phone" v-model="household.location.phone" :rules="[ val => val > 1000000 ]"/>
+      <q-input class="q-ma-md" outlined hide-bottom-space error-message="Phone numbers must be at least 7 digits and numeric" label="Home phone" v-model="household.location.phone" :rules="[ val => val > 1000000 || val ]"/>
       <q-select outlined class="q-ma-md" label="Household cellphone" v-model="household.householdcell" :options="housecellOptions" map-options emit-value/>
       <div class="q-ma-md text-center">
         <q-btn color="primary" @click="submit">OK</q-btn>
@@ -119,7 +119,7 @@ export default {
         message: 'Are you sure you want to delete this household and its members?',
         ok: 'Yes',
         cancel: 'No'
-      }).then(() => {
+      }).onOk(() => {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token
         this.$axios.post(process.env.API + '/households/delete',
           {
@@ -132,7 +132,7 @@ export default {
           .catch(function (error) {
             console.log(error)
           })
-      }).catch(() => {
+      }).onCancel(() => {
         console.log('Cancelling deletion')
       })
     },

@@ -24,8 +24,8 @@
               <q-icon color="primary" name="fas fa-fw fa-user-friends" />
             </q-item-section>
             <q-item-section side>
-              <q-item-label overline>Households</q-item-label>
-              <q-item-label caption>view all households</q-item-label>
+              <q-item-label overline>Individuals</q-item-label>
+              <q-item-label caption>search for individuals</q-item-label>
             </q-item-section>
           </q-item>
           <q-item to="/groups">

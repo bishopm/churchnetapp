@@ -75,6 +75,10 @@ export default {
         {
           label: 'Song / Hymn',
           value: 'song'
+        },
+        {
+          label: 'Video',
+          value: 'video'
         }
       ],
       showHtml: false
