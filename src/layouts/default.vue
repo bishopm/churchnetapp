@@ -134,15 +134,6 @@
               <q-item-label caption>admin settings for societies</q-item-label>
             </q-item-section>
         </q-item>
-        <q-item clickable @click.native="logout()">
-          <q-item-section avatar>
-            <q-icon color="primary" name="fas fa-fw fa-sign-out-alt" />
-          </q-item-section>
-          <q-item-section side>
-            <q-item-label overline>Log out</q-item-label>
-            <q-item-label caption>log out of ChurchNet</q-item-label>
-          </q-item-section>
-        </q-item>
       </q-list>
     </q-drawer>
     <q-page-container>
@@ -289,7 +280,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setAdminoptions', false)
     if (localStorage.getItem('CHURCHNET_Token')) {
       this.$q.loading.show({
         message: 'Welcome! Logging you in...',
@@ -337,14 +327,31 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    } else if (!localStorage.getItem('CHURCHNET_verifiedphone')) {
+      this.$router.push({ name: 'phoneverification' })
     } else {
-      this.$router.push({ name: 'login' })
-    }
-  },
-  methods: {
-    logout () {
-      localStorage.removeItem('CHURCHNET_Token')
-      this.$router.push({ name: 'login' })
+      this.$axios.post(process.env.API + '/churchnet/login',
+        {
+          phone: localStorage.getItem('CHURCHNET_verifiedphone'),
+          phonetoken: localStorage.getItem('CHURCHNET_phonetoken')
+        })
+        .then(response => {
+          localStorage.setItem('CHURCHNET_Token', response.data.token)
+          localStorage.setItem('CHURCHNET_user_id', response.data.userid)
+          this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
+          this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
+            .then((response) => {
+              this.$store.commit('setUser', response.data)
+              this.$router.push({ name: 'home' })
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        })
+        .catch(function (error) {
+          this.error = error
+        })
     }
   }
 }

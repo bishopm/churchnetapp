@@ -25,7 +25,7 @@ module.exports = function (ctx) {
     ],
 
     framework: {
-      // all: true, // --- includes everything; for dev only!
+      importStrategy: 'auto',
 
       components: [
         'QBadge',
@@ -92,17 +92,15 @@ module.exports = function (ctx) {
       // lang: 'de' // Quasar language
     },
 
-    supportIE: false,
-
     build: {
       env: ctx.dev
         ? { // so on dev we'll have
-          API: JSON.stringify('http://localhost/churchnet/public/api'),
-          WEB: JSON.stringify('http://localhost/churchnet/public')
+          API: 'http://localhost/churchnet/public/api',
+          WEB: 'http://localhost/churchnet/public'
         }
         : { // and on build (production):
-          API: JSON.stringify('https://church.net.za/api'),
-          WEB: JSON.stringify('https://church.net.za')
+          API: 'https://church.net.za/api',
+          WEB: 'https://church.net.za'
         },
       scopeHoisting: true,
       // vueRouterMode: 'history',
@@ -146,27 +144,27 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'statics/icons/icon-128x128.png',
+            'src': 'icons/icon-128x128.png',
             'sizes': '128x128',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-192x192.png',
+            'src': 'icons/icon-192x192.png',
             'sizes': '192x192',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-256x256.png',
+            'src': 'icons/icon-256x256.png',
             'sizes': '256x256',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-384x384.png',
+            'src': 'icons/icon-384x384.png',
             'sizes': '384x384',
             'type': 'image/png'
           },
           {
-            'src': 'statics/icons/icon-512x512.png',
+            'src': 'icons/icon-512x512.png',
             'sizes': '512x512',
             'type': 'image/png'
           }

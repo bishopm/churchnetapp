@@ -79,38 +79,9 @@ export default {
   },
   methods: {
     login () {
-      this.$axios.post(process.env.API + '/churchnet/login',
-        {
-          email: this.email,
-          password: this.password,
-          phonetoken: localStorage.getItem('CHURCHNET_phonetoken')
-        })
-        .then(response => {
-          if (response.data === 'Invalid credentials') {
-            this.$q.notify('Incorrect login details! Do you still need to register?')
-          } else if (response.data === 'Wrong phone token') {
-            this.$q.notify('Re-directing to phone number authentication')
-          } else {
-            localStorage.setItem('CHURCHNET_Token', response.data.token)
-            localStorage.setItem('CHURCHNET_user_id', response.data.user.id)
-            this.$store.commit('setToken', localStorage.getItem('CHURCHNET_Token'))
-            this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('CHURCHNET_Token')
-            this.$axios.get(process.env.API + '/users/' + localStorage.getItem('CHURCHNET_user_id'))
-              .then((response) => {
-                this.$store.commit('setUser', response.data)
-                this.$router.push({ name: 'home' })
-              })
-              .catch(function (error) {
-                console.log(error)
-              })
-          }
-        })
-        .catch(function (error) {
-          this.error = error
-        })
     },
     verification () {
-      this.$router.push({ name: 'phoneverification' })
+
     },
     register () {
       this.$axios.post(process.env.API + '/register',
