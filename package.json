@@ -15,7 +15,7 @@
     "core-js": "^3.8.3",
     "firebase": "^5.11.1",
     "firebaseui": "^3.6.1",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "leaflet": "^1.6.0",
     "quasar": "^1.15.1",
     "vue-avatar-cropper": "^1.0.6",
